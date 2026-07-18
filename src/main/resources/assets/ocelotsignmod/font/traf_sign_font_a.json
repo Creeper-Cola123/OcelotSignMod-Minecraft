@@ -1,0 +1,25 @@
+{
+    "providers": [
+        {
+            "type": "ttf",
+            "file": "ocelotsignmod:re2014em.ttf",
+            "size": 12.5,
+            "oversample": 16.0,
+            "shift": [0, 0.5]
+        },
+        {
+            "type": "ttf",
+            "file": "ocelotsignmod:misans_semibold.ttf",
+            "size": 13.0,
+            "oversample": 16.0,
+            "shift": [0, -0.5],
+            "filter": {
+                "unicode": [
+                    "\u4e00-\u9fff",
+                    "\u3000-\u303f",
+                    "\uff00-\uffef"
+                ]
+            }
+        }
+    ]
+}
