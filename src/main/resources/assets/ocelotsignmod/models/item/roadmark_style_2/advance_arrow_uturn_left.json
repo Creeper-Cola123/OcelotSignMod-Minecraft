@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "ocelotsignmod:block/roadmark_style_2/advance_arrow_uturn_left",
+    "layer1": "ocelotsignmod:item/item_group/large"
+  }
+}

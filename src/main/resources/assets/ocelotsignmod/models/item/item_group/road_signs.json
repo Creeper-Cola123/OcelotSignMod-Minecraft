@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "ocelotsignmod:item/item_group/road_signs"
+  }
+}

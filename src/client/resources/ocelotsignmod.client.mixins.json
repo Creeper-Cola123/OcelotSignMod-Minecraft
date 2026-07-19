@@ -1,0 +1,16 @@
+{
+	"required": true,
+	"package": "bklmc.ocelotsign.mixin.client",
+	"compatibilityLevel": "JAVA_17",
+	"client": [
+		"AbstractSignBlockEditScreenAccessor",
+		"AbstractSignBlockEditScreenMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	},
+	"refmap": "ocelotsignmod.client.refmap.json"
+}

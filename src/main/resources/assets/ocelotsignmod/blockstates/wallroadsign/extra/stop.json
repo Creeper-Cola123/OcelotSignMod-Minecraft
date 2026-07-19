@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "ocelotsignmod:block/wallroadsign/extra/stop",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "ocelotsignmod:block/wallroadsign/extra/stop",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "ocelotsignmod:block/wallroadsign/extra/stop",
+      "y": 270
+    },
+    "facing=west": {
+      "model": "ocelotsignmod:block/wallroadsign/extra/stop",
+      "y": 90
+    }
+  }
+}

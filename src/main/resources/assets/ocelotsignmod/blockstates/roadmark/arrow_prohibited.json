@@ -1,0 +1,124 @@
+{
+  "variants": {
+    "facing=north,on_slab=false,waterlogged=false": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited"
+    },
+    "facing=north,on_slab=false,waterlogged=true": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited"
+    },
+    "facing=north,on_slab=true,waterlogged=false": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited_on_slab"
+    },
+    "facing=north,on_slab=true,waterlogged=true": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited_on_slab"
+    },
+    "facing=north_east,on_slab=false,waterlogged=false": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited_rotated",
+      "y": 90
+    },
+    "facing=north_east,on_slab=false,waterlogged=true": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited_rotated",
+      "y": 90
+    },
+    "facing=north_east,on_slab=true,waterlogged=false": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited_on_slab_rotated",
+      "y": 90
+    },
+    "facing=north_east,on_slab=true,waterlogged=true": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited_on_slab_rotated",
+      "y": 90
+    },
+    "facing=east,on_slab=false,waterlogged=false": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited",
+      "y": 90
+    },
+    "facing=east,on_slab=false,waterlogged=true": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited",
+      "y": 90
+    },
+    "facing=east,on_slab=true,waterlogged=false": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited_on_slab",
+      "y": 90
+    },
+    "facing=east,on_slab=true,waterlogged=true": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited_on_slab",
+      "y": 90
+    },
+    "facing=south_east,on_slab=false,waterlogged=false": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited_rotated",
+      "y": 180
+    },
+    "facing=south_east,on_slab=false,waterlogged=true": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited_rotated",
+      "y": 180
+    },
+    "facing=south_east,on_slab=true,waterlogged=false": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited_on_slab_rotated",
+      "y": 180
+    },
+    "facing=south_east,on_slab=true,waterlogged=true": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited_on_slab_rotated",
+      "y": 180
+    },
+    "facing=south,on_slab=false,waterlogged=false": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited",
+      "y": 180
+    },
+    "facing=south,on_slab=false,waterlogged=true": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited",
+      "y": 180
+    },
+    "facing=south,on_slab=true,waterlogged=false": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited_on_slab",
+      "y": 180
+    },
+    "facing=south,on_slab=true,waterlogged=true": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited_on_slab",
+      "y": 180
+    },
+    "facing=south_west,on_slab=false,waterlogged=false": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited_rotated",
+      "y": 270
+    },
+    "facing=south_west,on_slab=false,waterlogged=true": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited_rotated",
+      "y": 270
+    },
+    "facing=south_west,on_slab=true,waterlogged=false": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited_on_slab_rotated",
+      "y": 270
+    },
+    "facing=south_west,on_slab=true,waterlogged=true": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited_on_slab_rotated",
+      "y": 270
+    },
+    "facing=west,on_slab=false,waterlogged=false": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited",
+      "y": 270
+    },
+    "facing=west,on_slab=false,waterlogged=true": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited",
+      "y": 270
+    },
+    "facing=west,on_slab=true,waterlogged=false": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited_on_slab",
+      "y": 270
+    },
+    "facing=west,on_slab=true,waterlogged=true": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited_on_slab",
+      "y": 270
+    },
+    "facing=north_west,on_slab=false,waterlogged=false": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited_rotated"
+    },
+    "facing=north_west,on_slab=false,waterlogged=true": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited_rotated"
+    },
+    "facing=north_west,on_slab=true,waterlogged=false": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited_on_slab_rotated"
+    },
+    "facing=north_west,on_slab=true,waterlogged=true": {
+      "model": "ocelotsignmod:block/roadmark/arrow_prohibited_on_slab_rotated"
+    }
+  }
+}

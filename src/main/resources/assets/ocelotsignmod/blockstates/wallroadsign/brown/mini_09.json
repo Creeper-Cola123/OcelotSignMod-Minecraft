@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "ocelotsignmod:block/wallroadsign/brown/mini_09",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "ocelotsignmod:block/wallroadsign/brown/mini_09",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "ocelotsignmod:block/wallroadsign/brown/mini_09",
+      "y": 270
+    },
+    "facing=west": {
+      "model": "ocelotsignmod:block/wallroadsign/brown/mini_09",
+      "y": 90
+    }
+  }
+}
