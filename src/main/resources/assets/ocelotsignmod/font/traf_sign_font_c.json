@@ -5,21 +5,15 @@
             "file": "ocelotsignmod:rg2014b.ttf",
             "size": 12.5,
             "oversample": 16.0,
-            "shift": [0, 0.5]
+            "shift": [0, 0.5],
+            "skip": "\u4e00-\u9fff\u3000-\u303f\uff00-\uffef"
         },
         {
             "type": "ttf",
             "file": "ocelotsignmod:misans_semibold.ttf",
             "size": 13.0,
             "oversample": 16.0,
-            "shift": [0, -0.5],
-            "filter": {
-                "unicode": [
-                    "\u4e00-\u9fff",
-                    "\u3000-\u303f",
-                    "\uff00-\uffef"
-                ]
-            }
+            "shift": [0, -0.5]
         }
     ]
 }
