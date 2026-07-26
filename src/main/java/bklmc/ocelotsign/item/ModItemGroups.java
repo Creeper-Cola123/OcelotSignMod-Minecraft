@@ -9,11 +9,12 @@ import bklmc.ocelotsign.block.PillarBlocks;
 import bklmc.ocelotsign.block.RoadSignBlocks;
 import bklmc.ocelotsign.block.WallRoadSignBlocks;
 import bklmc.ocelotsign.integration.mishanguc.MishangAccess;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import org.slf4j.Logger;
@@ -23,7 +24,7 @@ import org.slf4j.LoggerFactory;
  * 物品创造栏分组注册
  *
  * @see ModItems
- * @see net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup
+ * @see net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab
  */
 public class ModItemGroups {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModItemGroups.class); // 日志记录器
@@ -31,7 +32,7 @@ public class ModItemGroups {
     /**
      * 道路指示牌分类。
      */
-    public static final CreativeModeTab ROAD_SIGNS = FabricItemGroup.builder()
+    public static final CreativeModeTab ROAD_SIGNS = FabricCreativeModeTab.builder()
             .icon(() -> new ItemStack(ModItems.ROAD_SIGNS_ICON))
             .title(Component.translatable("itemGroup.ocelotsign.road_signs"))
             .displayItems((context, entries) -> {
@@ -102,7 +103,7 @@ public class ModItemGroups {
     /**
      * 墙道路指示牌分类。
      */
-    public static final CreativeModeTab WALL_ROAD_SIGNS = FabricItemGroup.builder()
+    public static final CreativeModeTab WALL_ROAD_SIGNS = FabricCreativeModeTab.builder()
             .icon(() -> new ItemStack(ModItems.WALL_ROAD_SIGNS_ICON))
             .title(Component.translatable("itemGroup.ocelotsign.wall_road_signs"))
             .displayItems((context, entries) -> {
@@ -326,7 +327,7 @@ public class ModItemGroups {
     /**
      * 支柱分类。
      */
-    public static final CreativeModeTab PILLARS = FabricItemGroup.builder()
+    public static final CreativeModeTab PILLARS = FabricCreativeModeTab.builder()
             .icon(() -> new ItemStack(ModItems.PILLARS_ICON))
             .title(Component.translatable("itemGroup.ocelotsign.pillars"))
             .displayItems((context, entries) -> {
@@ -388,18 +389,18 @@ public class ModItemGroups {
      * ArrowBlocks 另行注册到 mishanguc 的 {@code roads} 分组中。</p>
      */
     public static void registerItemGroups() {
-        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(OcelotSignMod.MOD_ID, "ocelotsign_1_road_signs"), ROAD_SIGNS);
-        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(OcelotSignMod.MOD_ID, "ocelotsign_2_wall_road_signs"), WALL_ROAD_SIGNS);
-        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(OcelotSignMod.MOD_ID, "ocelotsign_3_pillars"), PILLARS);
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, OcelotSignMod.id("ocelotsign_1_road_signs"), ROAD_SIGNS);
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, OcelotSignMod.id("ocelotsign_2_wall_road_signs"), WALL_ROAD_SIGNS);
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, OcelotSignMod.id("ocelotsign_3_pillars"), PILLARS);
     }
 
     /** 将 ArrowBlocks 注入到 mishanguc 的 roads 分组中，不影响本模组分类顺序 */
     static {
         var roadsGroupKey = net.minecraft.resources.ResourceKey.create(
                 net.minecraft.core.registries.Registries.CREATIVE_MODE_TAB,
-                ResourceLocation.fromNamespaceAndPath("mishanguc", "roads")
+                Identifier.fromNamespaceAndPath("mishanguc", "roads")
         );
-        net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents.modifyEntriesEvent(roadsGroupKey)
+        CreativeModeTabEvents.modifyOutputEvent(roadsGroupKey)
                 .register(entries -> {
                     addAllBlocks(entries,
                             ArrowBlocks.SPEED_BUMP, ArrowBlocks.YIELD, ArrowBlocks.DISTANCE_CONFIRM,

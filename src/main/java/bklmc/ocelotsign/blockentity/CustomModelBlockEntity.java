@@ -10,6 +10,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 /**
  * 动态模型方块实体
@@ -35,7 +37,7 @@ public class CustomModelBlockEntity extends BlockEntity {
     public void setModelId(String modelId) {
         this.modelId = modelId == null ? "" : modelId;
         setChanged();
-        if (this.level != null && !this.level.isClientSide) {
+        if (this.level != null && !this.level.isClientSide()) {
             this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), Block.UPDATE_ALL);
             if (this.level instanceof ServerLevel serverWorld) {
                 serverWorld.getChunkSource().blockChanged(this.worldPosition);
@@ -44,15 +46,15 @@ public class CustomModelBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider registryLookup) {
-        super.loadAdditional(nbt, registryLookup);
-        this.modelId = nbt.getString("ModelId");
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        this.modelId = input.getStringOr("ModelId", "");
     }
 
     @Override
-    protected void saveAdditional(CompoundTag nbt, HolderLookup.Provider registryLookup) {
-        super.saveAdditional(nbt, registryLookup);
-        nbt.putString("ModelId", this.modelId);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.putString("ModelId", this.modelId);
     }
 
     @Override

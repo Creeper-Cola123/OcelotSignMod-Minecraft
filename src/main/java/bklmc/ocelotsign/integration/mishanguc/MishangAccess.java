@@ -8,7 +8,7 @@ import java.util.List;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * 提供类型安全、防御性的 mishanguc API 访问
@@ -63,7 +63,7 @@ public final class MishangAccess {
     }
 
     /** 获取告示牌编辑同步的数据包 ID（1.21.1 中的 {@code PacketType} 标识符） */
-    public static ResourceLocation getEditSignFinishPacketId() {
+    public static Identifier getEditSignFinishPacketId() {
         return IMPL.getEditSignFinishPacketId();
     }
 

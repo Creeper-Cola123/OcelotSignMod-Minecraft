@@ -1,14 +1,14 @@
 package bklmc.ocelotsign.platform;
 
 import bklmc.ocelotsign.OcelotSignMod;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * 本模组标识符的集中定义
  */
 public final class ModIdentifiers {
     /** 选择模型数据包标识符 */
-    public static final ResourceLocation SELECT_MODEL = of("select_model");
+    public static final Identifier SELECT_MODEL = of("select_model");
 
     // 私有构造函数，防止实例化
     private ModIdentifiers() {
@@ -20,7 +20,7 @@ public final class ModIdentifiers {
      * @param path 标识符路径
      * @return 对应的标识符
      */
-    public static ResourceLocation of(String path) {
-        return ResourceLocation.fromNamespaceAndPath(OcelotSignMod.MOD_ID, path);
+    public static Identifier of(String path) {
+        return Identifier.fromNamespaceAndPath(OcelotSignMod.MOD_ID, path);
     }
 }

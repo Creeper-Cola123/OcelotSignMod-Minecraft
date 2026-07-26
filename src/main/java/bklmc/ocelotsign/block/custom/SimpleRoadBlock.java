@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -18,7 +18,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * @see RoadSignBlock
  */
 public class SimpleRoadBlock extends Block {
-    public static final DirectionProperty FACING = DirectionProperty.create("facing",
+    public static final EnumProperty<Direction> FACING = EnumProperty.create("facing", Direction.class,
             Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST);
 
     public static final VoxelShape SHAPE_N = Block.box(0, 0, 0, 16, 16, 3);

@@ -9,6 +9,5 @@
 	},
 	"overwrites": {
 		"requireAnnotations": true
-	},
-	"refmap": "ocelotsignmod-refmap.json"
+	}
 }

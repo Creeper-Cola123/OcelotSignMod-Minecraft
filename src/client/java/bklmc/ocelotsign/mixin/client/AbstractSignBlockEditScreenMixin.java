@@ -3,8 +3,8 @@ package bklmc.ocelotsign.mixin.client;
 import bklmc.ocelotsign.integration.mishanguc.client.SignEditorInsertion;
 import bklmc.ocelotsign.integration.mishanguc.client.SignEditorToolboxConfigurer;
 import bklmc.ocelotsign.mixin_interfaces.ISignEditorExtension;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.resources.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,7 +26,7 @@ public abstract class AbstractSignBlockEditScreenMixin implements ISignEditorExt
      * 图案与字体列表按钮。
      */
     @Unique
-    private final ButtonWidget viewPatternListButton = SignEditorToolboxConfigurer.createViewPatternListButton();
+    private final Button viewPatternListButton = SignEditorToolboxConfigurer.createViewPatternListButton();
 
     /**
      * 初始化工具栏，插入图案列表按钮。

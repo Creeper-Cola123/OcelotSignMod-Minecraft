@@ -1,20 +1,26 @@
 package bklmc.ocelotsign;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.RotationAxis;
-import pers.solid.mishang.uc.block.WallSignBlock;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.Vec3;
 import pers.solid.mishang.uc.blockentity.WallSignBlockEntity;
+import pers.solid.mishang.uc.render.WallSignBlockEntityRenderState;
+import pers.solid.mishang.uc.render.WallSignBlockEntityRenderer;
 import pers.solid.mishang.uc.text.TextContext;
 
 /**
  * 壁挂式道路指示牌方块实体渲染器
+ *
+ * <p>渲染状态的提取委托给 mishanguc 的 {@link WallSignBlockEntityRenderer}，
+ * 本类只负责按本模组的变换提交文本。</p>
  *
  * @param <T> 渲染的方块实体类型
  * @see BlockEntityRenderer
@@ -22,60 +28,74 @@ import pers.solid.mishang.uc.text.TextContext;
  */
 @Environment(EnvType.CLIENT)
 public class WallRoadSignBlockEntityRenderer<T extends WallSignBlockEntity>
-        implements BlockEntityRenderer<T> {
+        implements BlockEntityRenderer<T, WallSignBlockEntityRenderState> {
 
-    private final BlockEntityRendererFactory.Context ctx;
+    /** 发光时使用的最大光照值 */
+    private static final int FULL_BRIGHT = 15728880;
+
+    private final BlockEntityRendererProvider.Context ctx;
+    private final WallSignBlockEntityRenderer<T> stateExtractor;
 
     /**
      * 构造渲染器。
      *
      * @param ctx 方块实体渲染器工厂上下文
      */
-    public WallRoadSignBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
+    public WallRoadSignBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
         this.ctx = ctx;
+        this.stateExtractor = new WallSignBlockEntityRenderer<>(ctx);
+    }
+
+    @Override
+    public WallSignBlockEntityRenderState createRenderState() {
+        return stateExtractor.createRenderState();
+    }
+
+    @Override
+    public void extractRenderState(T entity, WallSignBlockEntityRenderState state, float tickDelta,
+                                   Vec3 cameraPos, ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+        stateExtractor.extractRenderState(entity, state, tickDelta, cameraPos, breakProgress);
     }
 
     /**
-     * 渲染方块实体。
+     * 提交渲染指令。
      *
-     * @param entity 方块实体
-     * @param tickDelta 帧插值时间
-     * @param matrices 矩阵栈
-     * @param vertexConsumers 顶点消费者提供者
-     * @param light 光照值
-     * @param overlay 覆盖贴图
+     * @param state     渲染状态
+     * @param matrices  矩阵栈
+     * @param collector 渲染指令收集器
+     * @param camera    摄像机状态
      */
     @Override
-    public void render(T entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        final BlockState state = entity.getCachedState();
-        final Direction facing = state.get(WallSignBlock.FACING);
-
+    public void submit(WallSignBlockEntityRenderState state, PoseStack matrices,
+                       SubmitNodeCollector collector, CameraRenderState camera) {
         // 发光时使用最大光照
-        if (entity.glowing) {
-            light = 15728880;
-        }
+        final int light = state.glowing ? FULL_BRIGHT : state.lightCoords;
+
+        matrices.pushPose();
 
         // 对齐方块中心
         matrices.translate(0.5, 0.5, 0.5);
         // 按朝向旋转
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-facing.asRotation()));
+        matrices.mulPose(Axis.YP.rotationDegrees(-state.facing.toYRot()));
 
         // 缩放并偏移至方块表面
         matrices.scale(1 / 16f, -1 / 16f, 1 / 16f);
-        float zOffset = getZOffsetForWallRoadSign(facing);
+        float zOffset = getZOffsetForWallRoadSign(state.facing);
         matrices.translate(0, 0, zOffset);
 
         // 渲染所有文本
-        for (TextContext textContext : entity.textContexts) {
+        for (TextContext textContext : state.textContexts) {
             textContext.draw(
-                    ctx.getTextRenderer(),
+                    ctx.font(),
                     matrices,
-                    vertexConsumers,
+                    collector,
                     light,
                     16,
-                    entity.getHeight()
+                    state.height
             );
         }
+
+        matrices.popPose();
     }
 
     /**

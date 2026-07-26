@@ -3,7 +3,7 @@ package bklmc.ocelotsign.block;
 import bklmc.ocelotsign.OcelotSignMod;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -29,8 +29,11 @@ public class DynamicBlocks {
      * @return 已注册的方块
      */
     private static Block registerBlockWithItem(String id, Block block) {
-        Block registeredBlock = Registry.register(BuiltInRegistries.BLOCK, ResourceLocation.fromNamespaceAndPath(OcelotSignMod.MOD_ID, id), block);
-        Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(OcelotSignMod.MOD_ID, id), new BlockItem(block, new Item.Properties()));
+        Block registeredBlock = Registry.register(BuiltInRegistries.BLOCK, Identifier.fromNamespaceAndPath(OcelotSignMod.MOD_ID, id), block);
+        Registry.register(BuiltInRegistries.ITEM, OcelotSignMod.id(id),
+                new BlockItem(block, new Item.Properties()
+                        .setId(OcelotSignMod.itemKey(id))
+                        .useBlockDescriptionPrefix()));
         return registeredBlock;
     }
 }

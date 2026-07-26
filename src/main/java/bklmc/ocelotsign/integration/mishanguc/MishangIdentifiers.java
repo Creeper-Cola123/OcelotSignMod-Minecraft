@@ -1,14 +1,14 @@
 package bklmc.ocelotsign.integration.mishanguc;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * mishanguc 模组标识符的集中引用
  */
 public final class MishangIdentifiers {
     public static final String NAMESPACE = "mishanguc";
-    public static final ResourceLocation EDIT_SIGN_FINISH = of("edit_sign_finish");
-    public static final ResourceLocation ROADS_ITEM_GROUP = of("roads");
+    public static final Identifier EDIT_SIGN_FINISH = of("edit_sign_finish");
+    public static final Identifier ROADS_ITEM_GROUP = of("roads");
     private MishangIdentifiers() {
     }
 
@@ -18,7 +18,7 @@ public final class MishangIdentifiers {
      * @param path 标识符路径
      * @return 对应的标识符
      */
-    public static ResourceLocation of(String path) {
-        return ResourceLocation.fromNamespaceAndPath(NAMESPACE, path);
+    public static Identifier of(String path) {
+        return Identifier.fromNamespaceAndPath(NAMESPACE, path);
     }
 }

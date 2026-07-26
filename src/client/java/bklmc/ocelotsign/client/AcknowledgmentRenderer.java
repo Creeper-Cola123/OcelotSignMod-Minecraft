@@ -1,9 +1,9 @@
 package bklmc.ocelotsign.client;
 
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,21 +22,21 @@ public final class AcknowledgmentRenderer {
      * 鸣谢条目数据模型
      */
     public static final class Entry {
-        public final Text label;
+        public final Component label;
         public final String url;
-        public final Text buttonText;
+        public final Component buttonText;
 
-        public Entry(Text label, String url, Text buttonText) {
+        public Entry(Component label, String url, Component buttonText) {
             this.label = label;
             this.url = url;
             this.buttonText = buttonText;
         }
 
-        public Entry(Text label, String url) {
+        public Entry(Component label, String url) {
             this(label, url, null);
         }
 
-        public Entry(Text label) {
+        public Entry(Component label) {
             this(label, null, null);
         }
     }
@@ -45,17 +45,17 @@ public final class AcknowledgmentRenderer {
      * 鸣谢内容区块数据模型
      */
     public static final class Block {
-        public final Text title;
+        public final Component title;
         public final int titleColor;
-        public final List<Text> introLines = new ArrayList<>();
+        public final List<Component> introLines = new ArrayList<>();
         public final List<Entry> entries = new ArrayList<>();
-        public Text quoteTitle;
-        public final List<Text> quoteLines = new ArrayList<>();
+        public Component quoteTitle;
+        public final List<Component> quoteLines = new ArrayList<>();
         public boolean twoColumn = false;
-        public Text col1Header;
-        public Text col2Header;
+        public Component col1Header;
+        public Component col2Header;
 
-        public Block(Text title, int titleColor) {
+        public Block(Component title, int titleColor) {
             this.title = title;
             this.titleColor = titleColor;
         }
@@ -74,7 +74,7 @@ public final class AcknowledgmentRenderer {
      * @param scrollWindowEndY 滚动窗口结束 Y 坐标
      * @return 内容总高度（像素）
      */
-    public static int render(DrawContext context, TextRenderer textRenderer,
+    public static int render(GuiGraphicsExtractor context, Font textRenderer,
                              int mouseX, int mouseY, int mainWidth, int contentStartY,
                              int scrollWindowStartY, int scrollWindowEndY) {
         PatternAndFontOverlay.clearLastHoveredUrl();
@@ -108,7 +108,7 @@ public final class AcknowledgmentRenderer {
      * @param textRenderer 文本渲染器
      * @return 内容总高度（像素）
      */
-    public static int getContentHeight(int mainWidth, TextRenderer textRenderer) {
+    public static int getContentHeight(int mainWidth, Font textRenderer) {
         int height = estimateBigTitleHeight(textRenderer, mainWidth);
 
         Block ack = buildAcknowledgmentBlock();
@@ -128,19 +128,19 @@ public final class AcknowledgmentRenderer {
      */
     private static Block buildAcknowledgmentBlock() {
         Block b = new Block(
-                Text.translatable("ocelotsignmod.gui.ack.section.ack_title"),
+                Component.translatable("ocelotsignmod.gui.ack.section.ack_title"),
                 UIConstants.COLOR_HOMEPAGE_SECTION_TITLE);
-        b.introLines.add(Text.translatable("ocelotsignmod.gui.ack.section.ack_p1"));
+        b.introLines.add(Component.translatable("ocelotsignmod.gui.ack.section.ack_p1"));
 
         // Column headers (rendered inside the card)
-        b.col1Header = Text.translatable("ocelotsignmod.gui.ack.column.ocelot_dev");
-        b.col2Header = Text.translatable("ocelotsignmod.gui.ack.column.mishang_dev");
+        b.col1Header = Component.translatable("ocelotsignmod.gui.ack.column.ocelot_dev");
+        b.col2Header = Component.translatable("ocelotsignmod.gui.ack.column.mishang_dev");
 
         // Column 1: Ocelot Sign Mod Developers
-        b.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.section.ack_contributors_label")));
+        b.entries.add(new Entry(Component.translatable("ocelotsignmod.gui.ack.section.ack_contributors_label")));
 
         // Column 2: MishangUC Development Team
-        b.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.section.ack_mishang_dev_label")));
+        b.entries.add(new Entry(Component.translatable("ocelotsignmod.gui.ack.section.ack_mishang_dev_label")));
 
         b.twoColumn = true;
         return b;
@@ -153,80 +153,80 @@ public final class AcknowledgmentRenderer {
         List<Block> blocks = new ArrayList<>();
 
         Block b1 = new Block(
-                Text.translatable("ocelotsignmod.gui.ack.mod.mishang.h2"),
+                Component.translatable("ocelotsignmod.gui.ack.mod.mishang.h2"),
                 0xFF2A6F2A);
-        b1.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.mod.mishang.label.name")));
+        b1.entries.add(new Entry(Component.translatable("ocelotsignmod.gui.ack.mod.mishang.label.name")));
         b1.entries.add(new Entry(
-                Text.translatable("ocelotsignmod.gui.ack.mod.mishang.label.license"),
+                Component.translatable("ocelotsignmod.gui.ack.mod.mishang.label.license"),
                 "https://www.gnu.org/licenses/lgpl-3.0.html",
-                Text.translatable("ocelotsignmod.gui.ack.link.gpl")));
+                Component.translatable("ocelotsignmod.gui.ack.link.gpl")));
         b1.entries.add(new Entry(
-                Text.translatable("ocelotsignmod.gui.ack.mod.mishang.label.repo"),
+                Component.translatable("ocelotsignmod.gui.ack.mod.mishang.label.repo"),
                 "https://github.com/SolidBlock-cn/mishanguc",
-                Text.translatable("ocelotsignmod.gui.ack.link.github_repo")));
-        b1.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.mod.mishang.label.note")));
+                Component.translatable("ocelotsignmod.gui.ack.link.github_repo")));
+        b1.entries.add(new Entry(Component.translatable("ocelotsignmod.gui.ack.mod.mishang.label.note")));
         // 引用块（MISHANGUC）
-        b1.quoteTitle = Text.translatable("ocelotsignmod.gui.ack.quote_excerpt_title");
-        b1.quoteLines.add(Text.translatable("ocelotsignmod.gui.ack.mod.mishang.quote"));
+        b1.quoteTitle = Component.translatable("ocelotsignmod.gui.ack.quote_excerpt_title");
+        b1.quoteLines.add(Component.translatable("ocelotsignmod.gui.ack.mod.mishang.quote"));
         blocks.add(b1);
 
         /**
          * 字体使用声明。
          */
         Block b2 = new Block(
-                Text.translatable("ocelotsignmod.gui.ack.fonts.h2"),
+                Component.translatable("ocelotsignmod.gui.ack.fonts.h2"),
                 0xFF2A6F2A);
-        b2.introLines.add(Text.translatable("ocelotsignmod.gui.ack.fonts.p1"));
+        b2.introLines.add(Component.translatable("ocelotsignmod.gui.ack.fonts.p1"));
         blocks.add(b2);
 
         // MiSans
         Block b3 = new Block(
-                Text.translatable("ocelotsignmod.gui.ack.font.misans.h3"),
+                Component.translatable("ocelotsignmod.gui.ack.font.misans.h3"),
                 0xFF2A6F2A);
-        b3.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.font.misans.label.owner")));
-        b3.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.font.misans.label.license")));
+        b3.entries.add(new Entry(Component.translatable("ocelotsignmod.gui.ack.font.misans.label.owner")));
+        b3.entries.add(new Entry(Component.translatable("ocelotsignmod.gui.ack.font.misans.label.license")));
         b3.entries.add(new Entry(
-                Text.translatable("ocelotsignmod.gui.ack.font.misans.label.link"),
+                Component.translatable("ocelotsignmod.gui.ack.font.misans.label.link"),
                 "https://hyperos.mi.com/font/zh/",
-                Text.translatable("ocelotsignmod.gui.ack.link.xiaomi")));
+                Component.translatable("ocelotsignmod.gui.ack.link.xiaomi")));
         b3.entries.add(new Entry(
-                Text.translatable("ocelotsignmod.gui.ack.font.misans.label.license_link"),
+                Component.translatable("ocelotsignmod.gui.ack.font.misans.label.license_link"),
                 "https://hyperos.mi.com/font/zh/faq/",
-                Text.translatable("ocelotsignmod.gui.ack.link.misans_license")));
+                Component.translatable("ocelotsignmod.gui.ack.link.misans_license")));
         blocks.add(b3);
 
         // Roadgeek 2014
         Block b4 = new Block(
-                Text.translatable("ocelotsignmod.gui.ack.font.roadgeek.h3"),
+                Component.translatable("ocelotsignmod.gui.ack.font.roadgeek.h3"),
                 0xFF2A6F2A);
-        b4.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.font.roadgeek.label.owner")));
-        b4.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.font.roadgeek.label.license")));
+        b4.entries.add(new Entry(Component.translatable("ocelotsignmod.gui.ack.font.roadgeek.label.owner")));
+        b4.entries.add(new Entry(Component.translatable("ocelotsignmod.gui.ack.font.roadgeek.label.license")));
         b4.entries.add(new Entry(
-                Text.translatable("ocelotsignmod.gui.ack.font.roadgeek.label.link"),
+                Component.translatable("ocelotsignmod.gui.ack.font.roadgeek.label.link"),
                 "https://github.com/sammdot/roadgeek-fonts",
-                Text.translatable("ocelotsignmod.gui.ack.link.github_repo")));
+                Component.translatable("ocelotsignmod.gui.ack.link.github_repo")));
         blocks.add(b4);
 
         // Source Han Sans
         Block b5 = new Block(
-                Text.translatable("ocelotsignmod.gui.ack.font.sans.h3"),
+                Component.translatable("ocelotsignmod.gui.ack.font.sans.h3"),
                 0xFF2A6F2A);
-        b5.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.font.sans.label.license")));
+        b5.entries.add(new Entry(Component.translatable("ocelotsignmod.gui.ack.font.sans.label.license")));
         b5.entries.add(new Entry(
-                Text.translatable("ocelotsignmod.gui.ack.font.sans.label.link"),
+                Component.translatable("ocelotsignmod.gui.ack.font.sans.label.link"),
                 "https://github.com/adobe-fonts/source-han-sans",
-                Text.translatable("ocelotsignmod.gui.ack.link.github_repo")));
+                Component.translatable("ocelotsignmod.gui.ack.link.github_repo")));
         blocks.add(b5);
 
         // Source Han Serif
         Block b6 = new Block(
-                Text.translatable("ocelotsignmod.gui.ack.font.serif.h3"),
+                Component.translatable("ocelotsignmod.gui.ack.font.serif.h3"),
                 0xFF2A6F2A);
-        b6.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.font.serif.label.license")));
+        b6.entries.add(new Entry(Component.translatable("ocelotsignmod.gui.ack.font.serif.label.license")));
         b6.entries.add(new Entry(
-                Text.translatable("ocelotsignmod.gui.ack.font.serif.label.link"),
+                Component.translatable("ocelotsignmod.gui.ack.font.serif.label.link"),
                 "https://github.com/adobe-fonts/source-han-serif",
-                Text.translatable("ocelotsignmod.gui.ack.link.github_repo")));
+                Component.translatable("ocelotsignmod.gui.ack.link.github_repo")));
         blocks.add(b6);
 
         return blocks;
@@ -235,12 +235,12 @@ public final class AcknowledgmentRenderer {
     /**
      * 添加一种字体声明的多行条目，并附带仓库链接。
      */
-    private static void addFontEntries(Block b, String prefix, String repoUrl, Text repoBtnText) {
-        b.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.font." + prefix + ".h3")));
-        b.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.font." + prefix + ".label.owner")));
-        b.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.font." + prefix + ".label.license")));
+    private static void addFontEntries(Block b, String prefix, String repoUrl, Component repoBtnText) {
+        b.entries.add(new Entry(Component.translatable("ocelotsignmod.gui.ack.font." + prefix + ".h3")));
+        b.entries.add(new Entry(Component.translatable("ocelotsignmod.gui.ack.font." + prefix + ".label.owner")));
+        b.entries.add(new Entry(Component.translatable("ocelotsignmod.gui.ack.font." + prefix + ".label.license")));
         b.entries.add(new Entry(
-                Text.translatable("ocelotsignmod.gui.ack.font." + prefix + ".label.link"),
+                Component.translatable("ocelotsignmod.gui.ack.font." + prefix + ".label.link"),
                 repoUrl,
                 repoBtnText));
     }
@@ -249,28 +249,28 @@ public final class AcknowledgmentRenderer {
      * 添加字体声明条目，license 行额外附带 OFL 协议链接。
      */
     private static void addFontEntriesWithOflLicense(Block b, String prefix, String repoUrl) {
-        b.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.font." + prefix + ".h3")));
-        b.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.font." + prefix + ".label.license")));
+        b.entries.add(new Entry(Component.translatable("ocelotsignmod.gui.ack.font." + prefix + ".h3")));
+        b.entries.add(new Entry(Component.translatable("ocelotsignmod.gui.ack.font." + prefix + ".label.license")));
         b.entries.add(new Entry(
-                Text.translatable("ocelotsignmod.gui.ack.font." + prefix + ".label.license_link"),
+                Component.translatable("ocelotsignmod.gui.ack.font." + prefix + ".label.license_link"),
                 "https://openfontlicense.org",
-                Text.translatable("ocelotsignmod.gui.ack.link.ofl")));
+                Component.translatable("ocelotsignmod.gui.ack.link.ofl")));
         b.entries.add(new Entry(
-                Text.translatable("ocelotsignmod.gui.ack.font." + prefix + ".label.link"),
+                Component.translatable("ocelotsignmod.gui.ack.font." + prefix + ".label.link"),
                 repoUrl,
-                Text.translatable("ocelotsignmod.gui.ack.link.github_repo")));
+                Component.translatable("ocelotsignmod.gui.ack.link.github_repo")));
     }
 
     /**
      * 渲染页面大标题。
      */
-    private static int renderBigTitle(DrawContext context, TextRenderer textRenderer, int mainWidth,
+    private static int renderBigTitle(GuiGraphicsExtractor context, Font textRenderer, int mainWidth,
                                       int currentY, int scrollWindowStartY, int scrollWindowEndY) {
-        Text title = Text.translatable("ocelotsignmod.gui.ack.title");
-        int titleWidth = textRenderer.getWidth(title);
+        Component title = Component.translatable("ocelotsignmod.gui.ack.title");
+        int titleWidth = textRenderer.width(title);
         int titleX = UIConstants.SIDEBAR_WIDTH + (mainWidth - titleWidth) / 2;
         if (currentY + 22 >= scrollWindowStartY && currentY <= scrollWindowEndY) {
-            context.drawText(textRenderer, title, titleX, currentY, 0xFF1A1A1A, false);
+            context.text(textRenderer, title, titleX, currentY, 0xFF1A1A1A, false);
         }
         currentY += 24;
 
@@ -286,27 +286,27 @@ public final class AcknowledgmentRenderer {
     /**
      * 估算页面大标题高度。
      */
-    private static int estimateBigTitleHeight(TextRenderer textRenderer, int mainWidth) {
-        Text title = Text.translatable("ocelotsignmod.gui.ack.title");
-        List<OrderedText> lines = textRenderer.wrapLines(title, mainWidth - 60);
+    private static int estimateBigTitleHeight(Font textRenderer, int mainWidth) {
+        Component title = Component.translatable("ocelotsignmod.gui.ack.title");
+        List<FormattedCharSequence> lines = textRenderer.split(title, mainWidth - 60);
         return lines.size() * 22 + 2 + 14;
     }
 
     /**
      * 渲染一个内容区块（含标题、介绍、条目、引用）。
      */
-    private static int renderBlock(DrawContext context, TextRenderer textRenderer,
+    private static int renderBlock(GuiGraphicsExtractor context, Font textRenderer,
                                    int mouseX, int mouseY, int mainWidth, int currentY,
                                    int scrollWindowStartY, int scrollWindowEndY, Block block) {
         // 章节大标题
         if (currentY + 22 >= scrollWindowStartY && currentY <= scrollWindowEndY) {
-            context.drawText(textRenderer, block.title,
+            context.text(textRenderer, block.title,
                     UIConstants.SIDEBAR_WIDTH + 24, currentY, block.titleColor, false);
         }
         currentY += 24;
 
         // intro 行
-        for (Text t : block.introLines) {
+        for (Component t : block.introLines) {
             currentY = renderWrappedParagraph(context, textRenderer, t,
                     UIConstants.SIDEBAR_WIDTH + 24, mainWidth - 48,
                     currentY, scrollWindowStartY, scrollWindowEndY,
@@ -342,10 +342,10 @@ public final class AcknowledgmentRenderer {
     /**
      * 估算内容区块总高度。
      */
-    private static int estimateBlockHeight(TextRenderer textRenderer, int mainWidth, Block block) {
+    private static int estimateBlockHeight(Font textRenderer, int mainWidth, Block block) {
         int height = 24;
-        for (Text t : block.introLines) {
-            List<OrderedText> lines = textRenderer.wrapLines(t, mainWidth - 48);
+        for (Component t : block.introLines) {
+            List<FormattedCharSequence> lines = textRenderer.split(t, mainWidth - 48);
             height += lines.size() * 14 + 6 + 10;
         }
         if (!block.entries.isEmpty()) {
@@ -367,7 +367,7 @@ public final class AcknowledgmentRenderer {
     /**
      * 渲染单列条目卡片列表。
      */
-    private static int renderEntries(DrawContext context, TextRenderer textRenderer,
+    private static int renderEntries(GuiGraphicsExtractor context, Font textRenderer,
                                      int mouseX, int mouseY, int mainWidth, int currentY,
                                      int scrollWindowStartY, int scrollWindowEndY,
                                      List<Entry> entries) {
@@ -400,10 +400,10 @@ public final class AcknowledgmentRenderer {
      *
      * <p>假设 entries 顺序为：列1内容, 列2内容。
      */
-    private static int renderTwoColumnEntries(DrawContext context, TextRenderer textRenderer,
+    private static int renderTwoColumnEntries(GuiGraphicsExtractor context, Font textRenderer,
                                               int mouseX, int mouseY, int mainWidth, int currentY,
                                               int scrollWindowStartY, int scrollWindowEndY,
-                                              List<Entry> entries, Text col1Header, Text col2Header) {
+                                              List<Entry> entries, Component col1Header, Component col2Header) {
         int blockX = UIConstants.SIDEBAR_WIDTH + 24;
         int blockW = mainWidth - 48;
         int gap = 16;
@@ -434,9 +434,9 @@ public final class AcknowledgmentRenderer {
             // 列标题（白色文字在蓝色背景上）
             int headerY = currentY + 5;
             int headerColor = 0xFFFFFFFF;
-            context.drawText(textRenderer, col1Header, leftX + 8, headerY, headerColor, false);
+            context.text(textRenderer, col1Header, leftX + 8, headerY, headerColor, false);
             if (col2Header != null) {
-                context.drawText(textRenderer, col2Header, rightX + 8, headerY, headerColor, false);
+                context.text(textRenderer, col2Header, rightX + 8, headerY, headerColor, false);
             }
         }
 
@@ -458,7 +458,7 @@ public final class AcknowledgmentRenderer {
     /**
      * 估算双列条目卡片总高度。
      */
-    private static int estimateTwoColumnEntriesHeight(TextRenderer textRenderer, int mainWidth, List<Entry> entries) {
+    private static int estimateTwoColumnEntriesHeight(Font textRenderer, int mainWidth, List<Entry> entries) {
         int blockW = mainWidth - 48;
         int gap = 16;
         int colW = (blockW - gap) / 2;
@@ -472,10 +472,10 @@ public final class AcknowledgmentRenderer {
     /**
      * 估算单个条目高度。
      */
-    private static int estimateEntryHeight(TextRenderer textRenderer, int colW, Entry entry) {
+    private static int estimateEntryHeight(Font textRenderer, int colW, Entry entry) {
         int padding = 6;
         int innerW = colW - padding * 2;
-        List<OrderedText> labelLines = textRenderer.wrapLines(entry.label, innerW - 8);
+        List<FormattedCharSequence> labelLines = textRenderer.split(entry.label, innerW - 8);
         int labelHeight = labelLines.size() * 12;
         int entryHeight = labelHeight + padding * 2;
         if (entry.url != null && !entry.url.isEmpty()) {
@@ -487,7 +487,7 @@ public final class AcknowledgmentRenderer {
     /**
      * 渲染单个条目。
      */
-    private static int renderEntry(DrawContext context, TextRenderer textRenderer,
+    private static int renderEntry(GuiGraphicsExtractor context, Font textRenderer,
                                    int mouseX, int mouseY,
                                    int blockX, int blockW, int currentY,
                                    int scrollWindowStartY, int scrollWindowEndY,
@@ -496,7 +496,7 @@ public final class AcknowledgmentRenderer {
         int innerX = blockX + padding;
         int innerW = blockW - padding * 2;
 
-        List<OrderedText> labelLines = textRenderer.wrapLines(entry.label, innerW - 8);
+        List<FormattedCharSequence> labelLines = textRenderer.split(entry.label, innerW - 8);
         int labelHeight = labelLines.size() * 12;
 
         int entryHeight = labelHeight + padding * 2;
@@ -507,7 +507,7 @@ public final class AcknowledgmentRenderer {
         if (currentY + entryHeight >= scrollWindowStartY && currentY <= scrollWindowEndY) {
             // 文本
             for (int i = 0; i < labelLines.size(); i++) {
-                context.drawText(textRenderer, labelLines.get(i),
+                context.text(textRenderer, labelLines.get(i),
                         innerX + 4, currentY + padding + i * 12,
                         0xFF333333, false);
             }
@@ -525,13 +525,13 @@ public final class AcknowledgmentRenderer {
     /**
      * 估算单列条目列表总高度。
      */
-    private static int estimateEntriesHeight(TextRenderer textRenderer, int mainWidth, List<Entry> entries) {
+    private static int estimateEntriesHeight(Font textRenderer, int mainWidth, List<Entry> entries) {
         int blockW = mainWidth - 48;
         int padding = 6;
         int innerW = blockW - padding * 2;
         int total = 12;
         for (Entry e : entries) {
-            List<OrderedText> labelLines = textRenderer.wrapLines(e.label, innerW - 8);
+            List<FormattedCharSequence> labelLines = textRenderer.split(e.label, innerW - 8);
             int labelHeight = labelLines.size() * 12;
             int entryHeight = labelHeight + padding * 2;
             if (e.url != null && !e.url.isEmpty()) {
@@ -545,16 +545,16 @@ public final class AcknowledgmentRenderer {
     /**
      * 渲染 URL 链接按钮。
      */
-    private static void renderUrlButton(DrawContext context, TextRenderer textRenderer,
+    private static void renderUrlButton(GuiGraphicsExtractor context, Font textRenderer,
                                         int mouseX, int mouseY,
                                         int x, int y, int maxWidth,
-                                        String url, Text customText,
+                                        String url, Component customText,
                                         int scrollWindowStartY, int scrollWindowEndY) {
-        Text display = customText != null ? customText : simplifyUrl(url);
+        Component display = customText != null ? customText : simplifyUrl(url);
         int btnW = Math.max(40, maxWidth);
         int minH = 22;
 
-        List<OrderedText> wrapped = textRenderer.wrapLines(display, btnW - 16);
+        List<FormattedCharSequence> wrapped = textRenderer.split(display, btnW - 16);
         int actualH = Math.max(minH, wrapped.size() * 10 + 6);
 
         boolean isVisible = y + actualH >= scrollWindowStartY && y <= scrollWindowEndY;
@@ -563,13 +563,13 @@ public final class AcknowledgmentRenderer {
         if (isVisible) {
             int bgColor = isHover ? UIConstants.COLOR_BTN_BG_HOVER : UIConstants.COLOR_BTN_BG;
             context.fill(x, y, x + btnW, y + actualH, bgColor);
-            context.drawBorder(x, y, btnW, actualH, UIConstants.COLOR_BTN_BORDER);
+            context.outline(x, y, btnW, actualH, UIConstants.COLOR_BTN_BORDER);
 
             int color = isHover ? UIConstants.COLOR_LINK_HOVER : UIConstants.COLOR_LINK_NORMAL;
             int textY = y + (actualH - wrapped.size() * 10) / 2;
             for (int i = 0; i < wrapped.size(); i++) {
-                int lw = textRenderer.getWidth(wrapped.get(i));
-                context.drawText(textRenderer, wrapped.get(i),
+                int lw = textRenderer.width(wrapped.get(i));
+                context.text(textRenderer, wrapped.get(i),
                         x + (btnW - lw) / 2, textY + i * 10, color, false);
             }
         }
@@ -581,21 +581,21 @@ public final class AcknowledgmentRenderer {
     /**
      * 简化 URL 为短显示文本。
      */
-    private static Text simplifyUrl(String url) {
-        if (url == null || url.isEmpty()) return Text.empty();
+    private static Component simplifyUrl(String url) {
+        if (url == null || url.isEmpty()) return Component.empty();
         String trimmed = url;
         if (trimmed.startsWith("https://")) trimmed = trimmed.substring(8);
         else if (trimmed.startsWith("http://")) trimmed = trimmed.substring(7);
         if (trimmed.length() > 32) {
-            return Text.literal(trimmed.substring(0, 29) + "...");
+            return Component.literal(trimmed.substring(0, 29) + "...");
         }
-        return Text.literal(trimmed);
+        return Component.literal(trimmed);
     }
 
     /**
      * 渲染引用块。
      */
-    private static int renderQuote(DrawContext context, TextRenderer textRenderer,
+    private static int renderQuote(GuiGraphicsExtractor context, Font textRenderer,
                                    int mainWidth, int currentY,
                                    int scrollWindowStartY, int scrollWindowEndY,
                                    Block block) {
@@ -613,14 +613,14 @@ public final class AcknowledgmentRenderer {
 
             int y = currentY + padding;
             if (block.quoteTitle != null) {
-                context.drawText(textRenderer, block.quoteTitle,
+                context.text(textRenderer, block.quoteTitle,
                         innerX, y, UIConstants.COLOR_SECTION_TITLE, false);
                 y += 16 + 6;
             }
-            for (Text t : block.quoteLines) {
-                List<OrderedText> lines = textRenderer.wrapLines(t, innerW - 8);
-                for (OrderedText line : lines) {
-                    context.drawText(textRenderer, line, innerX, y, UIConstants.COLOR_DESC_TEXT, false);
+            for (Component t : block.quoteLines) {
+                List<FormattedCharSequence> lines = textRenderer.split(t, innerW - 8);
+                for (FormattedCharSequence line : lines) {
+                    context.text(textRenderer, line, innerX, y, UIConstants.COLOR_DESC_TEXT, false);
                     y += 13;
                 }
                 y += 4;
@@ -632,14 +632,14 @@ public final class AcknowledgmentRenderer {
     /**
      * 估算引用块高度。
      */
-    private static int estimateQuoteHeight(TextRenderer textRenderer, int mainWidth, Block block) {
+    private static int estimateQuoteHeight(Font textRenderer, int mainWidth, Block block) {
         int blockW = mainWidth - 48;
         int padding = 10;
         int innerW = blockW - padding * 2;
         int height = padding;
         if (block.quoteTitle != null) height += 16 + 6;
-        for (Text t : block.quoteLines) {
-            List<OrderedText> lines = textRenderer.wrapLines(t, innerW - 8);
+        for (Component t : block.quoteLines) {
+            List<FormattedCharSequence> lines = textRenderer.split(t, innerW - 8);
             height += lines.size() * 13 + 4;
         }
         return height;
@@ -648,17 +648,17 @@ public final class AcknowledgmentRenderer {
     /**
      * 渲染换行文本段落。
      */
-    private static int renderWrappedParagraph(DrawContext context, TextRenderer textRenderer,
-                                              Text text, int x, int maxWidth, int currentY,
+    private static int renderWrappedParagraph(GuiGraphicsExtractor context, Font textRenderer,
+                                              Component text, int x, int maxWidth, int currentY,
                                               int scrollWindowStartY, int scrollWindowEndY,
                                               int color, int lineHeight, int paraGap) {
         String raw = text.getString();
         String[] paragraphs = raw.split("\n");
         for (int p = 0; p < paragraphs.length; p++) {
-            List<OrderedText> lines = textRenderer.wrapLines(Text.literal(paragraphs[p]), maxWidth);
+            List<FormattedCharSequence> lines = textRenderer.split(Component.literal(paragraphs[p]), maxWidth);
             for (int i = 0; i < lines.size(); i++) {
                 if (currentY + lineHeight >= scrollWindowStartY && currentY <= scrollWindowEndY) {
-                    context.drawText(textRenderer, lines.get(i), x, currentY, color, false);
+                    context.text(textRenderer, lines.get(i), x, currentY, color, false);
                 }
                 currentY += lineHeight;
             }

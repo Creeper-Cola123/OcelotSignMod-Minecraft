@@ -7,12 +7,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -38,93 +38,93 @@ public final class PatternRegistry {
         if (PatternAndFontOverlay.isDataLoaded) return;
 
         PatternAndFontOverlay.initMishangPatterns();
-        PatternAndFontOverlay.H2Category patternCategory = new PatternAndFontOverlay.H2Category(Text.translatable("ocelotsignmod.gui.tabs.patterns"));
+        PatternAndFontOverlay.H2Category patternCategory = new PatternAndFontOverlay.H2Category(Component.translatable("ocelotsignmod.gui.tabs.patterns"));
 
-        PatternAndFontOverlay.H3Category mishangCategory = new PatternAndFontOverlay.H3Category(Text.translatable("ocelotsignmod.gui.categories.mishang_builtin"));
-        mishangCategory.addSection(new PatternAndFontOverlay.H4Section(Text.translatable("ocelotsignmod.gui.sections.rect"),
-                Text.translatable("ocelotsignmod.gui.sections.rect.desc"),
-                Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/"))
+        PatternAndFontOverlay.H3Category mishangCategory = new PatternAndFontOverlay.H3Category(Component.translatable("ocelotsignmod.gui.categories.mishang_builtin"));
+        mishangCategory.addSection(new PatternAndFontOverlay.H4Section(Component.translatable("ocelotsignmod.gui.sections.rect"),
+                Component.translatable("ocelotsignmod.gui.sections.rect.desc"),
+                Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/"))
                 .setWhitelistMode()
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/rect.png"),
-                        "-rect <长> <宽>", Text.translatable("ocelotsignmod.gui.pattern.rect")));
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/rect.png"),
+                        "-rect <长> <宽>", Component.translatable("ocelotsignmod.gui.pattern.rect")));
 
-        mishangCategory.addSection(new PatternAndFontOverlay.H4Section(Text.translatable("ocelotsignmod.gui.sections.mishang_patterns"),
-                Text.translatable("ocelotsignmod.gui.sections.mishang_patterns.desc"),
-                Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/"))
+        mishangCategory.addSection(new PatternAndFontOverlay.H4Section(Component.translatable("ocelotsignmod.gui.sections.mishang_patterns"),
+                Component.translatable("ocelotsignmod.gui.sections.mishang_patterns.desc"),
+                Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/"))
                 .setWhitelistMode()
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/arrow-left.png"), "-pattern al", Text.translatable("ocelotsignmod.gui.pattern.arrow_left"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/arrow-right.png"), "-pattern ar", Text.translatable("ocelotsignmod.gui.pattern.arrow_right"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/arrow-up.png"), "-pattern au", Text.translatable("ocelotsignmod.gui.pattern.arrow_up"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/arrow-down.png"), "-pattern ad", Text.translatable("ocelotsignmod.gui.pattern.arrow_down"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/arrow-left-thin.png"), "-pattern arrow-left-thin", Text.translatable("ocelotsignmod.gui.pattern.arrow_left_thin"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/arrow-right-thin.png"), "-pattern arrow-right-thin", Text.translatable("ocelotsignmod.gui.pattern.arrow_right_thin"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/arrow-up-thin.png"), "-pattern arrow-up-thin", Text.translatable("ocelotsignmod.gui.pattern.arrow_up_thin"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/arrow-down-thin.png"), "-pattern arrow-down-thin", Text.translatable("ocelotsignmod.gui.pattern.arrow_down_thin"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/arrow-left-up.png"), "-pattern alu", Text.translatable("ocelotsignmod.gui.pattern.arrow_left_up"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/arrow-right-up.png"), "-pattern aru", Text.translatable("ocelotsignmod.gui.pattern.arrow_right_up"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/arrow-left-down.png"), "-pattern ald", Text.translatable("ocelotsignmod.gui.pattern.arrow_left_down"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/arrow-right-down.png"), "-pattern ard", Text.translatable("ocelotsignmod.gui.pattern.arrow_right_down"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/arrow-left-turn-up.png"), "-pattern altu", Text.translatable("ocelotsignmod.gui.pattern.arrow_left_turn_up"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/arrow-right-turn-up.png"), "-pattern artu", Text.translatable("ocelotsignmod.gui.pattern.arrow_right_turn_up"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/arrow-left-turn-down.png"), "-pattern altd", Text.translatable("ocelotsignmod.gui.pattern.arrow_left_turn_down"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/arrow-right-turn-down.png"), "-pattern artd", Text.translatable("ocelotsignmod.gui.pattern.arrow_right_turn_down"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/arrow-left-right.png"), "-pattern alr", Text.translatable("ocelotsignmod.gui.pattern.arrow_left_right"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/arrow-up-down.png"), "-pattern aud", Text.translatable("ocelotsignmod.gui.pattern.arrow_up_down"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/circle-small.png"), "-pattern circle-small", Text.translatable("ocelotsignmod.gui.pattern.circle_small"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/circle-medium.png"), "-pattern O", Text.translatable("ocelotsignmod.gui.pattern.circle_medium"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/ban.png"), "-pattern ban", Text.translatable("ocelotsignmod.gui.pattern.ban"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/u-turn-left-down.png"), "-pattern uld", Text.translatable("ocelotsignmod.gui.pattern.u_turn_left_down"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/u-turn-right-down.png"), "-pattern urd", Text.translatable("ocelotsignmod.gui.pattern.u_turn_right_down"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/u-turn-left-up.png"), "-pattern ulu", Text.translatable("ocelotsignmod.gui.pattern.u_turn_left_up"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/u-turn-right-up.png"), "-pattern uru", Text.translatable("ocelotsignmod.gui.pattern.u_turn_right_up"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/cross-small.png"), "-pattern cross-small", Text.translatable("ocelotsignmod.gui.pattern.cross_small"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/cross-medium.png"), "-pattern X", Text.translatable("ocelotsignmod.gui.pattern.cross_medium"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/cross-large.png"), "-pattern cross-large", Text.translatable("ocelotsignmod.gui.pattern.cross_large"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/square-small.png"), "-pattern square-small", Text.translatable("ocelotsignmod.gui.pattern.square_small"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/square-medium.png"), "-pattern square", Text.translatable("ocelotsignmod.gui.pattern.square_medium"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/square-large.png"), "-pattern square-large", Text.translatable("ocelotsignmod.gui.pattern.square_large"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/square-slant-small.png"), "-pattern small-slant-square", Text.translatable("ocelotsignmod.gui.pattern.square_slant_small"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/square-slant-medium.png"), "-pattern medium-slant-square", Text.translatable("ocelotsignmod.gui.pattern.square_slant_medium"))
-                .addWhitelistItem(Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/square-slant-large.png"), "-pattern large-slant-square", Text.translatable("ocelotsignmod.gui.pattern.square_slant_large")));
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/arrow-left.png"), "-pattern al", Component.translatable("ocelotsignmod.gui.pattern.arrow_left"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/arrow-right.png"), "-pattern ar", Component.translatable("ocelotsignmod.gui.pattern.arrow_right"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/arrow-up.png"), "-pattern au", Component.translatable("ocelotsignmod.gui.pattern.arrow_up"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/arrow-down.png"), "-pattern ad", Component.translatable("ocelotsignmod.gui.pattern.arrow_down"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/arrow-left-thin.png"), "-pattern arrow-left-thin", Component.translatable("ocelotsignmod.gui.pattern.arrow_left_thin"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/arrow-right-thin.png"), "-pattern arrow-right-thin", Component.translatable("ocelotsignmod.gui.pattern.arrow_right_thin"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/arrow-up-thin.png"), "-pattern arrow-up-thin", Component.translatable("ocelotsignmod.gui.pattern.arrow_up_thin"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/arrow-down-thin.png"), "-pattern arrow-down-thin", Component.translatable("ocelotsignmod.gui.pattern.arrow_down_thin"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/arrow-left-up.png"), "-pattern alu", Component.translatable("ocelotsignmod.gui.pattern.arrow_left_up"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/arrow-right-up.png"), "-pattern aru", Component.translatable("ocelotsignmod.gui.pattern.arrow_right_up"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/arrow-left-down.png"), "-pattern ald", Component.translatable("ocelotsignmod.gui.pattern.arrow_left_down"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/arrow-right-down.png"), "-pattern ard", Component.translatable("ocelotsignmod.gui.pattern.arrow_right_down"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/arrow-left-turn-up.png"), "-pattern altu", Component.translatable("ocelotsignmod.gui.pattern.arrow_left_turn_up"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/arrow-right-turn-up.png"), "-pattern artu", Component.translatable("ocelotsignmod.gui.pattern.arrow_right_turn_up"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/arrow-left-turn-down.png"), "-pattern altd", Component.translatable("ocelotsignmod.gui.pattern.arrow_left_turn_down"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/arrow-right-turn-down.png"), "-pattern artd", Component.translatable("ocelotsignmod.gui.pattern.arrow_right_turn_down"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/arrow-left-right.png"), "-pattern alr", Component.translatable("ocelotsignmod.gui.pattern.arrow_left_right"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/arrow-up-down.png"), "-pattern aud", Component.translatable("ocelotsignmod.gui.pattern.arrow_up_down"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/circle-small.png"), "-pattern circle-small", Component.translatable("ocelotsignmod.gui.pattern.circle_small"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/circle-medium.png"), "-pattern O", Component.translatable("ocelotsignmod.gui.pattern.circle_medium"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/ban.png"), "-pattern ban", Component.translatable("ocelotsignmod.gui.pattern.ban"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/u-turn-left-down.png"), "-pattern uld", Component.translatable("ocelotsignmod.gui.pattern.u_turn_left_down"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/u-turn-right-down.png"), "-pattern urd", Component.translatable("ocelotsignmod.gui.pattern.u_turn_right_down"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/u-turn-left-up.png"), "-pattern ulu", Component.translatable("ocelotsignmod.gui.pattern.u_turn_left_up"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/u-turn-right-up.png"), "-pattern uru", Component.translatable("ocelotsignmod.gui.pattern.u_turn_right_up"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/cross-small.png"), "-pattern cross-small", Component.translatable("ocelotsignmod.gui.pattern.cross_small"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/cross-medium.png"), "-pattern X", Component.translatable("ocelotsignmod.gui.pattern.cross_medium"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/cross-large.png"), "-pattern cross-large", Component.translatable("ocelotsignmod.gui.pattern.cross_large"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/square-small.png"), "-pattern square-small", Component.translatable("ocelotsignmod.gui.pattern.square_small"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/square-medium.png"), "-pattern square", Component.translatable("ocelotsignmod.gui.pattern.square_medium"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/square-large.png"), "-pattern square-large", Component.translatable("ocelotsignmod.gui.pattern.square_large"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/square-slant-small.png"), "-pattern small-slant-square", Component.translatable("ocelotsignmod.gui.pattern.square_slant_small"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/square-slant-medium.png"), "-pattern medium-slant-square", Component.translatable("ocelotsignmod.gui.pattern.square_slant_medium"))
+                .addWhitelistItem(Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/square-slant-large.png"), "-pattern large-slant-square", Component.translatable("ocelotsignmod.gui.pattern.square_slant_large")));
 
-        PatternAndFontOverlay.H3Category modCategory = new PatternAndFontOverlay.H3Category(Text.translatable("ocelotsignmod.gui.categories.ocelot_builtin"));
+        PatternAndFontOverlay.H3Category modCategory = new PatternAndFontOverlay.H3Category(Component.translatable("ocelotsignmod.gui.categories.ocelot_builtin"));
 
-        PatternAndFontOverlay.H3Category roadSigns = new PatternAndFontOverlay.H3Category(Text.translatable("ocelotsignmod.gui.categories.road_signs_cn"));
+        PatternAndFontOverlay.H3Category roadSigns = new PatternAndFontOverlay.H3Category(Component.translatable("ocelotsignmod.gui.categories.road_signs_cn"));
         addRoadSignSections(roadSigns);
         modCategory.addSubCategory(roadSigns);
 
-        PatternAndFontOverlay.H3Category publicSigns = new PatternAndFontOverlay.H3Category(Text.translatable("ocelotsignmod.gui.categories.public_signs"));
+        PatternAndFontOverlay.H3Category publicSigns = new PatternAndFontOverlay.H3Category(Component.translatable("ocelotsignmod.gui.categories.public_signs"));
         addPublicSignSections(publicSigns);
         modCategory.addSubCategory(publicSigns);
 
-        PatternAndFontOverlay.H3Category customPatternCategory = new PatternAndFontOverlay.H3Category(Text.translatable("ocelotsignmod.gui.categories.custom_resource_pack"));
-        customPatternCategory.headerText = Text.translatable("ocelotsignmod.gui.sections.custom_patterns.desc");
-        customPatternCategory.addSection(new PatternAndFontOverlay.H4Section(Text.translatable("ocelotsignmod.gui.sections.custom_patterns"),
-                Text.literal(""), Identifier.of("ocelotsignmod", "patterns/"))
+        PatternAndFontOverlay.H3Category customPatternCategory = new PatternAndFontOverlay.H3Category(Component.translatable("ocelotsignmod.gui.categories.custom_resource_pack"));
+        customPatternCategory.headerText = Component.translatable("ocelotsignmod.gui.sections.custom_patterns.desc");
+        customPatternCategory.addSection(new PatternAndFontOverlay.H4Section(Component.translatable("ocelotsignmod.gui.sections.custom_patterns"),
+                Component.literal(""), Identifier.fromNamespaceAndPath("ocelotsignmod", "patterns/"))
                 .setCustomJsonPath("ocelotsignmod:patterns/custom_patterns.json"));
 
         patternCategory.addSubCategory(mishangCategory);
         patternCategory.addSubCategory(modCategory);
         patternCategory.addSubCategory(customPatternCategory);
 
-        PatternAndFontOverlay.H2Category fontCategory = new PatternAndFontOverlay.H2Category(Text.translatable("ocelotsignmod.gui.tabs.fonts"));
+        PatternAndFontOverlay.H2Category fontCategory = new PatternAndFontOverlay.H2Category(Component.translatable("ocelotsignmod.gui.tabs.fonts"));
 
-        PatternAndFontOverlay.H3Category builtInFonts = new PatternAndFontOverlay.H3Category(Text.translatable("ocelotsignmod.gui.categories.ocelot_builtin"));
-        builtInFonts.addSection(new PatternAndFontOverlay.H4Section(Text.translatable("ocelotsignmod.gui.sections.default_fonts"),
-                Text.translatable("ocelotsignmod.gui.sections.default_fonts.desc"),
-                Identifier.of("ocelotsignmod", "textures/font/default/"))
+        PatternAndFontOverlay.H3Category builtInFonts = new PatternAndFontOverlay.H3Category(Component.translatable("ocelotsignmod.gui.categories.ocelot_builtin"));
+        builtInFonts.addSection(new PatternAndFontOverlay.H4Section(Component.translatable("ocelotsignmod.gui.sections.default_fonts"),
+                Component.translatable("ocelotsignmod.gui.sections.default_fonts.desc"),
+                Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/font/default/"))
                 .setFontMode()
-                .addFontItem("ocelotsignmod:traf_sign_font_a", Text.translatable("ocelotsignmod.gui.fonts.traf_sign_font_a"))
-                .addFontItem("ocelotsignmod:traf_sign_font_b", Text.translatable("ocelotsignmod.gui.fonts.traf_sign_font_b"))
-                .addFontItem("ocelotsignmod:traf_sign_font_c", Text.translatable("ocelotsignmod.gui.fonts.traf_sign_font_c"))
-                .addFontItem("ocelotsignmod:heiti", Text.translatable("ocelotsignmod.gui.fonts.heiti"))
-                .addFontItem("ocelotsignmod:songti", Text.translatable("ocelotsignmod.gui.fonts.songti"))
-                .addFontItem("ocelotsignmod:misans_semibold", Text.translatable("ocelotsignmod.gui.fonts.misans_semibold")));
+                .addFontItem("ocelotsignmod:traf_sign_font_a", Component.translatable("ocelotsignmod.gui.fonts.traf_sign_font_a"))
+                .addFontItem("ocelotsignmod:traf_sign_font_b", Component.translatable("ocelotsignmod.gui.fonts.traf_sign_font_b"))
+                .addFontItem("ocelotsignmod:traf_sign_font_c", Component.translatable("ocelotsignmod.gui.fonts.traf_sign_font_c"))
+                .addFontItem("ocelotsignmod:heiti", Component.translatable("ocelotsignmod.gui.fonts.heiti"))
+                .addFontItem("ocelotsignmod:songti", Component.translatable("ocelotsignmod.gui.fonts.songti"))
+                .addFontItem("ocelotsignmod:misans_semibold", Component.translatable("ocelotsignmod.gui.fonts.misans_semibold")));
 
-        PatternAndFontOverlay.H3Category customFontCategory = new PatternAndFontOverlay.H3Category(Text.translatable("ocelotsignmod.gui.categories.custom_resource_pack"));
-        customFontCategory.headerText = Text.translatable("ocelotsignmod.gui.sections.custom_fonts.desc");
-        customFontCategory.addSection(new PatternAndFontOverlay.H4Section(Text.translatable("ocelotsignmod.gui.sections.custom_fonts"),
-                Text.literal(""), Identifier.of("ocelotsignmod", "fonts/"))
+        PatternAndFontOverlay.H3Category customFontCategory = new PatternAndFontOverlay.H3Category(Component.translatable("ocelotsignmod.gui.categories.custom_resource_pack"));
+        customFontCategory.headerText = Component.translatable("ocelotsignmod.gui.sections.custom_fonts.desc");
+        customFontCategory.addSection(new PatternAndFontOverlay.H4Section(Component.translatable("ocelotsignmod.gui.sections.custom_fonts"),
+                Component.literal(""), Identifier.fromNamespaceAndPath("ocelotsignmod", "fonts/"))
                 .setFontMode()
                 .setCustomJsonPath("ocelotsignmod:fonts/custom_fonts.json"));
 
@@ -135,7 +135,7 @@ public final class PatternRegistry {
         PatternAndFontOverlay.REGISTRY.add(fontCategory);
 
         setDefaultSelection();
-        loadAllFromResourceManager(MinecraftClient.getInstance().getResourceManager());
+        loadAllFromResourceManager(Minecraft.getInstance().getResourceManager());
 
         PatternAndFontOverlay.isDataLoaded = true;
     }
@@ -164,89 +164,89 @@ public final class PatternRegistry {
 
     // 添加道路交通标志分区
     private static void addRoadSignSections(PatternAndFontOverlay.H3Category parent) {
-        Identifier basicPath = Identifier.of("ocelotsignmod", "textures/sign/road/basic/");
-        parent.addSection(new PatternAndFontOverlay.H4Section(Text.translatable("ocelotsignmod.gui.sections.basic"), Text.literal(""), basicPath)
+        Identifier basicPath = Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/sign/road/basic/");
+        parent.addSection(new PatternAndFontOverlay.H4Section(Component.translatable("ocelotsignmod.gui.sections.basic"), Component.literal(""), basicPath)
                 .enableSubfolders()
-                .addSubFolder("black", Text.translatable("ocelotsignmod.gui.colors.black"))
-                .addSubFolder("white", Text.translatable("ocelotsignmod.gui.colors.white"))
-                .addSubFolder("blue", Text.translatable("ocelotsignmod.gui.colors.blue"))
-                .addSubFolder("green", Text.translatable("ocelotsignmod.gui.colors.green"))
-                .addSubFolder("yellow", Text.translatable("ocelotsignmod.gui.colors.yellow"))
-                .addSubFolder("brown", Text.translatable("ocelotsignmod.gui.colors.brown")));
+                .addSubFolder("black", Component.translatable("ocelotsignmod.gui.colors.black"))
+                .addSubFolder("white", Component.translatable("ocelotsignmod.gui.colors.white"))
+                .addSubFolder("blue", Component.translatable("ocelotsignmod.gui.colors.blue"))
+                .addSubFolder("green", Component.translatable("ocelotsignmod.gui.colors.green"))
+                .addSubFolder("yellow", Component.translatable("ocelotsignmod.gui.colors.yellow"))
+                .addSubFolder("brown", Component.translatable("ocelotsignmod.gui.colors.brown")));
 
-        parent.addSection(new PatternAndFontOverlay.H4Section(Text.translatable("ocelotsignmod.gui.sections.arrows"), Text.literal(""),
-                Identifier.of("ocelotsignmod", "textures/sign/road/arrowsign/"))
+        parent.addSection(new PatternAndFontOverlay.H4Section(Component.translatable("ocelotsignmod.gui.sections.arrows"), Component.literal(""),
+                Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/sign/road/arrowsign/"))
                 .enableSubfolders()
-                .addSubFolder("black", Text.translatable("ocelotsignmod.gui.colors.black"))
-                .addSubFolder("white", Text.translatable("ocelotsignmod.gui.colors.white"))
-                .addSubFolder("blue", Text.translatable("ocelotsignmod.gui.colors.blue"))
-                .addSubFolder("green", Text.translatable("ocelotsignmod.gui.colors.green"))
-                .addSubFolder("yellow", Text.translatable("ocelotsignmod.gui.colors.yellow")));
+                .addSubFolder("black", Component.translatable("ocelotsignmod.gui.colors.black"))
+                .addSubFolder("white", Component.translatable("ocelotsignmod.gui.colors.white"))
+                .addSubFolder("blue", Component.translatable("ocelotsignmod.gui.colors.blue"))
+                .addSubFolder("green", Component.translatable("ocelotsignmod.gui.colors.green"))
+                .addSubFolder("yellow", Component.translatable("ocelotsignmod.gui.colors.yellow")));
 
-        parent.addSection(new PatternAndFontOverlay.H4Section(Text.translatable("ocelotsignmod.gui.sections.direction_signs"), Text.literal(""),
-                Identifier.of("ocelotsignmod", "textures/sign/road/directionsign/"))
+        parent.addSection(new PatternAndFontOverlay.H4Section(Component.translatable("ocelotsignmod.gui.sections.direction_signs"), Component.literal(""),
+                Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/sign/road/directionsign/"))
                 .setExtensionFilter(PatternAndFontOverlay.FilterMode.BLACKLIST, "arrow1.png", "arrow2.png", "arrow3.png"));
 
-        parent.addSection(new PatternAndFontOverlay.H4Section(Text.translatable("ocelotsignmod.gui.sections.restriction_signs"), Text.literal(""),
-                Identifier.of("ocelotsignmod", "textures/sign/road/")));
+        parent.addSection(new PatternAndFontOverlay.H4Section(Component.translatable("ocelotsignmod.gui.sections.restriction_signs"), Component.literal(""),
+                Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/sign/road/")));
 
-        parent.addSection(new PatternAndFontOverlay.H4Section(Text.translatable("ocelotsignmod.gui.sections.road_number"), Text.literal(""),
-                Identifier.of("ocelotsignmod", "textures/sign/road/roadnumber/")));
+        parent.addSection(new PatternAndFontOverlay.H4Section(Component.translatable("ocelotsignmod.gui.sections.road_number"), Component.literal(""),
+                Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/sign/road/roadnumber/")));
 
         addColoredSignSections(parent, "facility_signs", "textures/sign/road/facilities/",
                 new String[]{"black", "white", "blue", "green"});
         addColoredSignSections(parent, "road_users", "textures/sign/road/roaduser/",
                 new String[]{"black", "white", "blue", "green"});
 
-        parent.addSection(new PatternAndFontOverlay.H4Section(Text.translatable("ocelotsignmod.gui.sections.warning_signs"), Text.literal(""),
-                Identifier.of("ocelotsignmod", "textures/sign/road/warningsign/")));
+        parent.addSection(new PatternAndFontOverlay.H4Section(Component.translatable("ocelotsignmod.gui.sections.warning_signs"), Component.literal(""),
+                Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/sign/road/warningsign/")));
 
         addColoredSignSections(parent, "cropped_warning_signs", "textures/sign/road/croppedwarningsign/",
                 new String[]{"black", "white", "blue", "green"});
 
-        parent.addSection(new PatternAndFontOverlay.H4Section(Text.translatable("ocelotsignmod.gui.sections.guide_signs"), Text.literal(""),
-                Identifier.of("ocelotsignmod", "textures/sign/road/guidesign/")));
+        parent.addSection(new PatternAndFontOverlay.H4Section(Component.translatable("ocelotsignmod.gui.sections.guide_signs"), Component.literal(""),
+                Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/sign/road/guidesign/")));
 
-        parent.addSection(new PatternAndFontOverlay.H4Section(Text.translatable("ocelotsignmod.gui.sections.prohibition_signs"), Text.literal(""),
-                Identifier.of("ocelotsignmod", "textures/sign/road/prohibitsign/")));
+        parent.addSection(new PatternAndFontOverlay.H4Section(Component.translatable("ocelotsignmod.gui.sections.prohibition_signs"), Component.literal(""),
+                Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/sign/road/prohibitsign/")));
 
         addColoredSignSections(parent, "scenic_area_signs", "textures/sign/road/scenicarea/",
                 new String[]{"black", "white", "brown"});
         addColoredSignSections(parent, "driver_action", "textures/sign/road/driveraction/",
                 new String[]{"black", "white", "blue", "green"});
 
-        parent.addSection(new PatternAndFontOverlay.H4Section(Text.translatable("ocelotsignmod.gui.sections.misc_signs"), Text.literal(""),
-                Identifier.of("ocelotsignmod", "textures/sign/road/extra/")));
+        parent.addSection(new PatternAndFontOverlay.H4Section(Component.translatable("ocelotsignmod.gui.sections.misc_signs"), Component.literal(""),
+                Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/sign/road/extra/")));
 
-        parent.addSection(new PatternAndFontOverlay.H4Section(Text.translatable("ocelotsignmod.gui.sections.road_arrow_style_1"), Text.translatable("ocelotsignmod.gui.sections.road_arrow_style_1.desc"),
-                Identifier.of("ocelotsignmod", "textures/block/roadmark_large/")));
+        parent.addSection(new PatternAndFontOverlay.H4Section(Component.translatable("ocelotsignmod.gui.sections.road_arrow_style_1"), Component.translatable("ocelotsignmod.gui.sections.road_arrow_style_1.desc"),
+                Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/block/roadmark_large/")));
 
-        parent.addSection(new PatternAndFontOverlay.H4Section(Text.translatable("ocelotsignmod.gui.sections.road_arrow_style_2"), Text.translatable("ocelotsignmod.gui.sections.road_arrow_style_2.desc"),
-                Identifier.of("ocelotsignmod", "textures/block/roadmark_style_2/")));
+        parent.addSection(new PatternAndFontOverlay.H4Section(Component.translatable("ocelotsignmod.gui.sections.road_arrow_style_2"), Component.translatable("ocelotsignmod.gui.sections.road_arrow_style_2.desc"),
+                Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/block/roadmark_style_2/")));
 
-        parent.addSection(new PatternAndFontOverlay.H4Section(Text.translatable("ocelotsignmod.gui.sections.road_arrow_style_3"), Text.translatable("ocelotsignmod.gui.sections.road_arrow_style_3.desc"),
-                Identifier.of("ocelotsignmod", "textures/block/roadmark_style_3/")));
+        parent.addSection(new PatternAndFontOverlay.H4Section(Component.translatable("ocelotsignmod.gui.sections.road_arrow_style_3"), Component.translatable("ocelotsignmod.gui.sections.road_arrow_style_3.desc"),
+                Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/block/roadmark_style_3/")));
 
-        parent.addSection(new PatternAndFontOverlay.H4Section(Text.translatable("ocelotsignmod.gui.sections.road_mark_lines"), Text.literal(""), Identifier.of("mishanguc", "textures/block/")).setExtensionFilter(PatternAndFontOverlay.FilterMode.WHITELIST, "white_and_yellow_double_right_angle_line.png", "white_and_yellow_right_angle_line.png", "white_auto_bevel_angle_line.png", "white_auto_right_angle_line.png", "white_bevel_angle_double_line.png", "white_bevel_angle_line.png", "white_bevel_angle_thick_line.png", "white_bi_bevel_angle_line_to_straight_double_line.png", "white_cross_line.png", "white_double_joint_line.png", "white_double_joint_line_with_offset_side.png", "white_half_double_line.png", "white_ink.png", "white_joint_line.png", "white_joint_line_with_double_side.png", "white_joint_line_with_offset_side.png", "white_joint_line_with_offset_yellow_side.png", "white_joint_line_with_thick_side.png", "white_joint_line_with_yellow_double_side.png", "white_joint_line_with_yellow_side.png", "white_light.png", "white_light_emission.png", "white_offset_in_bevel_angle_line.png", "white_offset_in_right_angle_line.png", "white_offset_out_bevel_angle_line.png", "white_offset_out_right_angle_line.png", "white_offset_straight_line.png", "white_offset_straight_line2.png", "white_pure.png", "white_right_angle_line.png", "white_right_angle_line_with_one_part_offset_in.png", "white_right_angle_line_with_one_part_offset_out.png", "white_straight_double_line.png", "white_straight_line.png", "white_straight_thick_line.png", "white_thick_and_normal_right_angle_line.png", "white_thick_and_yellow_double_right_angle_line.png", "white_thick_and_yellow_right_angle_line.png", "white_thick_joint_line.png", "white_thick_joint_line_with_offset_side.png", "white_thick_joint_line_with_offset_yellow_side.png", "white_thick_joint_line_with_yellow_double_side.png", "white_thick_joint_line_with_yellow_side.png", "white_unknown_line.png", "white_yellow_double_straight_line.png", "yellow_bevel_angle_double_line.png", "yellow_bevel_angle_line.png", "yellow_bevel_angle_thick_line.png", "yellow_cross_line.png", "yellow_half_double_line.png", "yellow_ink.png", "yellow_joint_line.png", "yellow_joint_line_with_offset_side.png", "yellow_joint_line_with_offset_yellow_side.png", "yellow_joint_line_with_white_side.png", "yellow_light.png", "yellow_offset_in_bevel_angle_line.png", "yellow_offset_in_right_angle_line.png", "yellow_offset_out_bevel_angle_line.png", "yellow_offset_out_right_angle_line.png", "yellow_offset_straight_line.png", "yellow_offset_straight_line2.png", "yellow_right_angle_line.png", "yellow_right_angle_line_with_one_part_offset_in.png", "yellow_right_angle_line_with_one_part_offset_out.png", "yellow_straight_double_line.png", "yellow_straight_line.png", "yellow_straight_thick_line.png"));
+        parent.addSection(new PatternAndFontOverlay.H4Section(Component.translatable("ocelotsignmod.gui.sections.road_mark_lines"), Component.literal(""), Identifier.fromNamespaceAndPath("mishanguc", "textures/block/")).setExtensionFilter(PatternAndFontOverlay.FilterMode.WHITELIST, "white_and_yellow_double_right_angle_line.png", "white_and_yellow_right_angle_line.png", "white_auto_bevel_angle_line.png", "white_auto_right_angle_line.png", "white_bevel_angle_double_line.png", "white_bevel_angle_line.png", "white_bevel_angle_thick_line.png", "white_bi_bevel_angle_line_to_straight_double_line.png", "white_cross_line.png", "white_double_joint_line.png", "white_double_joint_line_with_offset_side.png", "white_half_double_line.png", "white_ink.png", "white_joint_line.png", "white_joint_line_with_double_side.png", "white_joint_line_with_offset_side.png", "white_joint_line_with_offset_yellow_side.png", "white_joint_line_with_thick_side.png", "white_joint_line_with_yellow_double_side.png", "white_joint_line_with_yellow_side.png", "white_light.png", "white_light_emission.png", "white_offset_in_bevel_angle_line.png", "white_offset_in_right_angle_line.png", "white_offset_out_bevel_angle_line.png", "white_offset_out_right_angle_line.png", "white_offset_straight_line.png", "white_offset_straight_line2.png", "white_pure.png", "white_right_angle_line.png", "white_right_angle_line_with_one_part_offset_in.png", "white_right_angle_line_with_one_part_offset_out.png", "white_straight_double_line.png", "white_straight_line.png", "white_straight_thick_line.png", "white_thick_and_normal_right_angle_line.png", "white_thick_and_yellow_double_right_angle_line.png", "white_thick_and_yellow_right_angle_line.png", "white_thick_joint_line.png", "white_thick_joint_line_with_offset_side.png", "white_thick_joint_line_with_offset_yellow_side.png", "white_thick_joint_line_with_yellow_double_side.png", "white_thick_joint_line_with_yellow_side.png", "white_unknown_line.png", "white_yellow_double_straight_line.png", "yellow_bevel_angle_double_line.png", "yellow_bevel_angle_line.png", "yellow_bevel_angle_thick_line.png", "yellow_cross_line.png", "yellow_half_double_line.png", "yellow_ink.png", "yellow_joint_line.png", "yellow_joint_line_with_offset_side.png", "yellow_joint_line_with_offset_yellow_side.png", "yellow_joint_line_with_white_side.png", "yellow_light.png", "yellow_offset_in_bevel_angle_line.png", "yellow_offset_in_right_angle_line.png", "yellow_offset_out_bevel_angle_line.png", "yellow_offset_out_right_angle_line.png", "yellow_offset_straight_line.png", "yellow_offset_straight_line2.png", "yellow_right_angle_line.png", "yellow_right_angle_line_with_one_part_offset_in.png", "yellow_right_angle_line_with_one_part_offset_out.png", "yellow_straight_double_line.png", "yellow_straight_line.png", "yellow_straight_thick_line.png"));
     }
 
     // 添加公共场所标志分区
     private static void addPublicSignSections(PatternAndFontOverlay.H3Category parent) {
-        Identifier hangingSignPath = Identifier.of("ocelotsignmod", "textures/sign/hangingsign/");
+        Identifier hangingSignPath = Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/sign/hangingsign/");
         String[] colors = new String[]{"black", "white", "yellow"};
 
-        parent.addSection(new PatternAndFontOverlay.H4Section(Text.translatable("ocelotsignmod.gui.sections.arrows"), Text.literal(""), hangingSignPath)
+        parent.addSection(new PatternAndFontOverlay.H4Section(Component.translatable("ocelotsignmod.gui.sections.arrows"), Component.literal(""), hangingSignPath)
                 .enableSubfolders()
-                .addSubFolder("black", Text.translatable("ocelotsignmod.gui.colors.black"))
-                .addSubFolder("white", Text.translatable("ocelotsignmod.gui.colors.white"))
-                .addSubFolder("yellow", Text.translatable("ocelotsignmod.gui.colors.yellow"))
+                .addSubFolder("black", Component.translatable("ocelotsignmod.gui.colors.black"))
+                .addSubFolder("white", Component.translatable("ocelotsignmod.gui.colors.white"))
+                .addSubFolder("yellow", Component.translatable("ocelotsignmod.gui.colors.yellow"))
                 .setExtensionFilter(PatternAndFontOverlay.FilterMode.WHITELIST, "arrow1.png", "arrow2.png", "arrow3.png", "arrow4.png", "arrow5.png", "arrow6.png", "arrow7.png"));
 
-        parent.addSection(new PatternAndFontOverlay.H4Section(Text.translatable("ocelotsignmod.gui.sections.basic_shapes"), Text.literal(""), hangingSignPath)
+        parent.addSection(new PatternAndFontOverlay.H4Section(Component.translatable("ocelotsignmod.gui.sections.basic_shapes"), Component.literal(""), hangingSignPath)
                 .enableSubfolders()
-                .addSubFolder("black", Text.translatable("ocelotsignmod.gui.colors.black"))
-                .addSubFolder("white", Text.translatable("ocelotsignmod.gui.colors.white"))
-                .addSubFolder("yellow", Text.translatable("ocelotsignmod.gui.colors.yellow"))
+                .addSubFolder("black", Component.translatable("ocelotsignmod.gui.colors.black"))
+                .addSubFolder("white", Component.translatable("ocelotsignmod.gui.colors.white"))
+                .addSubFolder("yellow", Component.translatable("ocelotsignmod.gui.colors.yellow"))
                 .setExtensionFilter(PatternAndFontOverlay.FilterMode.WHITELIST, "bg1.png", "bg2.png", "bg3.png"));
 
         addWhitelistSignSection(parent, "traffic", hangingSignPath, colors,
@@ -270,21 +270,21 @@ public final class PatternRegistry {
 
     // 添加带颜色子文件夹的分区
     private static void addColoredSignSections(PatternAndFontOverlay.H3Category parent, String sectionKey, String basePath, String[] colors) {
-        PatternAndFontOverlay.H4Section section = new PatternAndFontOverlay.H4Section(Text.translatable("ocelotsignmod.gui.sections." + sectionKey), Text.literal(""),
-                Identifier.of("ocelotsignmod", basePath));
+        PatternAndFontOverlay.H4Section section = new PatternAndFontOverlay.H4Section(Component.translatable("ocelotsignmod.gui.sections." + sectionKey), Component.literal(""),
+                Identifier.fromNamespaceAndPath("ocelotsignmod", basePath));
         section.enableSubfolders();
         for (String color : colors) {
-            section.addSubFolder(color, Text.translatable("ocelotsignmod.gui.colors." + color));
+            section.addSubFolder(color, Component.translatable("ocelotsignmod.gui.colors." + color));
         }
         parent.addSection(section);
     }
 
     // 添加带白名单过滤的颜色子文件夹分区
     private static void addWhitelistSignSection(PatternAndFontOverlay.H3Category parent, String sectionKey, Identifier basePath, String[] colors, String... whitelistFiles) {
-        PatternAndFontOverlay.H4Section section = new PatternAndFontOverlay.H4Section(Text.translatable("ocelotsignmod.gui.sections." + sectionKey), Text.literal(""), basePath);
+        PatternAndFontOverlay.H4Section section = new PatternAndFontOverlay.H4Section(Component.translatable("ocelotsignmod.gui.sections." + sectionKey), Component.literal(""), basePath);
         section.enableSubfolders();
         for (String color : colors) {
-            section.addSubFolder(color, Text.translatable("ocelotsignmod.gui.colors." + color));
+            section.addSubFolder(color, Component.translatable("ocelotsignmod.gui.colors." + color));
         }
         section.setExtensionFilter(PatternAndFontOverlay.FilterMode.WHITELIST, whitelistFiles);
         parent.addSection(section);
@@ -301,12 +301,12 @@ public final class PatternRegistry {
     }
 
     /**
-     * 根据当前 MinecraftClient 实例的资源管理器扫描并分类 H4Section 的纹理。
+     * 根据当前 Minecraft 实例的资源管理器扫描并分类 H4Section 的纹理。
      *
      * @param section 目标 Section
      */
     public static void buildTextureCache(PatternAndFontOverlay.H4Section section) {
-        buildTextureCache(section, MinecraftClient.getInstance().getResourceManager());
+        buildTextureCache(section, Minecraft.getInstance().getResourceManager());
     }
 
     /**
@@ -325,7 +325,7 @@ public final class PatternRegistry {
             targetPath = targetPath.substring(0, targetPath.length() - 1);
         }
 
-        Map<Identifier, Resource> allResources = resourceManager.findResources(targetPath,
+        Map<Identifier, Resource> allResources = resourceManager.listResources(targetPath,
                 id -> id.getPath().endsWith(".png"));
 
         initCacheBuckets(section);
@@ -394,22 +394,22 @@ public final class PatternRegistry {
 
     // 解析自定义图案 JSON 并追加到指定 Section
     private static void loadCustomPatternsFromJsonSection(PatternAndFontOverlay.H4Section section, ResourceManager manager) {
-        Identifier jsonId = Identifier.of(section.customJsonPath);
+        Identifier jsonId = Identifier.parse(section.customJsonPath);
 
         try {
             List<Resource> resources = collectAllResources(manager, jsonId);
             for (Resource resource : resources) {
-                try (InputStreamReader reader = new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8)) {
+                try (InputStreamReader reader = new InputStreamReader(resource.open(), StandardCharsets.UTF_8)) {
                     JsonElement root = JsonParser.parseReader(reader);
                     if (root.isJsonArray()) {
                         for (JsonElement element : root.getAsJsonArray()) {
                             JsonObject obj = element.getAsJsonObject();
-                            String name = obj.has("name") ? obj.get("name").getAsString() : Text.translatable("ocelotsignmod.gui.unnamed").getString();
+                            String name = obj.has("name") ? obj.get("name").getAsString() : Component.translatable("ocelotsignmod.gui.unnamed").getString();
                             String texture = obj.has("texture") ? obj.get("texture").getAsString() : "";
                             String insert = obj.has("insert") ? obj.get("insert").getAsString() : "";
 
                             if (!texture.isEmpty()) {
-                                section.addWhitelistItem(Identifier.of(texture), insert, Text.literal(name));
+                                section.addWhitelistItem(Identifier.parse(texture), insert, Component.literal(name));
                             }
                         }
                     }
@@ -430,21 +430,21 @@ public final class PatternRegistry {
 
     // 解析自定义字体 JSON 并追加到指定 Section
     private static void loadCustomFontsFromJsonSection(PatternAndFontOverlay.H4Section section, ResourceManager manager) {
-        Identifier jsonId = Identifier.of(section.customJsonPath);
+        Identifier jsonId = Identifier.parse(section.customJsonPath);
 
         try {
             List<Resource> resources = collectAllResources(manager, jsonId);
             for (Resource resource : resources) {
-                try (InputStreamReader reader = new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8)) {
+                try (InputStreamReader reader = new InputStreamReader(resource.open(), StandardCharsets.UTF_8)) {
                     JsonElement root = JsonParser.parseReader(reader);
                     if (root.isJsonArray()) {
                         for (JsonElement element : root.getAsJsonArray()) {
                             JsonObject obj = element.getAsJsonObject();
                             String fontId = obj.has("font_id") ? obj.get("font_id").getAsString() : "";
-                            String name = obj.has("name") ? obj.get("name").getAsString() : Text.translatable("ocelotsignmod.gui.unnamed_font").getString();
+                            String name = obj.has("name") ? obj.get("name").getAsString() : Component.translatable("ocelotsignmod.gui.unnamed_font").getString();
 
                             if (!fontId.isEmpty()) {
-                                section.addFontItem(fontId, Text.literal(name));
+                                section.addFontItem(fontId, Component.literal(name));
                             }
                         }
                     }
@@ -469,14 +469,14 @@ public final class PatternRegistry {
     private static List<Resource> collectAllResources(ResourceManager manager, Identifier targetId) {
         List<Resource> result = new ArrayList<>();
         try {
-            Map<Identifier, Resource> allById = manager.findResources(
+            Map<Identifier, Resource> allById = manager.listResources(
                     targetId.getPath(),
                     id -> id.getNamespace().equals(targetId.getNamespace())
                             && id.getPath().equals(targetId.getPath())
             );
             for (Identifier id : allById.keySet()) {
                 try {
-                    result.addAll(manager.getAllResources(id));
+                    result.addAll(manager.getResourceStack(id));
                 } catch (Exception ignored) {
                 }
             }
@@ -484,7 +484,7 @@ public final class PatternRegistry {
         }
         if (result.isEmpty()) {
             try {
-                result.addAll(manager.getAllResources(targetId));
+                result.addAll(manager.getResourceStack(targetId));
             } catch (Exception ignored) {
             }
         }
@@ -497,9 +497,9 @@ public final class PatternRegistry {
                                                      java.util.function.Consumer<PatternAndFontOverlay.H4Section> sectionConsumer) {
         String customPackKey = "ocelotsignmod.gui.categories.custom_resource_pack";
         for (PatternAndFontOverlay.H2Category h2 : PatternAndFontOverlay.REGISTRY) {
-            if (!h2.title.getString().equals(Text.translatable(tabTranslationKey).getString())) continue;
+            if (!h2.title.getString().equals(Component.translatable(tabTranslationKey).getString())) continue;
             for (PatternAndFontOverlay.H3Category h3 : childrenSupplier.apply(h2)) {
-                if (!h3.title.getString().equals(Text.translatable(customPackKey).getString())) continue;
+                if (!h3.title.getString().equals(Component.translatable(customPackKey).getString())) continue;
                 for (PatternAndFontOverlay.H4Section section : h3.sections) {
                     if (section.customJsonPath.isEmpty()) continue;
                     sectionConsumer.accept(section);
@@ -510,11 +510,11 @@ public final class PatternRegistry {
 
     // 从 JSON 加载高级自定义 UI 定义
     private static void loadAdvancedCustomUIFromJson(ResourceManager manager) {
-        Map<Identifier, Resource> resources = manager.findResources("ui_definitions",
+        Map<Identifier, Resource> resources = manager.listResources("ui_definitions",
                 id -> id.getPath().endsWith(".json"));
 
         for (Map.Entry<Identifier, Resource> entry : resources.entrySet()) {
-            try (InputStreamReader reader = new InputStreamReader(entry.getValue().getInputStream(), StandardCharsets.UTF_8)) {
+            try (InputStreamReader reader = new InputStreamReader(entry.getValue().open(), StandardCharsets.UTF_8)) {
                 JsonObject root = JsonParser.parseReader(reader).getAsJsonObject();
 
                 String tabType = root.has("tab") ? root.get("tab").getAsString() : "patterns";
@@ -524,11 +524,11 @@ public final class PatternRegistry {
                 PatternAndFontOverlay.H3Category customPackH3 = isFont ? targetH2.subCategories.get(1) : targetH2.subCategories.get(2);
 
                 String categoryName = root.has("category_name") ? root.get("category_name").getAsString() : "未命名分类";
-                PatternAndFontOverlay.H3Category customH3 = new PatternAndFontOverlay.H3Category(Text.literal(categoryName));
+                PatternAndFontOverlay.H3Category customH3 = new PatternAndFontOverlay.H3Category(Component.literal(categoryName));
 
                 customH3.headerText = root.has("header_text")
-                        ? Text.literal(root.get("header_text").getAsString())
-                        : Text.translatable(isFont
+                        ? Component.literal(root.get("header_text").getAsString())
+                        : Component.translatable(isFont
                                 ? "ocelotsignmod.gui.sections.custom_fonts.desc"
                                 : "ocelotsignmod.gui.sections.custom_patterns.desc");
 
@@ -552,9 +552,9 @@ public final class PatternRegistry {
 
     // 从 JSON 解析 Section
     private static PatternAndFontOverlay.H4Section parseSectionFromJson(JsonObject secObj) {
-        Text secTitle = Text.literal(secObj.has("title") ? secObj.get("title").getAsString() : "未命名 Section");
-        Text secDesc = Text.literal(secObj.has("description") ? secObj.get("description").getAsString() : "");
-        Identifier basePath = Identifier.of(secObj.has("basePath") ? secObj.get("basePath").getAsString() : "minecraft:empty/");
+        Component secTitle = Component.literal(secObj.has("title") ? secObj.get("title").getAsString() : "未命名 Section");
+        Component secDesc = Component.literal(secObj.has("description") ? secObj.get("description").getAsString() : "");
+        Identifier basePath = Identifier.parse(secObj.has("basePath") ? secObj.get("basePath").getAsString() : "minecraft:empty/");
 
         PatternAndFontOverlay.H4Section newSection = new PatternAndFontOverlay.H4Section(secTitle, secDesc, basePath);
 
@@ -564,7 +564,7 @@ public final class PatternRegistry {
                 for (JsonElement subEl : secObj.getAsJsonArray("subFolders")) {
                     JsonObject subObj = subEl.getAsJsonObject();
                     newSection.addSubFolder(subObj.get("dirName").getAsString(),
-                            Text.literal(subObj.get("displayName").getAsString()));
+                            Component.literal(subObj.get("displayName").getAsString()));
                 }
             }
         }
@@ -591,7 +591,7 @@ public final class PatternRegistry {
                     JsonObject fontObj = fontEl.getAsJsonObject();
                     String fId = fontObj.get("fontId").getAsString();
                     String dName = fontObj.get("displayName").getAsString();
-                    newSection.addFontItem(fId, Text.literal(dName));
+                    newSection.addFontItem(fId, Component.literal(dName));
                 }
             }
         }
@@ -603,7 +603,7 @@ public final class PatternRegistry {
      * 注册资源包刷新监听器，确保资源包刷新后自动同步缓存。
      */
     public static void registerReloadListener() {
-        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(
+        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(
                 new SimpleSynchronousResourceReloadListener() {
                     @Override
                     public Identifier getFabricId() {
@@ -611,7 +611,7 @@ public final class PatternRegistry {
                     }
 
                     @Override
-                    public void reload(ResourceManager manager) {
+                    public void onResourceManagerReload(ResourceManager manager) {
                         onResourcePackReloaded(manager);
                     }
                 }

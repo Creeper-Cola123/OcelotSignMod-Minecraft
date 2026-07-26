@@ -1,6 +1,6 @@
 package bklmc.ocelotsign.client;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 /**
  * UI 常量定义类

@@ -25,10 +25,6 @@ repositories {
 loom {
 	splitEnvironmentSourceSets()
 
-	mixin {
-		defaultRefmapName = "${archives_base_name}-refmap.json"
-	}
-
 	mods {
 		"ocelotsignmod" {
 			sourceSet sourceSets.main

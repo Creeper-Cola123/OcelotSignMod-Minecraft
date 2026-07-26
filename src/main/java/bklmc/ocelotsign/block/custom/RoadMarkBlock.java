@@ -1,21 +1,15 @@
 package bklmc.ocelotsign.block.custom;
 
-import com.google.gson.JsonPrimitive;
-import net.minecraft.block.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.data.client.*;
-import net.minecraft.data.models.BlockModelGenerators;
-import net.minecraft.data.models.ModelProvider;
-import net.minecraft.data.models.model.ModelLocationUtils;
-import net.minecraft.data.models.model.TextureMapping;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Mirror;
@@ -52,14 +46,13 @@ public class RoadMarkBlock extends Block implements SimpleWaterloggedBlock {
     public static final VoxelShape SHAPE_ON_SLAB_Z = Block.box(2, -8, 0, 14, -7, 16);
 
     public static final BooleanProperty ON_SLAB = BooleanProperty.create("on_slab");
-    public static final net.minecraft.data.models.blockstates.VariantProperty<Integer> Y_VARIANT = new net.minecraft.data.models.blockstates.VariantProperty<>("y", JsonPrimitive::new);
 
-    protected final ResourceLocation texture;
+    protected final Identifier texture;
 
     private static final VoxelShape SHAPE_TOP_MASK = Block.box(0, 15.5, 0, 16, 16, 16);
     private static final VoxelShape SHAPE_SLAB_TOP_MASK = Block.box(0, 7.5, 0, 16, 8, 16);
 
-    public RoadMarkBlock(@NotNull ResourceLocation texture, Properties settings) {
+    public RoadMarkBlock(@NotNull Identifier texture, Properties settings) {
         super(settings);
         this.texture = texture;
         registerDefaultState(defaultBlockState()
@@ -110,22 +103,23 @@ public class RoadMarkBlock extends Block implements SimpleWaterloggedBlock {
 
     @SuppressWarnings("deprecation")
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
-                                                 LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
+    public BlockState updateShape(BlockState state, LevelReader world, ScheduledTickAccess tickAccess, BlockPos pos,
+                                  Direction direction, BlockPos neighborPos, BlockState neighborState,
+                                  RandomSource random) {
         if (state.getValue(BlockStateProperties.WATERLOGGED)) {
-            world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+            tickAccess.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
         }
         if (direction == Direction.DOWN) {
             if (!this.canSurvive(state, world, pos)) {
                 return Blocks.AIR.defaultBlockState();
             } else {
-                return super.updateShape(state, direction, neighborState, world, pos, neighborPos)
+                return super.updateShape(state, world, tickAccess, pos, direction, neighborPos, neighborState, random)
                     .setValue(ON_SLAB, Shapes.joinIsNotEmpty(
                             world.getBlockState(neighborPos).getShape(world, neighborPos),
                             SHAPE_TOP_MASK, BooleanOp.ONLY_SECOND));
             }
         }
-        return super.updateShape(state, direction, neighborState, world, pos, neighborPos);
+        return super.updateShape(state, world, tickAccess, pos, direction, neighborPos, neighborState, random);
     }
 
     @SuppressWarnings("deprecation")
@@ -144,39 +138,25 @@ public class RoadMarkBlock extends Block implements SimpleWaterloggedBlock {
         return drops;
     }
 
-    public static RoadMarkBlock createAxisFacing(ResourceLocation texture, Properties settings) {
+    public static RoadMarkBlock createAxisFacing(Identifier texture, Properties settings) {
         return new AxisFacing(texture, settings);
     }
 
-    public static RoadMarkBlock createDirectionalFacing(ResourceLocation texture, Properties settings) {
+    public static RoadMarkBlock createDirectionalFacing(Identifier texture, Properties settings) {
         return new DirectionalFacing(texture, settings);
     }
 
-    public void registerModels(ModelProvider modelProvider, BlockModelGenerators blockStateModelGenerator) {
-        final TextureMapping textures = TextureMapping.cube(texture);
-        final ResourceLocation modelId = ModelLocationUtils.getModelLocation(this);
-        final ResourceLocation onSlabModelId = ResourceLocation.fromNamespaceAndPath(modelId.getNamespace(), modelId.getPath() + "_on_slab");
-
-        net.minecraft.data.models.model.ModelTemplates.CUBE_ALL.create(modelId, textures, blockStateModelGenerator.modelOutput);
-        net.minecraft.data.models.model.ModelTemplates.CUBE_ALL.create(onSlabModelId, textures, blockStateModelGenerator.modelOutput);
-
-        blockStateModelGenerator.blockStateOutput.accept(net.minecraft.data.models.blockstates.MultiVariantGenerator.multiVariant(this)
-            .with(net.minecraft.data.models.blockstates.PropertyDispatch.property(ON_SLAB)
-                .select(false, new net.minecraft.data.models.blockstates.Variant()
-                    .with(net.minecraft.data.models.blockstates.VariantProperties.MODEL, modelId))
-                .select(true, new net.minecraft.data.models.blockstates.Variant()
-                    .with(net.minecraft.data.models.blockstates.VariantProperties.MODEL, onSlabModelId))));
-
-        net.minecraft.data.models.model.ModelTemplates.FLAT_HANDHELD_ITEM.create(
-                net.minecraft.data.models.model.ModelLocationUtils.getModelLocation(asItem()),
-                TextureMapping.layer0(texture),
-                blockStateModelGenerator.modelOutput);
+    /**
+     * @return 该方块使用的贴图标识符，供客户端数据生成使用
+     */
+    public Identifier getTexture() {
+        return texture;
     }
 
-    protected static class AxisFacing extends RoadMarkBlock {
+    public static class AxisFacing extends RoadMarkBlock {
         public static final EnumProperty<FourHorizontalAxis> AXIS = EnumProperty.create("axis", FourHorizontalAxis.class);
 
-        protected AxisFacing(ResourceLocation texture, Properties settings) {
+        protected AxisFacing(Identifier texture, Properties settings) {
             super(texture, settings);
             registerDefaultState(defaultBlockState().setValue(AXIS, FourHorizontalAxis.X));
         }
@@ -219,45 +199,13 @@ public class RoadMarkBlock extends Block implements SimpleWaterloggedBlock {
         public BlockState mirror(BlockState state, Mirror mirror) {
             return super.mirror(state, mirror).setValue(AXIS, state.getValue(AXIS).mirror());
         }
-
-        @Override
-        public void registerModels(ModelProvider modelProvider, BlockModelGenerators blockStateModelGenerator) {
-            final TextureMapping textures = TextureMapping.cube(texture);
-            final ResourceLocation modelId = ModelLocationUtils.getModelLocation(this);
-            final ResourceLocation onSlabModelId = ResourceLocation.fromNamespaceAndPath(modelId.getNamespace(), modelId.getPath() + "_on_slab");
-
-            net.minecraft.data.models.model.ModelTemplates.CUBE_ALL.create(modelId, textures, blockStateModelGenerator.modelOutput);
-            net.minecraft.data.models.model.ModelTemplates.CUBE_ALL.create(onSlabModelId, textures, blockStateModelGenerator.modelOutput);
-            blockStateModelGenerator.blockStateOutput.accept(
-                    net.minecraft.data.models.blockstates.MultiVariantGenerator.multiVariant(this)
-                .with(net.minecraft.data.models.blockstates.PropertyDispatch.properties(ON_SLAB, AXIS)
-                    .select(false, FourHorizontalAxis.X,
-                            new net.minecraft.data.models.blockstates.Variant()
-                                .with(net.minecraft.data.models.blockstates.VariantProperties.MODEL, modelId))
-                    .select(false, FourHorizontalAxis.Z,
-                            new net.minecraft.data.models.blockstates.Variant()
-                                .with(net.minecraft.data.models.blockstates.VariantProperties.MODEL, modelId))
-                    .select(true, FourHorizontalAxis.X,
-                            new net.minecraft.data.models.blockstates.Variant()
-                                .with(net.minecraft.data.models.blockstates.VariantProperties.MODEL, onSlabModelId))
-                    .select(true, FourHorizontalAxis.Z,
-                            new net.minecraft.data.models.blockstates.Variant()
-                                .with(net.minecraft.data.models.blockstates.VariantProperties.MODEL, onSlabModelId))
-                )
-            );
-
-            net.minecraft.data.models.model.ModelTemplates.FLAT_HANDHELD_ITEM.create(
-                    net.minecraft.data.models.model.ModelLocationUtils.getModelLocation(asItem()),
-                    TextureMapping.layer0(texture),
-                    blockStateModelGenerator.modelOutput);
-        }
     }
 
-    protected static class DirectionalFacing extends RoadMarkBlock {
+    public static class DirectionalFacing extends RoadMarkBlock {
         public static final EnumProperty<EightHorizontalDirection> FACING =
                 EnumProperty.create("facing", EightHorizontalDirection.class);
 
-        public DirectionalFacing(ResourceLocation texture, Properties settings) {
+        public DirectionalFacing(Identifier texture, Properties settings) {
             super(texture, settings);
             registerDefaultState(defaultBlockState().setValue(FACING, EightHorizontalDirection.SOUTH));
         }
@@ -299,49 +247,6 @@ public class RoadMarkBlock extends Block implements SimpleWaterloggedBlock {
         @Override
         public BlockState mirror(BlockState state, Mirror mirror) {
             return super.mirror(state, mirror).setValue(FACING, state.getValue(FACING).mirror(mirror));
-        }
-
-        @Override
-        public void registerModels(ModelProvider modelProvider, BlockModelGenerators blockStateModelGenerator) {
-            final TextureMapping textures = TextureMapping.cube(texture);
-            final ResourceLocation modelId = ModelLocationUtils.getModelLocation(this);
-            final ResourceLocation rotatedModelId = ResourceLocation.fromNamespaceAndPath(modelId.getNamespace(), modelId.getPath() + "_rotated");
-            final ResourceLocation onSlabModelId = ResourceLocation.fromNamespaceAndPath(modelId.getNamespace(), modelId.getPath() + "_on_slab");
-            final ResourceLocation onSlabRotatedModelId = ResourceLocation.fromNamespaceAndPath(modelId.getNamespace(), modelId.getPath() + "_on_slab_rotated");
-
-            net.minecraft.data.models.model.ModelTemplates.CUBE_ALL.create(modelId, textures, blockStateModelGenerator.modelOutput);
-            net.minecraft.data.models.model.ModelTemplates.CUBE_ALL.create(rotatedModelId, textures, blockStateModelGenerator.modelOutput);
-            net.minecraft.data.models.model.ModelTemplates.CUBE_ALL.create(onSlabModelId, textures, blockStateModelGenerator.modelOutput);
-            net.minecraft.data.models.model.ModelTemplates.CUBE_ALL.create(onSlabRotatedModelId, textures, blockStateModelGenerator.modelOutput);
-
-            final net.minecraft.data.models.blockstates.PropertyDispatch.C2<Boolean, EightHorizontalDirection> map =
-                    net.minecraft.data.models.blockstates.PropertyDispatch.properties(ON_SLAB, FACING);
-            for (EightHorizontalDirection direction : EightHorizontalDirection.VALUES) {
-                int rotation = (int) direction.asRotation();
-                boolean isDiagonal = direction.right().isPresent();
-                if (isDiagonal) {
-                    rotation -= 45;
-                }
-
-                map.select(false, direction,
-                        net.minecraft.data.models.blockstates.Variant.variant()
-                            .with(net.minecraft.data.models.blockstates.VariantProperties.MODEL,
-                                    isDiagonal ? rotatedModelId : modelId)
-                            .with(Y_VARIANT, rotation));
-                map.select(true, direction,
-                        net.minecraft.data.models.blockstates.Variant.variant()
-                            .with(net.minecraft.data.models.blockstates.VariantProperties.MODEL,
-                                    isDiagonal ? onSlabRotatedModelId : onSlabModelId)
-                            .with(Y_VARIANT, rotation));
-            }
-
-            blockStateModelGenerator.blockStateOutput.accept(
-                    net.minecraft.data.models.blockstates.MultiVariantGenerator.multiVariant(this).with(map));
-
-            net.minecraft.data.models.model.ModelTemplates.FLAT_HANDHELD_ITEM.create(
-                    net.minecraft.data.models.model.ModelLocationUtils.getModelLocation(asItem()),
-                    TextureMapping.layer0(texture),
-                    blockStateModelGenerator.modelOutput);
         }
     }
 }

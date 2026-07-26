@@ -1,13 +1,13 @@
 package bklmc.ocelotsign.client;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 import java.util.List;
 
@@ -95,7 +95,7 @@ public final class MouseEventHandler {
 
             if (!LayoutHelper.isMouseInRect(mouseX, mouseY, scrollbarX, thumbY, UIConstants.SCROLLBAR_WIDTH, thumbHeight)) {
                 float newScrollRatio = (float) (mouseY - scrollbarY - thumbHeight / 2.0f) / (float) (scrollWindowHeight - thumbHeight);
-                PatternAndFontOverlay.scrollY = MathHelper.clamp(newScrollRatio * PatternAndFontOverlay.maxScrollY, 0, PatternAndFontOverlay.maxScrollY);
+                PatternAndFontOverlay.scrollY = Mth.clamp(newScrollRatio * PatternAndFontOverlay.maxScrollY, 0, PatternAndFontOverlay.maxScrollY);
                 PatternAndFontOverlay.dragStartScrollY = PatternAndFontOverlay.scrollY;
             }
             return true;
@@ -127,7 +127,7 @@ public final class MouseEventHandler {
 
             if (!LayoutHelper.isMouseInRect(mouseX, mouseY, scrollbarX, thumbY, UIConstants.SCROLLBAR_WIDTH, thumbHeight)) {
                 float newScrollRatio = (float) (mouseY - scrollbarY - thumbHeight / 2.0f) / (float) (scrollbarHeight - thumbHeight);
-                PatternAndFontOverlay.sidebarScrollY = MathHelper.clamp(newScrollRatio * PatternAndFontOverlay.maxSidebarScrollY, 0, PatternAndFontOverlay.maxSidebarScrollY);
+                PatternAndFontOverlay.sidebarScrollY = Mth.clamp(newScrollRatio * PatternAndFontOverlay.maxSidebarScrollY, 0, PatternAndFontOverlay.maxSidebarScrollY);
                 PatternAndFontOverlay.dragStartSidebarScrollY = PatternAndFontOverlay.sidebarScrollY;
             }
             return true;
@@ -141,12 +141,12 @@ public final class MouseEventHandler {
      * @return 若点击被消费返回 {@code true}
      */
     private static boolean handleSidebarClick(double mouseX, double mouseY) {
-        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+        Font textRenderer = Minecraft.getInstance().font;
         int sidebarHeaderHeight = UIConstants.HEADER_HEIGHT;
         int currentY = sidebarHeaderHeight + 12 - (int) PatternAndFontOverlay.sidebarScrollY;
 
         // 文档列表
-        int docH = LayoutHelper.getSidebarTopItemHeight(Text.translatable("ocelotsignmod.gui.sidebar.docs"), textRenderer);
+        int docH = LayoutHelper.getSidebarTopItemHeight(Component.translatable("ocelotsignmod.gui.sidebar.docs"), textRenderer);
         if (LayoutHelper.isMouseInRect(mouseX, mouseY, 0, currentY, UIConstants.SIDEBAR_WIDTH, docH)) {
             PatternAndFontOverlay.selectSidebarTop(PatternAndFontOverlay.SIDEBAR_TOP_DOCS);
             return true;
@@ -154,7 +154,7 @@ public final class MouseEventHandler {
         currentY += docH;
 
         // 鸣谢与模组声明
-        int ackH = LayoutHelper.getSidebarTopItemHeight(Text.translatable("ocelotsignmod.gui.sidebar.ack"), textRenderer);
+        int ackH = LayoutHelper.getSidebarTopItemHeight(Component.translatable("ocelotsignmod.gui.sidebar.ack"), textRenderer);
         if (LayoutHelper.isMouseInRect(mouseX, mouseY, 0, currentY, UIConstants.SIDEBAR_WIDTH, ackH)) {
             PatternAndFontOverlay.selectSidebarTop(PatternAndFontOverlay.SIDEBAR_TOP_ACK);
             return true;
@@ -162,7 +162,7 @@ public final class MouseEventHandler {
         currentY += ackH;
 
         // 道路交通颜色色表
-        int paletteH = LayoutHelper.getSidebarTopItemHeight(Text.translatable("ocelotsignmod.gui.sidebar.color_palette"), textRenderer);
+        int paletteH = LayoutHelper.getSidebarTopItemHeight(Component.translatable("ocelotsignmod.gui.sidebar.color_palette"), textRenderer);
         if (LayoutHelper.isMouseInRect(mouseX, mouseY, 0, currentY, UIConstants.SIDEBAR_WIDTH, paletteH)) {
             PatternAndFontOverlay.selectSidebarTop(PatternAndFontOverlay.SIDEBAR_TOP_PALETTE);
             return true;
@@ -170,7 +170,7 @@ public final class MouseEventHandler {
         currentY += paletteH;
 
         // 颜色选择器
-        int pickerH = LayoutHelper.getSidebarTopItemHeight(Text.translatable("ocelotsignmod.gui.sidebar.color_picker"), textRenderer);
+        int pickerH = LayoutHelper.getSidebarTopItemHeight(Component.translatable("ocelotsignmod.gui.sidebar.color_picker"), textRenderer);
         if (LayoutHelper.isMouseInRect(mouseX, mouseY, 0, currentY, UIConstants.SIDEBAR_WIDTH, pickerH)) {
             PatternAndFontOverlay.selectSidebarTop(PatternAndFontOverlay.SIDEBAR_TOP_PICKER);
             return true;
@@ -233,7 +233,7 @@ public final class MouseEventHandler {
         } else if (PatternAndFontOverlay.isColorPickerSelected) {
             return PatternAndFontOverlay.handleColorPickerClick(mouseX, mouseY, mainWidth, contentStartY, scrollWindowStartY, scrollWindowEndY);
         } else if (PatternAndFontOverlay.selectedH3 != null) {
-            String mishangKey = Text.translatable("ocelotsignmod.gui.categories.mishang_builtin").getString();
+            String mishangKey = Component.translatable("ocelotsignmod.gui.categories.mishang_builtin").getString();
             if (PatternAndFontOverlay.selectedH3.title.getString().equals(mishangKey)) {
                 if (PatternAndFontOverlay.handleMishangClick((int) mouseX, (int) mouseY, width, height, (int) scrollY, UIConstants.SIDEBAR_WIDTH)) {
                     return true;
@@ -254,7 +254,7 @@ public final class MouseEventHandler {
         // 直接读取上一次渲染时记录的精确悬停 URL，点击判定与视觉像素永远完美对齐
         String hoveredUrl = PatternAndFontOverlay.getLastHoveredUrl();
         if (hoveredUrl != null) {
-            Util.getOperatingSystem().open(hoveredUrl);
+            Util.getPlatform().openUri(hoveredUrl);
             return true;
         }
         // 没有悬停在任何链接上，不消费点击事件，让点击穿透到其他元素
@@ -269,13 +269,13 @@ public final class MouseEventHandler {
     private static boolean handleSectionClick(double mouseX, double mouseY, int width, int height,
                                               int mainWidth, int contentStartY, int scrollWindowStartY,
                                               int scrollWindowEndY, double scrollY) {
-        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+        Font textRenderer = Minecraft.getInstance().font;
         PatternAndFontOverlay.H3Category selectedH3 = PatternAndFontOverlay.selectedH3;
 
         int currentContentY = contentStartY;
 
         if (selectedH3.headerText != null) {
-            int lines = textRenderer.wrapLines(selectedH3.headerText, mainWidth - 48).size();
+            int lines = textRenderer.split(selectedH3.headerText, mainWidth - 48).size();
             currentContentY += lines * 12 + 16 + 15;
         }
 
@@ -286,14 +286,14 @@ public final class MouseEventHandler {
             int titleHeight = 14;
             int gap = 4;
             int lineHeight = 12;
-            List<OrderedText> warningLines = textRenderer.wrapLines(
-                    Text.translatable("ocelotsignmod.gui.sections.font_rendering_warning"), boxWidth - 16);
+            List<FormattedCharSequence> warningLines = textRenderer.split(
+                    Component.translatable("ocelotsignmod.gui.sections.font_rendering_warning"), boxWidth - 16);
             // 警告框前 8px 间距 + 警告框高度 + renderWarningBox 返回的尾部 8px 间距
             currentContentY += 8 + paddingY + titleHeight + gap + warningLines.size() * lineHeight + paddingY + 8;
         }
 
-        String defaultFontsKey = Text.translatable("ocelotsignmod.gui.sections.default_fonts").getString();
-        String customFontsKey = Text.translatable("ocelotsignmod.gui.sections.custom_fonts").getString();
+        String defaultFontsKey = Component.translatable("ocelotsignmod.gui.sections.default_fonts").getString();
+        String customFontsKey = Component.translatable("ocelotsignmod.gui.sections.custom_fonts").getString();
 
         for (PatternAndFontOverlay.H4Section section : selectedH3.sections) {
             // 获取当前活动的样式 section
@@ -304,13 +304,13 @@ public final class MouseEventHandler {
             }
 
             // 判断是否为默认字体/自定义字体特殊界面（使用 effectiveSection 的标题）
-            Text titleToCheck = effectiveSection.title.getString().isEmpty() ? section.title : effectiveSection.title;
+            Component titleToCheck = effectiveSection.title.getString().isEmpty() ? section.title : effectiveSection.title;
             boolean isDefaultFonts = titleToCheck.getString().equals(defaultFontsKey);
             boolean isCustomFonts = titleToCheck.getString().equals(customFontsKey);
 
             if (isDefaultFonts) {
                 // 默认字体：描述框 -> 间距8 -> 标题 -> 间距20 -> 字体列表（警告框已在循环前统一处理）
-                List<OrderedText> descLines = textRenderer.wrapLines(section.description, mainWidth - 48);
+                List<FormattedCharSequence> descLines = textRenderer.split(section.description, mainWidth - 48);
                 currentContentY += 8 + descLines.size() * 12 + 10; // 描述框
                 currentContentY += 8;                               // 描述框与标题之间的间距
 
@@ -363,7 +363,7 @@ public final class MouseEventHandler {
                 // 注意：字体警告框已在循环之前统一处理（与 renderSectionContent 中的渲染顺序一致），
                 // 此处无需再为单个 section 重复累加警告框高度。
 
-                List<OrderedText> descLines = textRenderer.wrapLines(section.description, mainWidth - 48);
+                List<FormattedCharSequence> descLines = textRenderer.split(section.description, mainWidth - 48);
                 currentContentY += descLines.size() * 12 + 10; // 描述
             }
 
@@ -473,10 +473,10 @@ public final class MouseEventHandler {
 
         if (mouseX > UIConstants.SIDEBAR_WIDTH && PatternAndFontOverlay.maxScrollY > 20) {
             PatternAndFontOverlay.scrollY -= amount * UIConstants.SCROLL_AMOUNT;
-            PatternAndFontOverlay.scrollY = MathHelper.clamp(PatternAndFontOverlay.scrollY, 0, PatternAndFontOverlay.maxScrollY);
+            PatternAndFontOverlay.scrollY = Mth.clamp(PatternAndFontOverlay.scrollY, 0, PatternAndFontOverlay.maxScrollY);
         } else if (mouseX <= UIConstants.SIDEBAR_WIDTH && PatternAndFontOverlay.maxSidebarScrollY > 20) {
             PatternAndFontOverlay.sidebarScrollY -= amount * UIConstants.SCROLL_AMOUNT;
-            PatternAndFontOverlay.sidebarScrollY = MathHelper.clamp(PatternAndFontOverlay.sidebarScrollY, 0, PatternAndFontOverlay.maxSidebarScrollY);
+            PatternAndFontOverlay.sidebarScrollY = Mth.clamp(PatternAndFontOverlay.sidebarScrollY, 0, PatternAndFontOverlay.maxSidebarScrollY);
         }
     }
 
@@ -501,8 +501,8 @@ public final class MouseEventHandler {
      * 向当前告示牌编辑界面插入纹理。
      */
     private static void insertTextureToScreen(Identifier identifier) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.currentScreen instanceof bklmc.ocelotsign.mixin_interfaces.ISignEditorExtension extension) {
+        Minecraft client = Minecraft.getInstance();
+        if (client.screen instanceof bklmc.ocelotsign.mixin_interfaces.ISignEditorExtension extension) {
             extension.ocelotsign$insertTexture(identifier);
             PatternAndFontOverlay.isVisible = false;
         }
@@ -512,8 +512,8 @@ public final class MouseEventHandler {
      * 向当前告示牌编辑界面插入文本。
      */
     private static void insertTextToScreen(String text) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.currentScreen instanceof bklmc.ocelotsign.mixin_interfaces.ISignEditorExtension extension) {
+        Minecraft client = Minecraft.getInstance();
+        if (client.screen instanceof bklmc.ocelotsign.mixin_interfaces.ISignEditorExtension extension) {
             extension.ocelotsign$insertText(text);
             PatternAndFontOverlay.isVisible = false;
         }

@@ -3,7 +3,6 @@ package bklmc.ocelotsign.block.custom;
 import bklmc.ocelotsign.blockentity.CustomModelBlockEntity;
 import bklmc.ocelotsign.item.CustomModelBlockItem;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.block.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
@@ -86,7 +85,7 @@ public class CustomModelBlock extends BaseEntityBlock {
 
     @Override
     public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
-        if (world.isClientSide) {
+        if (world.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
@@ -100,6 +99,6 @@ public class CustomModelBlock extends BaseEntityBlock {
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.INVISIBLE;
     }
 }

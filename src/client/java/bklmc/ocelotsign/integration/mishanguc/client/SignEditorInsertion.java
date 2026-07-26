@@ -1,6 +1,6 @@
 package bklmc.ocelotsign.integration.mishanguc.client;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 import pers.solid.mishang.uc.screen.AbstractSignBlockEditScreen;
 import pers.solid.mishang.uc.screen.TextFieldListWidget;
 import pers.solid.mishang.uc.text.TextContext;
@@ -33,7 +33,7 @@ public final class SignEditorInsertion {
         TextureSpecialDrawable textureDrawable = new TextureSpecialDrawable(identifier, textContext);
         textContext.extra = textureDrawable;
 
-        // In mishanguc 1.21.1, addTextField is on TextFieldListWidget, not on the screen.
+        // addTextField 位于 TextFieldListWidget 上，而不是编辑界面上。
         TextFieldListWidget.Entry newEntry = textFieldListWidget.addTextField(index, textContext, false);
         SignTextCommandApplier.apply(newEntry, screen);
         syncSignPreview(screen);
@@ -57,18 +57,17 @@ public final class SignEditorInsertion {
             textContext = new TextContext();
         }
 
-        // In mishanguc 1.21.1, addTextField is on TextFieldListWidget, not on the screen.
+        // addTextField 位于 TextFieldListWidget 上，而不是编辑界面上。
         TextFieldListWidget.Entry newEntry = textFieldListWidget.addTextField(index, textContext, false);
-        newEntry.textFieldWidget.setText(text);
-        // In 1.21.1, setCursorToEnd takes no parameters
-        newEntry.textFieldWidget.setCursorToEnd(false);
+        newEntry.textFieldWidget.setValue(text);
+        newEntry.textFieldWidget.moveCursorToEnd(false);
         SignTextCommandApplier.apply(newEntry, screen);
         syncSignPreview(screen);
         focusOnNewEntry(screen, textFieldListWidget, index);
     }
 
     private static void syncSignPreview(AbstractSignBlockEditScreen<?> screen) {
-        screen.entity.markDirty();
+        screen.entity.setChanged();
     }
 
     private static void focusOnNewEntry(
@@ -78,7 +77,7 @@ public final class SignEditorInsertion {
     ) {
         TextFieldListWidget.Entry newEntry = textFieldListWidget.children().get(index);
         textFieldListWidget.setFocused(newEntry, false, false);
-        textFieldListWidget.setScrollAmount(textFieldListWidget.getScrollAmount());
+        textFieldListWidget.setScrollAmount(textFieldListWidget.scrollAmount());
         if (!textFieldListWidget.children().isEmpty()) {
             screen.setFocused(textFieldListWidget);
         }

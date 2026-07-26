@@ -18,7 +18,7 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * {@link IMishangucIntegration} ????
@@ -35,14 +35,10 @@ public final class MishangucIntegrationImpl implements IMishangucIntegration {
 
     private final boolean available;
     private final Class<?> textContextClass;
-    private final Class<?> textBridgeClass;
     private final MethodHandle fromNbtHandle;
     private final MethodHandle defaultContextCloneHandle;
-    private final MethodHandle translatableHandle;
-    private final MethodHandle literalHandle;
-    private final MethodHandle emptyHandle;
     private final Object editSignFinishPacketHandler;
-    private final ResourceLocation editSignFinishPacketId;
+    private final Identifier editSignFinishPacketId;
     private final boolean hasPacketHandler;
     private final Object textCopyTool;
     private final boolean hasTextCopyTool;
@@ -50,21 +46,16 @@ public final class MishangucIntegrationImpl implements IMishangucIntegration {
     private MishangucIntegrationImpl() {
         boolean initAvailable = true;
         Class<?> tc = null;
-        Class<?> tb = null;
         MethodHandle fh = null;
         MethodHandle dch = null;
-        MethodHandle th = null;
-        MethodHandle lh = null;
-        MethodHandle eh = null;
         Object ph = null;
-        ResourceLocation pid = null;
+        Identifier pid = null;
         boolean hasPh = false;
         Object tct = null;
         boolean hasTct = false;
 
         try {
             tc = Class.forName("pers.solid.mishang.uc.text.TextContext");
-            tb = Class.forName("pers.solid.mishang.uc.util.TextBridge");
 
             // TextContext.fromNbt(NbtElement, RegistryWrapper.WrapperLookup)
             Method fromNbtMethod = tc.getMethod("fromNbt", Tag.class, HolderLookup.Provider.class);
@@ -74,15 +65,6 @@ public final class MishangucIntegrationImpl implements IMishangucIntegration {
             java.lang.reflect.Field defaultField = wallSignBeClass.getField("DEFAULT_TEXT_CONTEXT");
             defaultField.setAccessible(true);
             dch = MethodHandles.lookup().unreflectGetter(defaultField);
-
-            Method translatableMethod = tb.getMethod("translatable", String.class);
-            th = MethodHandles.lookup().unreflect(translatableMethod);
-
-            Method literalMethod = tb.getMethod("literal", String.class);
-            lh = MethodHandles.lookup().unreflect(literalMethod);
-
-            Method emptyMethod = tb.getMethod("empty");
-            eh = MethodHandles.lookup().unreflect(emptyMethod);
 
             Class<?> betClass = Class.forName("pers.solid.mishang.uc.blockentity.BlockEntityWithText");
             java.lang.reflect.Field packetHandlerField = betClass.getField("PACKET_HANDLER");
@@ -134,12 +116,8 @@ public final class MishangucIntegrationImpl implements IMishangucIntegration {
 
         this.available = initAvailable;
         this.textContextClass = tc;
-        this.textBridgeClass = tb;
         this.fromNbtHandle = fh;
         this.defaultContextCloneHandle = dch;
-        this.translatableHandle = th;
-        this.literalHandle = lh;
-        this.emptyHandle = eh;
         this.editSignFinishPacketHandler = ph;
         this.editSignFinishPacketId = pid;
         this.hasPacketHandler = hasPh;
@@ -229,39 +207,21 @@ public final class MishangucIntegrationImpl implements IMishangucIntegration {
 
     @Override
     public MutableComponent translatable(String key) {
-        if (!available) return Component.literal("");
-        try {
-            return (MutableComponent) translatableHandle.invoke(key);
-        } catch (Throwable t) {
-            LOGGER.error("????????: {}", key, t);
-            return Component.literal("");
-        }
+        return Component.translatable(key);
     }
 
     @Override
     public MutableComponent literal(String text) {
-        if (!available) return Component.literal(text);
-        try {
-            return (MutableComponent) literalHandle.invoke(text);
-        } catch (Throwable t) {
-            LOGGER.error("????????", t);
-            return Component.literal(text);
-        }
+        return Component.literal(text);
     }
 
     @Override
     public MutableComponent empty() {
-        if (!available) return Component.literal("");
-        try {
-            return (MutableComponent) emptyHandle.invoke();
-        } catch (Throwable t) {
-            LOGGER.error("???????", t);
-            return Component.literal("");
-        }
+        return Component.empty();
     }
 
     @Override
-    public ResourceLocation getEditSignFinishPacketId() {
+    public Identifier getEditSignFinishPacketId() {
         return editSignFinishPacketId;
     }
 
@@ -281,15 +241,15 @@ public final class MishangucIntegrationImpl implements IMishangucIntegration {
      */
     private static HolderLookup.Provider resolveRegistryLookup() {
         try {
-            Class<?> clientClass = Class.forName("net.minecraft.client.MinecraftClient");
+            Class<?> clientClass = Class.forName("net.minecraft.client.Minecraft");
             java.lang.reflect.Method getInstance = clientClass.getMethod("getInstance");
             Object client = getInstance.invoke(null);
             if (client != null) {
-                java.lang.reflect.Method getWorld = clientClass.getMethod("getWorld");
-                Object world = getWorld.invoke(client);
+                Object world = clientClass.getField("level").get(client);
                 if (world != null) {
-                    java.lang.reflect.Method getRegistryManager = world.getClass().getMethod("getRegistryManager");
-                    return (HolderLookup.Provider) getRegistryManager.invoke(world);
+                    java.lang.reflect.Method registryAccess =
+                            net.minecraft.world.level.Level.class.getMethod("registryAccess");
+                    return (HolderLookup.Provider) registryAccess.invoke(world);
                 }
             }
         } catch (Throwable t) {
@@ -302,18 +262,18 @@ public final class MishangucIntegrationImpl implements IMishangucIntegration {
     /**
      * ? PacketType ??? Identifier?
      */
-    private static ResourceLocation extractIdentifier(Object payloadType) {
+    private static Identifier extractIdentifier(Object payloadType) {
         try {
             Method getIdMethod = payloadType.getClass().getMethod("getId");
             Object idValue = getIdMethod.invoke(payloadType);
-            if (idValue instanceof ResourceLocation id) {
+            if (idValue instanceof Identifier id) {
                 return id;
             }
         } catch (NoSuchMethodException ignored) {
             try {
                 Method getIdMethod = payloadType.getClass().getMethod("getPacketId");
                 Object idValue = getIdMethod.invoke(payloadType);
-                if (idValue instanceof ResourceLocation id) {
+                if (idValue instanceof Identifier id) {
                     return id;
                 }
             } catch (NoSuchMethodException ignored2) {
@@ -344,7 +304,7 @@ public final class MishangucIntegrationImpl implements IMishangucIntegration {
         }
 
         @Override
-        public Stream<net.minecraft.resources.ResourceKey<? extends net.minecraft.core.Registry<?>>> listRegistries() {
+        public Stream<net.minecraft.resources.ResourceKey<? extends net.minecraft.core.Registry<?>>> listRegistryKeys() {
             return Stream.empty();
         }
     }

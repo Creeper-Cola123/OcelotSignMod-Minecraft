@@ -12,6 +12,5 @@
 	},
 	"overwrites": {
 		"requireAnnotations": true
-	},
-	"refmap": "ocelotsignmod.client.refmap.json"
+	}
 }

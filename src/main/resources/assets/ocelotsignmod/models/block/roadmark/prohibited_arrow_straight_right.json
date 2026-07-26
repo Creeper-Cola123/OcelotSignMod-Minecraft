@@ -1,5 +1,6 @@
 {
   "parent": "block/block",
+  "render_type": "minecraft:cutout",
   "textures": {
     "particle": "ocelotsignmod:block/roadmark/prohibited_arrow_straight_right",
     "texture": "ocelotsignmod:block/roadmark/prohibited_arrow_straight_right"

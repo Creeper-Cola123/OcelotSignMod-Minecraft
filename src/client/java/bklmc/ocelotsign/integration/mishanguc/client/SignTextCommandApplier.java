@@ -4,16 +4,16 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.crash.CrashException;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.ReportedException;
 import pers.solid.mishang.uc.screen.AbstractSignBlockEditScreen;
 import pers.solid.mishang.uc.screen.TextFieldListWidget;
 import pers.solid.mishang.uc.text.SpecialDrawable;
-import pers.solid.mishang.uc.util.TextBridge;
+import bklmc.ocelotsign.integration.mishanguc.MishangAccess;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,24 +31,24 @@ public final class SignTextCommandApplier {
         try {
             applyInternal(entry);
         } catch (Exception e) {
-            entry.textFieldWidget.setEditableColor(0xffff5555);
-            entry.textFieldWidget.setTooltip(Tooltip.of(Text.literal(e.getMessage() == null ? e.toString() : e.getMessage())));
+            entry.textFieldWidget.setTextColor(0xffff5555);
+            entry.textFieldWidget.setTooltip(Tooltip.create(Component.literal(e.getMessage() == null ? e.toString() : e.getMessage())));
         }
         screen.changed = true;
     }
 
     private static void applyInternal(TextFieldListWidget.Entry entry) {
-        String text = entry.textFieldWidget.getText();
+        String text = entry.textFieldWidget.getValue();
         Matcher matcher = TEXT_COMMAND_PATTERN.matcher(text);
         entry.textFieldWidget.setTooltip(null);
-        entry.textFieldWidget.setEditableColor(0xffe0e0e0);
+        entry.textFieldWidget.setTextColor(0xffe0e0e0);
         if (matcher.matches()) {
             String name = matcher.group(1);
             String value = matcher.group(2);
             switch (name) {
                 case "literal" -> {
                     entry.textContext.extra = null;
-                    entry.textContext.text = TextBridge.literal(value);
+                    entry.textContext.text = MishangAccess.literal(value);
                 }
                 case "json" -> applyJsonCommand(entry, value);
                 default -> {
@@ -56,22 +56,22 @@ public final class SignTextCommandApplier {
                         SpecialDrawable specialDrawable = SpecialDrawable.fromStringArgs(entry.textContext, name, value);
                         if (specialDrawable == null) {
                             entry.textContext.extra = null;
-                            entry.textContext.text = TextBridge.literal(text);
+                            entry.textContext.text = MishangAccess.literal(text);
                         } else if (specialDrawable != SpecialDrawable.INVALID) {
                             entry.textContext.extra = specialDrawable;
-                            entry.textContext.text = TextBridge.literal("");
+                            entry.textContext.text = MishangAccess.literal("");
                         } else {
-                            entry.textFieldWidget.setEditableColor(0xffff5555);
+                            entry.textFieldWidget.setTextColor(0xffff5555);
                         }
                     } catch (Exception e) {
                         entry.textContext.extra = null;
-                        entry.textContext.text = TextBridge.literal(text);
+                        entry.textContext.text = MishangAccess.literal(text);
                     }
                 }
             }
         } else {
             entry.textContext.extra = null;
-            entry.textContext.text = TextBridge.literal(text);
+            entry.textContext.text = MishangAccess.literal(text);
         }
     }
 
@@ -84,14 +84,14 @@ public final class SignTextCommandApplier {
         try {
             element = JsonParser.parseString(value);
         } catch (JsonParseException | IllegalStateException e) {
-            entry.textFieldWidget.setEditableColor(0xffff5555);
-            entry.textFieldWidget.setTooltip(Tooltip.of(Text.literal(e.getMessage())));
-            entry.textContext.text = TextBridge.literal(value);
+            entry.textFieldWidget.setTextColor(0xffff5555);
+            entry.textFieldWidget.setTooltip(Tooltip.create(Component.literal(e.getMessage())));
+            entry.textContext.text = MishangAccess.literal(value);
             return;
         }
         if (!element.isJsonObject()) {
             // 不支持的格式（非对象），回退为 literal
-            entry.textContext.text = TextBridge.literal(value);
+            entry.textContext.text = MishangAccess.literal(value);
             return;
         }
         JsonObject obj = element.getAsJsonObject();
@@ -117,16 +117,16 @@ public final class SignTextCommandApplier {
                 || obj.has("keybind") || obj.has("translate")
                 || obj.has("score") || obj.has("selector")
                 || obj.has("nbt")) {
-            entry.textFieldWidget.setEditableColor(0xffff5555);
-            entry.textFieldWidget.setTooltip(Tooltip.of(Text.literal(
+            entry.textFieldWidget.setTextColor(0xffff5555);
+            entry.textFieldWidget.setTooltip(Tooltip.create(Component.literal(
                     "Unsupported JSON features. Only text/font/color/bold/italic are supported here.")));
         }
 
-        MutableText resolved = TextBridge.literal(textStr);
+        MutableComponent resolved = MishangAccess.literal(textStr);
         Style style = Style.EMPTY
                 .withBold(bold)
                 .withItalic(italic)
-                .withFont(fontId);
+                .withFont(new net.minecraft.network.chat.FontDescription.Resource(fontId));
         if (color != null) {
             style = style.withColor(color);
         }

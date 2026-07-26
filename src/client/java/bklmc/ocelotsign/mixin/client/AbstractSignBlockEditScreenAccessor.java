@@ -1,6 +1,6 @@
 package bklmc.ocelotsign.mixin.client;
 
-import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.components.AbstractWidget;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
@@ -13,5 +13,5 @@ import pers.solid.mishang.uc.screen.AbstractSignBlockEditScreen;
 public interface AbstractSignBlockEditScreenAccessor {
     @Mutable
     @Accessor("toolbox3")
-    void ocelotsign$setToolbox3(ClickableWidget[] toolbox3);
+    void ocelotsign$setToolbox3(AbstractWidget[] toolbox3);
 }

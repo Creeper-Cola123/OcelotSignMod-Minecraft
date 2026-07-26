@@ -73,12 +73,12 @@ public abstract class AbstractRoadSignBlockItem extends pers.solid.mishang.uc.it
 
     /**
      * 从 ItemStack 中读取 BlockEntityTag 数据。
-     * 1.21.1 使用 DataComponentTypes.BLOCK_ENTITY_DATA 组件。
+     * 使用 DataComponents.BLOCK_ENTITY_DATA 组件（26.1.2 起为 TypedEntityData）。
      */
     private static CompoundTag getBlockEntityNbt(net.minecraft.world.item.ItemStack stack) {
-        CustomData blockEntityData = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+        var blockEntityData = stack.get(DataComponents.BLOCK_ENTITY_DATA);
         if (blockEntityData == null) return null;
-        return blockEntityData.copyTag();
+        return blockEntityData.getUnsafe();
     }
 
     /** 由子类实现以提供不同的提示内容 */

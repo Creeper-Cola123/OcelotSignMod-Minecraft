@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * mishanguc 集成的抽象接口
@@ -45,7 +45,7 @@ public interface IMishangucIntegration {
 
     /** 获取用于告示牌编辑同步的数据包 ID（1.21.1 中用于 {@code PlayPayloadHandler} 注册） */
     @Nullable
-    ResourceLocation getEditSignFinishPacketId();
+    Identifier getEditSignFinishPacketId();
 
     /** 获取用于告示牌编辑同步的 {@code PlayPayloadHandler} 对象（{@code BlockEntityWithText.PACKET_HANDLER}） */
     @Nullable

@@ -1,14 +1,14 @@
 package bklmc.ocelotsign.client;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.texture.TextureManager;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import com.mojang.blaze3d.platform.NativeImage;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
 
 import java.util.List;
 
@@ -198,27 +198,27 @@ public final class ColorPickerState {
      * @param textRenderer 文本渲染器
      * @return 总内容高度（像素）
      */
-    public static int getColorPickerContentHeight(int mainWidth, TextRenderer textRenderer) {
+    public static int getColorPickerContentHeight(int mainWidth, Font textRenderer) {
         int introMaxWidth = mainWidth - 60;
         if (introMaxWidth < 60) introMaxWidth = 60;
 
-        Text intro1 = Text.translatable("ocelotsignmod.gui.color_picker.intro1");
-        Text intro2 = Text.translatable("ocelotsignmod.gui.color_picker.intro2");
+        Component intro1 = Component.translatable("ocelotsignmod.gui.color_picker.intro1");
+        Component intro2 = Component.translatable("ocelotsignmod.gui.color_picker.intro2");
 
-        List<OrderedText> lines1 = textRenderer.wrapLines(intro1, introMaxWidth);
-        List<OrderedText> lines2 = textRenderer.wrapLines(intro2, introMaxWidth);
+        List<FormattedCharSequence> lines1 = textRenderer.split(intro1, introMaxWidth);
+        List<FormattedCharSequence> lines2 = textRenderer.split(intro2, introMaxWidth);
 
-        int introH = lines1.size() * textRenderer.fontHeight + 4
-                + lines2.size() * textRenderer.fontHeight + 4;
+        int introH = lines1.size() * textRenderer.lineHeight + 4
+                + lines2.size() * textRenderer.lineHeight + 4;
 
         int rightColumnH = 60 + 16 + 12
                 + (COLOR_PICKER_PRESET_ROWS * (COLOR_PICKER_PRESET_SIZE + COLOR_PICKER_PRESET_GAP)
                 - COLOR_PICKER_PRESET_GAP);
         int svAreaH = Math.max(SV_VISUAL_SIZE, rightColumnH);
 
-        Text useBtnText = Text.translatable("ocelotsignmod.gui.color_picker.copy_value");
-        List<OrderedText> btnLines = textRenderer.wrapLines(useBtnText, 200 - 8);
-        int btnH = Math.max(26, btnLines.size() * textRenderer.fontHeight + 4);
+        Component useBtnText = Component.translatable("ocelotsignmod.gui.color_picker.copy_value");
+        List<FormattedCharSequence> btnLines = textRenderer.split(useBtnText, 200 - 8);
+        int btnH = Math.max(26, btnLines.size() * textRenderer.lineHeight + 4);
 
         return introH + svAreaH + 6 + btnH;
     }
@@ -244,15 +244,15 @@ public final class ColorPickerState {
                 int r = (rgb >> 16) & 0xFF;
                 int g = (rgb >> 8) & 0xFF;
                 int b = rgb & 0xFF;
-                image.setColor(x, y, (0xFF << 24) | (b << 16) | (g << 8) | r);
+                image.setPixelABGR(x, y, (0xFF << 24) | (b << 16) | (g << 8) | r);
             }
         }
-        TextureManager tm = MinecraftClient.getInstance().getTextureManager();
+        TextureManager tm = Minecraft.getInstance().getTextureManager();
         if (svTextureId != null) {
-            tm.destroyTexture(svTextureId);
+            tm.release(svTextureId);
         }
-        svTextureId = Identifier.of("ocelotsignmod", "dynamic/color_picker_sv");
-        tm.registerTexture(svTextureId, new net.minecraft.client.texture.NativeImageBackedTexture(image));
+        svTextureId = Identifier.fromNamespaceAndPath("ocelotsignmod", "dynamic/color_picker_sv");
+        tm.register(svTextureId, new net.minecraft.client.renderer.texture.DynamicTexture(() -> "ocelotsignmod/sv_picker", image));
         svTextureImage = image;
         svTextureHueCached = hue;
     }
@@ -266,9 +266,9 @@ public final class ColorPickerState {
      * @return RGB 整数（0xRRGGBB 格式）
      */
     public static int hsvToRawRgb(float hue, float sat, float val) {
-        hue = MathHelper.clamp(hue, 0f, 1f);
-        sat = MathHelper.clamp(sat, 0f, 1f);
-        val = MathHelper.clamp(val, 0f, 1f);
+        hue = Mth.clamp(hue, 0f, 1f);
+        sat = Mth.clamp(sat, 0f, 1f);
+        val = Mth.clamp(val, 0f, 1f);
         int r, g, b;
         if (sat <= 0.0001f) {
             int gray = Math.round(val * 255f);
@@ -301,9 +301,9 @@ public final class ColorPickerState {
      * @param val 明度（0..1）
      */
     public static void hsvToRgb(float hue, float sat, float val) {
-        hue = MathHelper.clamp(hue, 0f, 1f);
-        sat = MathHelper.clamp(sat, 0f, 1f);
-        val = MathHelper.clamp(val, 0f, 1f);
+        hue = Mth.clamp(hue, 0f, 1f);
+        sat = Mth.clamp(sat, 0f, 1f);
+        val = Mth.clamp(val, 0f, 1f);
         h = hue; s = sat; v = val;
         int r, g, b;
         if (sat <= 0.0001f) {
@@ -326,9 +326,9 @@ public final class ColorPickerState {
                 default -> { r = Math.round(val * 255f); g = Math.round(p * 255f); b = Math.round(q * 255f); }
             }
         }
-        PatternAndFontOverlay.colorPickerR = MathHelper.clamp(r, 0, 255);
-        PatternAndFontOverlay.colorPickerG = MathHelper.clamp(g, 0, 255);
-        PatternAndFontOverlay.colorPickerB = MathHelper.clamp(b, 0, 255);
+        PatternAndFontOverlay.colorPickerR = Mth.clamp(r, 0, 255);
+        PatternAndFontOverlay.colorPickerG = Mth.clamp(g, 0, 255);
+        PatternAndFontOverlay.colorPickerB = Mth.clamp(b, 0, 255);
     }
 
     /**
@@ -339,9 +339,9 @@ public final class ColorPickerState {
      * @param b 蓝色分量（0..255）
      */
     public static void rgbToHsv(int r, int g, int b) {
-        r = MathHelper.clamp(r, 0, 255);
-        g = MathHelper.clamp(g, 0, 255);
-        b = MathHelper.clamp(b, 0, 255);
+        r = Mth.clamp(r, 0, 255);
+        g = Mth.clamp(g, 0, 255);
+        b = Mth.clamp(b, 0, 255);
         PatternAndFontOverlay.colorPickerR = r;
         PatternAndFontOverlay.colorPickerG = g;
         PatternAndFontOverlay.colorPickerB = b;
@@ -377,8 +377,8 @@ public final class ColorPickerState {
     public static void applySvFromMouse(double mouseX, double mouseY, int px, int py, int size) {
         float sat = (float) ((mouseX - px) / (double) Math.max(1, size - 1));
         float val = 1f - (float) ((mouseY - py) / (double) Math.max(1, size - 1));
-        sat = MathHelper.clamp(sat, 0f, 1f);
-        val = MathHelper.clamp(val, 0f, 1f);
+        sat = Mth.clamp(sat, 0f, 1f);
+        val = Mth.clamp(val, 0f, 1f);
         hsvToRgb(h, sat, val);
     }
 
@@ -391,7 +391,7 @@ public final class ColorPickerState {
      */
     public static void applyHueFromMouse(double mouseY, int py, int size) {
         float hue = (float) ((mouseY - py) / (double) Math.max(1, size - 1));
-        hue = MathHelper.clamp(hue, 0f, 1f);
+        hue = Mth.clamp(hue, 0f, 1f);
         hsvToRgb(hue, s, v);
     }
 
@@ -401,25 +401,25 @@ public final class ColorPickerState {
      * @param hexWithHash 带 # 的 HEX 颜色字符串
      */
     public static void copyHexToClipboard(String hexWithHash) {
-        MinecraftClient client = MinecraftClient.getInstance();
+        Minecraft client = Minecraft.getInstance();
         if (client == null) return;
         try {
-            long handle = client.getWindow().getHandle();
+            long handle = client.getWindow().handle();
             if (handle != 0L) {
                 org.lwjgl.glfw.GLFW.glfwSetClipboardString(handle, hexWithHash);
             }
         } catch (Throwable t) {
             // 静默忽略
         }
-        if (client.keyboard != null) {
-            client.keyboard.setClipboard(hexWithHash);
+        if (client.keyboardHandler != null) {
+            client.keyboardHandler.setClipboard(hexWithHash);
         }
-        client.getToastManager().add(net.minecraft.client.toast.SystemToast.create(
-                client,
-                net.minecraft.client.toast.SystemToast.Type.PERIODIC_NOTIFICATION,
-                Text.translatable("ocelotsignmod.gui.color_palette.copy_toast_title"),
-                Text.translatable("ocelotsignmod.gui.color_palette.copy_toast_body", hexWithHash)
-        ));
+        net.minecraft.client.gui.components.toasts.SystemToast.add(
+                client.getToastManager(),
+                net.minecraft.client.gui.components.toasts.SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                Component.translatable("ocelotsignmod.gui.color_palette.copy_toast_title"),
+                Component.translatable("ocelotsignmod.gui.color_palette.copy_toast_body", hexWithHash)
+        );
     }
 
     /**
@@ -434,13 +434,13 @@ public final class ColorPickerState {
      * @param label 按钮标签
      * @param hover 是否悬停
      */
-    public static void drawStepButton(DrawContext context, TextRenderer textRenderer,
+    public static void drawStepButton(GuiGraphicsExtractor context, Font textRenderer,
                                       int x, int y, int w, int h_, String label, boolean hover) {
         context.fill(x, y, x + w, y + h_, hover ? UIConstants.COLOR_BTN_BG_HOVER : UIConstants.COLOR_BTN_BG);
-        context.drawBorder(x, y, w, h_, UIConstants.COLOR_BTN_BORDER);
-        int tw = textRenderer.getWidth(label);
-        context.drawText(textRenderer, label,
-                x + (w - tw) / 2, y + (h_ - textRenderer.fontHeight) / 2,
+        context.outline(x, y, w, h_, UIConstants.COLOR_BTN_BORDER);
+        int tw = textRenderer.width(label);
+        context.text(textRenderer, label,
+                x + (w - tw) / 2, y + (h_ - textRenderer.lineHeight) / 2,
                 UIConstants.COLOR_BTN_TEXT, false);
     }
 }

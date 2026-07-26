@@ -11,7 +11,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -100,7 +99,7 @@ public class CustomModelBlockItem extends BlockItem {
         }
 
         Player player = context.getPlayer();
-        if (player == null || context.getLevel().isClientSide) {
+        if (player == null || context.getLevel().isClientSide()) {
             return false;
         }
 
@@ -127,7 +126,7 @@ public class CustomModelBlockItem extends BlockItem {
      * @see #useOn
      */
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
+    public InteractionResult use(Level world, Player user, InteractionHand hand) {
         return super.use(world, user, hand);
     }
 
@@ -165,7 +164,7 @@ public class CustomModelBlockItem extends BlockItem {
     public static String getSelectedModelId(ItemStack stack) {
         CompoundTag nbt = getCustomNbt(stack);
         if (nbt != null && nbt.contains(SELECTED_MODEL_ID_KEY)) {
-            return nbt.getString(SELECTED_MODEL_ID_KEY);
+            return nbt.getStringOr(SELECTED_MODEL_ID_KEY, "");
         }
         return "";
     }

@@ -93,7 +93,7 @@ public final class ServerNetworking {
      */
     private static void registerPayloadTypes() {
         // 注册 C2S (客户端到服务端) payload 类型
-        PayloadTypeRegistry.playC2S().register(SELECT_MODEL_ID, CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(SELECT_MODEL_ID, CODEC);
     }
 
     /**
