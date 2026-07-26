@@ -1,14 +1,12 @@
 package bklmc.ocelotsign.block;
 
 import bklmc.ocelotsign.OcelotSignMod;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 
 /**
  * 注册表占位方块注册中心
@@ -24,7 +22,7 @@ public class RegistryBlocks {
      * @return 已注册的方块
      */
     private static Block registerWithItem(String id, Block block) {
-        Block registeredBlock = Registry.register(Registries.BLOCK, Identifier.of(OcelotSignMod.MOD_ID, id), block);
+        Block registeredBlock = Registry.register(BuiltInRegistries.BLOCK, ResourceLocation.fromNamespaceAndPath(OcelotSignMod.MOD_ID, id), block);
         registerBlockItem(id, registeredBlock);
         return registeredBlock;
     }
@@ -36,8 +34,8 @@ public class RegistryBlocks {
      * @param block 对应的方块
      */
     private static void registerBlockItem(String id, Block block) {
-        Registry.register(Registries.ITEM, Identifier.of(OcelotSignMod.MOD_ID, id),
-                new BlockItem(block, new Item.Settings()));
+        Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(OcelotSignMod.MOD_ID, id),
+                new BlockItem(block, new Item.Properties()));
     }
 
     /**

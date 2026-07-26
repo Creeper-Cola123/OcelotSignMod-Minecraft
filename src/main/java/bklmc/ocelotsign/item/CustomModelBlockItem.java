@@ -1,25 +1,23 @@
 package bklmc.ocelotsign.item;
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
 
 /**
  * 自定义模型方块对应的物品
@@ -42,23 +40,23 @@ public class CustomModelBlockItem extends BlockItem {
      * @param block    关联的方块
      * @param settings 物品设置
      */
-    public CustomModelBlockItem(net.minecraft.block.Block block, Settings settings) {
+    public CustomModelBlockItem(net.minecraft.world.level.block.Block block, Properties settings) {
         super(block, settings);
     }
 
     /** 生成临时缓存键 */
-    private static String pendingKey(UUID playerId, Hand hand) {
+    private static String pendingKey(UUID playerId, InteractionHand hand) {
         return playerId + ":" + hand.name();
     }
 
     /**
-     * 在服务端缓存一次模型选择，待后续 {@link #useOnBlock} 时应用。
+     * 在服务端缓存一次模型选择，待后续 {@link #useOn} 时应用。
      *
      * @param playerId 玩家 UUID。
      * @param hand     交互的手。
      * @param modelId  选中的模型 ID。
      */
-    public static void rememberPendingSelection(UUID playerId, Hand hand, String modelId) {
+    public static void rememberPendingSelection(UUID playerId, InteractionHand hand, String modelId) {
         if (modelId != null && !modelId.isEmpty()) {
             PENDING_SERVER_SELECTIONS.put(pendingKey(playerId, hand), modelId);
         }
@@ -72,7 +70,7 @@ public class CustomModelBlockItem extends BlockItem {
      * @return 缓存的模型 ID，若无则返回 {@code null}。
      */
     @Nullable
-    public static String takePendingSelection(UUID playerId, Hand hand) {
+    public static String takePendingSelection(UUID playerId, InteractionHand hand) {
         return PENDING_SERVER_SELECTIONS.remove(pendingKey(playerId, hand));
     }
 
@@ -83,38 +81,38 @@ public class CustomModelBlockItem extends BlockItem {
      * @param hand    交互的手。
      * @param modelId 选中的模型 ID。
      */
-    public static void applySelectionToStack(ServerPlayerEntity player, Hand hand, String modelId) {
-        ItemStack stack = player.getStackInHand(hand);
+    public static void applySelectionToStack(ServerPlayer player, InteractionHand hand, String modelId) {
+        ItemStack stack = player.getItemInHand(hand);
         if (stack.isEmpty() || !isCustomModelItem(stack)) {
             return;
         }
         setModelIdToStack(stack, modelId);
-        player.setStackInHand(hand, stack);
-        player.currentScreenHandler.sendContentUpdates();
-        rememberPendingSelection(player.getUuid(), hand, modelId);
+        player.setItemInHand(hand, stack);
+        player.containerMenu.broadcastChanges();
+        rememberPendingSelection(player.getUUID(), hand, modelId);
     }
 
     /** 确保物品有已选模型，优先从服务端临时缓存中取 */
-    private static boolean ensureSelectedModel(ItemUsageContext context) {
-        ItemStack stack = context.getStack();
+    private static boolean ensureSelectedModel(UseOnContext context) {
+        ItemStack stack = context.getItemInHand();
         if (hasSelectedModel(stack)) {
             return true;
         }
 
-        PlayerEntity player = context.getPlayer();
-        if (player == null || context.getWorld().isClient) {
+        Player player = context.getPlayer();
+        if (player == null || context.getLevel().isClientSide) {
             return false;
         }
 
-        String pending = takePendingSelection(player.getUuid(), context.getHand());
+        String pending = takePendingSelection(player.getUUID(), context.getHand());
         if (pending == null) {
             return false;
         }
 
         setModelIdToStack(stack, pending);
-        if (player instanceof ServerPlayerEntity serverPlayer) {
-            serverPlayer.setStackInHand(context.getHand(), stack);
-            serverPlayer.currentScreenHandler.sendContentUpdates();
+        if (player instanceof ServerPlayer serverPlayer) {
+            serverPlayer.setItemInHand(context.getHand(), stack);
+            serverPlayer.containerMenu.broadcastChanges();
         }
         return true;
     }
@@ -126,10 +124,10 @@ public class CustomModelBlockItem extends BlockItem {
      * @param user  玩家
      * @param hand  手
      * @return 使用结果
-     * @see #useOnBlock
+     * @see #useOn
      */
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
+    public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
         return super.use(world, user, hand);
     }
 
@@ -143,8 +141,8 @@ public class CustomModelBlockItem extends BlockItem {
      * @return 使用结果
      */
     @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
-        return super.useOnBlock(context);
+    public InteractionResult useOn(UseOnContext context) {
+        return super.useOn(context);
     }
 
     /**
@@ -154,7 +152,7 @@ public class CustomModelBlockItem extends BlockItem {
      * @return 若已选择模型则返回 {@code true}
      */
     public static boolean hasSelectedModel(ItemStack stack) {
-        NbtCompound nbt = getCustomNbt(stack);
+        CompoundTag nbt = getCustomNbt(stack);
         return nbt != null && nbt.contains(SELECTED_MODEL_ID_KEY);
     }
 
@@ -165,7 +163,7 @@ public class CustomModelBlockItem extends BlockItem {
      * @return 模型 ID，未选择时返回空字符串
      */
     public static String getSelectedModelId(ItemStack stack) {
-        NbtCompound nbt = getCustomNbt(stack);
+        CompoundTag nbt = getCustomNbt(stack);
         if (nbt != null && nbt.contains(SELECTED_MODEL_ID_KEY)) {
             return nbt.getString(SELECTED_MODEL_ID_KEY);
         }
@@ -186,19 +184,19 @@ public class CustomModelBlockItem extends BlockItem {
      * 获取物品的自定义 NBT 数据（存储在 DataComponentTypes.CUSTOM_DATA 下）。
      */
     @Nullable
-    private static NbtCompound getCustomNbt(ItemStack stack) {
-        NbtComponent customData = stack.get(DataComponentTypes.CUSTOM_DATA);
+    private static CompoundTag getCustomNbt(ItemStack stack) {
+        CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
         if (customData == null) return null;
-        return customData.copyNbt();
+        return customData.copyTag();
     }
 
     /**
      * 将模型 ID 写入物品的自定义数据组件。
      */
     private static void setModelIdToStack(ItemStack stack, String modelId) {
-        NbtCompound existing = getCustomNbt(stack);
-        NbtCompound nbt = existing != null ? existing.copy() : new NbtCompound();
+        CompoundTag existing = getCustomNbt(stack);
+        CompoundTag nbt = existing != null ? existing.copy() : new CompoundTag();
         nbt.putString(SELECTED_MODEL_ID_KEY, modelId);
-        stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
     }
 }

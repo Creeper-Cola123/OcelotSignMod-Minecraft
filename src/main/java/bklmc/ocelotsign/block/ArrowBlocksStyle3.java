@@ -3,12 +3,12 @@ package bklmc.ocelotsign.block;
 import bklmc.ocelotsign.OcelotSignMod;
 import bklmc.ocelotsign.block.custom.RoadMarkBlock;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 
 /**
  * 道路箭头方块样式三注册中心
@@ -17,7 +17,7 @@ import net.minecraft.util.Identifier;
  * @see ArrowBlocksLarge
  */
 public class ArrowBlocksStyle3 {
-    private static final FabricBlockSettings ROAD_MARK_SETTINGS = FabricBlockSettings.create().strength(0.5f).nonOpaque().collidable(false);
+    private static final FabricBlockSettings ROAD_MARK_SETTINGS = FabricBlockSettings.of().strength(0.5f).noOcclusion().collidable(false);
 
     public static final RoadMarkBlock ARROW_LEFT = directional("roadmark_style_3/arrow_left");
     public static final RoadMarkBlock ARROW_RIGHT = directional("roadmark_style_3/arrow_right");
@@ -67,7 +67,7 @@ public class ArrowBlocksStyle3 {
      * @return 已注册的道路标线方块
      */
     private static RoadMarkBlock directional(String name) {
-        RoadMarkBlock block = RoadMarkBlock.createDirectionalFacing(Identifier.of(OcelotSignMod.MOD_ID, "block/" + name), ROAD_MARK_SETTINGS);
+        RoadMarkBlock block = RoadMarkBlock.createDirectionalFacing(ResourceLocation.fromNamespaceAndPath(OcelotSignMod.MOD_ID, "block/" + name), ROAD_MARK_SETTINGS);
         return registerWithItem(name, block);
     }
 
@@ -79,7 +79,7 @@ public class ArrowBlocksStyle3 {
      * @return 已注册的方块
      */
     private static RoadMarkBlock registerWithItem(String id, RoadMarkBlock block) {
-        RoadMarkBlock registeredBlock = Registry.register(Registries.BLOCK, Identifier.of(OcelotSignMod.MOD_ID, id), block);
+        RoadMarkBlock registeredBlock = Registry.register(BuiltInRegistries.BLOCK, ResourceLocation.fromNamespaceAndPath(OcelotSignMod.MOD_ID, id), block);
         registerBlockItem(id, registeredBlock);
         return registeredBlock;
     }
@@ -91,8 +91,8 @@ public class ArrowBlocksStyle3 {
      * @param block 对应的方块
      */
     private static void registerBlockItem(String id, Block block) {
-        Registry.register(Registries.ITEM, Identifier.of(OcelotSignMod.MOD_ID, id),
-                new BlockItem(block, new Item.Settings()));
+        Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(OcelotSignMod.MOD_ID, id),
+                new BlockItem(block, new Item.Properties()));
     }
 
     /**

@@ -1,19 +1,19 @@
 package bklmc.ocelotsign.util;
 
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Optional;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 
 /**
  * 八个水平方向枚举：四个主方向与四个对角方向。
  */
-public enum EightHorizontalDirection implements StringIdentifiable {
+public enum EightHorizontalDirection implements StringRepresentable {
     SOUTH(Direction.SOUTH, 0, FourHorizontalAxis.Z),
     SOUTH_WEST(null, 315, FourHorizontalAxis.NE_SW),
     WEST(Direction.WEST, 270, FourHorizontalAxis.X),
@@ -48,7 +48,7 @@ public enum EightHorizontalDirection implements StringIdentifiable {
      * @return 对应的水平方向
      */
     public static EightHorizontalDirection fromRotation(float rotation) {
-        return VALUES[MathHelper.floor(rotation / 45 + 0.5) & 7];
+        return VALUES[Mth.floor(rotation / 45 + 0.5) & 7];
     }
 
     /**
@@ -137,7 +137,7 @@ public enum EightHorizontalDirection implements StringIdentifiable {
      * @param rotation 旋转变换
      * @return 旋转后的水平方向
      */
-    public EightHorizontalDirection rotate(BlockRotation rotation) {
+    public EightHorizontalDirection rotate(Rotation rotation) {
         return switch (rotation) {
             case CLOCKWISE_90 -> VALUES[(ordinal() + 2) % 8];
             case COUNTERCLOCKWISE_90 -> VALUES[(ordinal() - 2 + 8) % 8];
@@ -152,7 +152,7 @@ public enum EightHorizontalDirection implements StringIdentifiable {
      * @param mirror 镜像变换
      * @return 镜像后的水平方向
      */
-    public EightHorizontalDirection mirror(BlockMirror mirror) {
+    public EightHorizontalDirection mirror(Mirror mirror) {
         return switch (mirror) {
             case LEFT_RIGHT -> switch (this) {
                 case NORTH -> NORTH;
@@ -186,7 +186,7 @@ public enum EightHorizontalDirection implements StringIdentifiable {
      * @return 小写名称
      */
     @Override
-    public String asString() {
+    public String getSerializedName() {
         return name().toLowerCase();
     }
 }

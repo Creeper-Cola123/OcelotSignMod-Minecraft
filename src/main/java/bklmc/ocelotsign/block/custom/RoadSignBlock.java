@@ -2,31 +2,29 @@ package bklmc.ocelotsign.block.custom;
 
 import bklmc.ocelotsign.integration.mishanguc.MishangAccess;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.block.WallSignBlock;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.enums.BlockFace;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.Properties;
-import net.minecraft.text.MutableText;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
-
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.AttachFace;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
  * 立式道路指示牌方块
@@ -38,75 +36,75 @@ public class RoadSignBlock extends pers.solid.mishang.uc.block.FullWallSignBlock
 
     public static final List<RoadSignBlock> ROAD_SIGNS = new ArrayList<>();
 
-    public static final VoxelShape SHAPE_N = Block.createCuboidShape(0, 0, 0, 16, 16, 3);
-    public static final VoxelShape SHAPE_S = Block.createCuboidShape(0, 0, 13, 16, 16, 16);
-    public static final VoxelShape SHAPE_E = Block.createCuboidShape(13, 0, 0, 16, 16, 16);
-    public static final VoxelShape SHAPE_W = Block.createCuboidShape(0, 0, 0, 3, 16, 16);
+    public static final VoxelShape SHAPE_N = Block.box(0, 0, 0, 16, 16, 3);
+    public static final VoxelShape SHAPE_S = Block.box(0, 0, 13, 16, 16, 16);
+    public static final VoxelShape SHAPE_E = Block.box(13, 0, 0, 16, 16, 16);
+    public static final VoxelShape SHAPE_W = Block.box(0, 0, 0, 3, 16, 16);
 
-    public RoadSignBlock(net.minecraft.block.Block baseBlock, net.minecraft.block.AbstractBlock.Settings settings) {
+    public RoadSignBlock(net.minecraft.world.level.block.Block baseBlock, net.minecraft.world.level.block.state.BlockBehaviour.Properties settings) {
         super(baseBlock, settings);
         ROAD_SIGNS.add(this);
-        this.setDefaultState(this.getStateManager().getDefaultState()
-                .with(FACING, Direction.NORTH)
-                .with(FACE, BlockFace.WALL)
-                .with(Properties.WATERLOGGED, false));
+        this.registerDefaultState(this.getStateDefinition().any()
+                .setValue(FACING, Direction.NORTH)
+                .setValue(FACE, AttachFace.WALL)
+                .setValue(BlockStateProperties.WATERLOGGED, false));
     }
 
     @Override
-    public MutableText getName() {
-        return net.minecraft.text.Text.translatable(this.getTranslationKey());
+    public MutableComponent getName() {
+        return net.minecraft.network.chat.Component.translatable(this.getDescriptionId());
     }
 
     @Override
-    public BlockEntity createBlockEntity(net.minecraft.util.math.BlockPos pos,
-                                         net.minecraft.block.BlockState state) {
+    public BlockEntity newBlockEntity(net.minecraft.core.BlockPos pos,
+                                         net.minecraft.world.level.block.state.BlockState state) {
         return new bklmc.ocelotsign.blockentity.RoadSignBlockEntity(pos, state);
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACE, FACING, Properties.WATERLOGGED);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FACE, FACING, BlockStateProperties.WATERLOGGED);
     }
 
     @Override
     public FluidState getFluidState(BlockState state) {
-        return Fluids.EMPTY.getDefaultState();
+        return Fluids.EMPTY.defaultFluidState();
     }
 
     @Override
-    public BlockState getStateForNeighborUpdate(
+    public BlockState updateShape(
             BlockState state,
             Direction direction,
             BlockState neighborState,
-            WorldAccess world,
+            LevelAccessor world,
             BlockPos pos,
             BlockPos neighborPos) {
-        super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
+        super.updateShape(state, direction, neighborState, world, pos, neighborPos);
         return state;
     }
 
     @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        Direction horizontalFacing = ctx.getHorizontalPlayerFacing().getOpposite();
+    public BlockState getStateForPlacement(BlockPlaceContext ctx) {
+        Direction horizontalFacing = ctx.getHorizontalDirection().getOpposite();
         if (horizontalFacing.getAxis().isHorizontal()) {
-            return this.getDefaultState()
-                    .with(FACING, horizontalFacing)
-                    .with(FACE, BlockFace.WALL)
-                    .with(Properties.WATERLOGGED, false);
+            return this.defaultBlockState()
+                    .setValue(FACING, horizontalFacing)
+                    .setValue(FACE, AttachFace.WALL)
+                    .setValue(BlockStateProperties.WATERLOGGED, false);
         }
-        return this.getDefaultState()
-                .with(FACE, BlockFace.WALL)
-                .with(Properties.WATERLOGGED, false);
+        return this.defaultBlockState()
+                .setValue(FACE, AttachFace.WALL)
+                .setValue(BlockStateProperties.WATERLOGGED, false);
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return getShapeForFacing(state.get(FACING));
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        return getShapeForFacing(state.getValue(FACING));
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return getShapeForFacing(state.get(FACING));
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        return getShapeForFacing(state.getValue(FACING));
     }
 
     private VoxelShape getShapeForFacing(Direction facing) {
@@ -120,17 +118,17 @@ public class RoadSignBlock extends pers.solid.mishang.uc.block.FullWallSignBlock
 
     @SuppressWarnings("deprecation")
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos,
-                              PlayerEntity player, BlockHitResult hit) {
-        final Direction side = hit.getSide();
-        if (side != state.get(FACING)) {
-            return ActionResult.PASS;
+    public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos,
+                              Player player, BlockHitResult hit) {
+        final Direction side = hit.getDirection();
+        if (side != state.getValue(FACING)) {
+            return InteractionResult.PASS;
         }
-        return super.onUse(state, world, pos, player, hit);
+        return super.useWithoutItem(state, world, pos, player, hit);
     }
 
     @Override
-    public BlockState rotate(BlockState state, BlockRotation rotation) {
-        return state.with(FACING, rotation.rotate(state.get(FACING)));
+    public BlockState rotate(BlockState state, Rotation rotation) {
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 }

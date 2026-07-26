@@ -1,14 +1,14 @@
 package bklmc.ocelotsign.util;
 
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 
 /**
  * 四个水平轴方向枚举，用于道路标线方块。
  */
-public enum FourHorizontalAxis implements StringIdentifiable {
+public enum FourHorizontalAxis implements StringRepresentable {
     X, NW_SE, Z, NE_SW;
 
     public static final FourHorizontalAxis[] VALUES = values();
@@ -29,7 +29,7 @@ public enum FourHorizontalAxis implements StringIdentifiable {
     }
 
     /** 应用旋转变换 */
-    public FourHorizontalAxis rotate(BlockRotation rotation) {
+    public FourHorizontalAxis rotate(Rotation rotation) {
         return switch (rotation) {
             case CLOCKWISE_90 -> VALUES[(ordinal() + 2) % 4];
             case COUNTERCLOCKWISE_90 -> VALUES[(ordinal() - 2 + 4) % 4];
@@ -48,12 +48,12 @@ public enum FourHorizontalAxis implements StringIdentifiable {
     }
 
     /** 应用镜像变换 */
-    public FourHorizontalAxis mirror(BlockMirror mirror) {
+    public FourHorizontalAxis mirror(Mirror mirror) {
         return mirror();
     }
 
     @Override
-    public String asString() {
+    public String getSerializedName() {
         return name;
     }
 }

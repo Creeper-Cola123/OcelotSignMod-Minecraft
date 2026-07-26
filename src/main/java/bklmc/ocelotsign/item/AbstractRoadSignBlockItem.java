@@ -4,15 +4,14 @@ import bklmc.ocelotsign.OcelotSignMod;
 import bklmc.ocelotsign.integration.mishanguc.MishangAccess;
 import bklmc.ocelotsign.integration.mishanguc.TextContextNbtReader;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.Block;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.level.block.Block;
 
 /**
  * 道路指示牌方块对应的物品基类
@@ -41,24 +40,24 @@ public abstract class AbstractRoadSignBlockItem extends pers.solid.mishang.uc.it
         public static final String ROAD_SIGN_BLOCK = "block.ocelotsignmod.tooltip.road_sign_block";
     }
 
-    protected AbstractRoadSignBlockItem(Block block, Settings settings) {
+    protected AbstractRoadSignBlockItem(Block block, Properties settings) {
         super(block, settings);
     }
 
     /** 获取物品显示名称，若有 NBT 文本内容则追加预览 */
     @Override
-    public Text getName(net.minecraft.item.ItemStack stack) {
-        NbtCompound nbt = getBlockEntityNbt(stack);
+    public Component getName(net.minecraft.world.item.ItemStack stack) {
+        CompoundTag nbt = getBlockEntityNbt(stack);
         if (nbt == null) return super.getName(stack);
 
-        MutableText text = super.getName(stack).copy();
-        List<MutableText> texts = TextContextNbtReader.fromBlockEntityTagAsStyledText(nbt).stream()
+        MutableComponent text = super.getName(stack).copy();
+        List<MutableComponent> texts = TextContextNbtReader.fromBlockEntityTagAsStyledText(nbt).stream()
                 .limit(20)
                 .collect(ImmutableList.toImmutableList());
 
         if (!texts.isEmpty()) {
-            MutableText appendable = MishangAccess.empty();
-            for (MutableText t : texts) {
+            MutableComponent appendable = MishangAccess.empty();
+            for (MutableComponent t : texts) {
                 appendable.append(" ").append(t);
             }
             // asTruncatedString 不再存在，使用 substring
@@ -67,7 +66,7 @@ public abstract class AbstractRoadSignBlockItem extends pers.solid.mishang.uc.it
                 truncated = truncated.substring(0, 25) + "...";
             }
             text.append(MishangAccess.literal(" -" + truncated)
-                    .formatted(Formatting.GRAY));
+                    .withStyle(ChatFormatting.GRAY));
         }
         return text;
     }
@@ -76,13 +75,13 @@ public abstract class AbstractRoadSignBlockItem extends pers.solid.mishang.uc.it
      * 从 ItemStack 中读取 BlockEntityTag 数据。
      * 1.21.1 使用 DataComponentTypes.BLOCK_ENTITY_DATA 组件。
      */
-    private static NbtCompound getBlockEntityNbt(net.minecraft.item.ItemStack stack) {
-        NbtComponent blockEntityData = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA);
+    private static CompoundTag getBlockEntityNbt(net.minecraft.world.item.ItemStack stack) {
+        CustomData blockEntityData = stack.get(DataComponents.BLOCK_ENTITY_DATA);
         if (blockEntityData == null) return null;
-        return blockEntityData.copyNbt();
+        return blockEntityData.copyTag();
     }
 
     /** 由子类实现以提供不同的提示内容 */
-    protected void addHintTooltipToList(List<Text> tooltip) {
+    protected void addHintTooltipToList(List<Component> tooltip) {
     }
 }

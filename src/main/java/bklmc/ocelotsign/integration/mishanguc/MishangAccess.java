@@ -1,14 +1,14 @@
 package bklmc.ocelotsign.integration.mishanguc;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * 提供类型安全、防御性的 mishanguc API 访问
@@ -34,36 +34,36 @@ public final class MishangAccess {
     }
 
     /** 从方块实体 NBT 读取文本上下文 */
-    public static List<?> readTextContextsFromNbt(NbtCompound nbt) {
+    public static List<?> readTextContextsFromNbt(CompoundTag nbt) {
         return IMPL.readTextContextsFromNbt(nbt);
     }
 
     /** 将文本上下文转换为用于显示的样式化文本 */
-    public static MutableText toStyledText(Object context) {
-        MutableText result = IMPL.textContextToStyledText(context);
-        return result != null ? result : Text.literal("");
+    public static MutableComponent toStyledText(Object context) {
+        MutableComponent result = IMPL.textContextToStyledText(context);
+        return result != null ? result : Component.literal("");
     }
 
     /** 通过 mishanguc 的文本桥接器创建可翻译文本 */
-    public static MutableText translatable(String key) {
-        MutableText result = IMPL.translatable(key);
-        return result != null ? result : Text.literal("");
+    public static MutableComponent translatable(String key) {
+        MutableComponent result = IMPL.translatable(key);
+        return result != null ? result : Component.literal("");
     }
 
     /** 通过 mishanguc 的文本桥接器创建字面文本 */
-    public static MutableText literal(String text) {
-        MutableText result = IMPL.literal(text);
-        return result != null ? result : Text.literal(text);
+    public static MutableComponent literal(String text) {
+        MutableComponent result = IMPL.literal(text);
+        return result != null ? result : Component.literal(text);
     }
 
     /** 通过 mishanguc 的文本桥接器创建空文本 */
-    public static MutableText empty() {
-        MutableText result = IMPL.empty();
-        return result != null ? result : Text.literal("");
+    public static MutableComponent empty() {
+        MutableComponent result = IMPL.empty();
+        return result != null ? result : Component.literal("");
     }
 
     /** 获取告示牌编辑同步的数据包 ID（1.21.1 中的 {@code PacketType} 标识符） */
-    public static Identifier getEditSignFinishPacketId() {
+    public static ResourceLocation getEditSignFinishPacketId() {
         return IMPL.getEditSignFinishPacketId();
     }
 

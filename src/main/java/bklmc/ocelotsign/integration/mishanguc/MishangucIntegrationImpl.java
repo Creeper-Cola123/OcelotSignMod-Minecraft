@@ -1,14 +1,6 @@
 package bklmc.ocelotsign.integration.mishanguc;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +11,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * {@link IMishangucIntegration} ????
@@ -42,7 +42,7 @@ public final class MishangucIntegrationImpl implements IMishangucIntegration {
     private final MethodHandle literalHandle;
     private final MethodHandle emptyHandle;
     private final Object editSignFinishPacketHandler;
-    private final Identifier editSignFinishPacketId;
+    private final ResourceLocation editSignFinishPacketId;
     private final boolean hasPacketHandler;
     private final Object textCopyTool;
     private final boolean hasTextCopyTool;
@@ -57,7 +57,7 @@ public final class MishangucIntegrationImpl implements IMishangucIntegration {
         MethodHandle lh = null;
         MethodHandle eh = null;
         Object ph = null;
-        Identifier pid = null;
+        ResourceLocation pid = null;
         boolean hasPh = false;
         Object tct = null;
         boolean hasTct = false;
@@ -67,7 +67,7 @@ public final class MishangucIntegrationImpl implements IMishangucIntegration {
             tb = Class.forName("pers.solid.mishang.uc.util.TextBridge");
 
             // TextContext.fromNbt(NbtElement, RegistryWrapper.WrapperLookup)
-            Method fromNbtMethod = tc.getMethod("fromNbt", NbtElement.class, RegistryWrapper.WrapperLookup.class);
+            Method fromNbtMethod = tc.getMethod("fromNbt", Tag.class, HolderLookup.Provider.class);
             fh = MethodHandles.lookup().unreflect(fromNbtMethod);
 
             Class<?> wallSignBeClass = Class.forName("pers.solid.mishang.uc.blockentity.WallSignBlockEntity");
@@ -176,7 +176,7 @@ public final class MishangucIntegrationImpl implements IMishangucIntegration {
     }
 
     @Override
-    public List<?> readTextContextsFromNbt(NbtCompound nbt) {
+    public List<?> readTextContextsFromNbt(CompoundTag nbt) {
         if (!available) return Collections.emptyList();
 
         try {
@@ -186,7 +186,7 @@ public final class MishangucIntegrationImpl implements IMishangucIntegration {
             }
 
             // 1.21.1 ? WallSignBlockEntity ? "text" ????? "texts"
-            NbtElement nbtText = nbt.get("texts");
+            Tag nbtText = nbt.get("texts");
             if (nbtText == null) {
                 // ?? 1.20.4 ? "text" ??
                 nbtText = nbt.get("text");
@@ -197,15 +197,15 @@ public final class MishangucIntegrationImpl implements IMishangucIntegration {
 
             // ?? MinecraftClient.world ?? registryLookup
             // ?????????? dummy registry
-            RegistryWrapper.WrapperLookup registryLookup = resolveRegistryLookup();
+            HolderLookup.Provider registryLookup = resolveRegistryLookup();
 
-            if (nbtText instanceof NbtList) {
+            if (nbtText instanceof ListTag) {
                 ImmutableList.Builder<Object> builder = new ImmutableList.Builder<>();
-                for (NbtElement element : (NbtList) nbtText) {
+                for (Tag element : (ListTag) nbtText) {
                     builder.add(fromNbtHandle.invoke(element, registryLookup));
                 }
                 return builder.build();
-            } else if (nbtText instanceof NbtCompound || nbtText instanceof NbtString) {
+            } else if (nbtText instanceof CompoundTag || nbtText instanceof StringTag) {
                 return ImmutableList.of(fromNbtHandle.invoke(nbtText, registryLookup));
             }
         } catch (Throwable t) {
@@ -215,53 +215,53 @@ public final class MishangucIntegrationImpl implements IMishangucIntegration {
     }
 
     @Override
-    public MutableText textContextToStyledText(Object context) {
-        if (!available || context == null) return Text.literal("");
+    public MutableComponent textContextToStyledText(Object context) {
+        if (!available || context == null) return Component.literal("");
 
         try {
             Method asStyledText = textContextClass.getMethod("asStyledText");
-            return (MutableText) asStyledText.invoke(context);
+            return (MutableComponent) asStyledText.invoke(context);
         } catch (Throwable t) {
             LOGGER.error("???????", t);
-            return Text.literal("");
+            return Component.literal("");
         }
     }
 
     @Override
-    public MutableText translatable(String key) {
-        if (!available) return Text.literal("");
+    public MutableComponent translatable(String key) {
+        if (!available) return Component.literal("");
         try {
-            return (MutableText) translatableHandle.invoke(key);
+            return (MutableComponent) translatableHandle.invoke(key);
         } catch (Throwable t) {
             LOGGER.error("????????: {}", key, t);
-            return Text.literal("");
+            return Component.literal("");
         }
     }
 
     @Override
-    public MutableText literal(String text) {
-        if (!available) return Text.literal(text);
+    public MutableComponent literal(String text) {
+        if (!available) return Component.literal(text);
         try {
-            return (MutableText) literalHandle.invoke(text);
+            return (MutableComponent) literalHandle.invoke(text);
         } catch (Throwable t) {
             LOGGER.error("????????", t);
-            return Text.literal(text);
+            return Component.literal(text);
         }
     }
 
     @Override
-    public MutableText empty() {
-        if (!available) return Text.literal("");
+    public MutableComponent empty() {
+        if (!available) return Component.literal("");
         try {
-            return (MutableText) emptyHandle.invoke();
+            return (MutableComponent) emptyHandle.invoke();
         } catch (Throwable t) {
             LOGGER.error("???????", t);
-            return Text.literal("");
+            return Component.literal("");
         }
     }
 
     @Override
-    public Identifier getEditSignFinishPacketId() {
+    public ResourceLocation getEditSignFinishPacketId() {
         return editSignFinishPacketId;
     }
 
@@ -279,7 +279,7 @@ public final class MishangucIntegrationImpl implements IMishangucIntegration {
      * ??????? RegistryWrapper.WrapperLookup?
      * ?????????? dummy registry lookup?
      */
-    private static RegistryWrapper.WrapperLookup resolveRegistryLookup() {
+    private static HolderLookup.Provider resolveRegistryLookup() {
         try {
             Class<?> clientClass = Class.forName("net.minecraft.client.MinecraftClient");
             java.lang.reflect.Method getInstance = clientClass.getMethod("getInstance");
@@ -289,7 +289,7 @@ public final class MishangucIntegrationImpl implements IMishangucIntegration {
                 Object world = getWorld.invoke(client);
                 if (world != null) {
                     java.lang.reflect.Method getRegistryManager = world.getClass().getMethod("getRegistryManager");
-                    return (RegistryWrapper.WrapperLookup) getRegistryManager.invoke(world);
+                    return (HolderLookup.Provider) getRegistryManager.invoke(world);
                 }
             }
         } catch (Throwable t) {
@@ -302,18 +302,18 @@ public final class MishangucIntegrationImpl implements IMishangucIntegration {
     /**
      * ? PacketType ??? Identifier?
      */
-    private static Identifier extractIdentifier(Object payloadType) {
+    private static ResourceLocation extractIdentifier(Object payloadType) {
         try {
             Method getIdMethod = payloadType.getClass().getMethod("getId");
             Object idValue = getIdMethod.invoke(payloadType);
-            if (idValue instanceof Identifier id) {
+            if (idValue instanceof ResourceLocation id) {
                 return id;
             }
         } catch (NoSuchMethodException ignored) {
             try {
                 Method getIdMethod = payloadType.getClass().getMethod("getPacketId");
                 Object idValue = getIdMethod.invoke(payloadType);
-                if (idValue instanceof Identifier id) {
+                if (idValue instanceof ResourceLocation id) {
                     return id;
                 }
             } catch (NoSuchMethodException ignored2) {
@@ -332,19 +332,19 @@ public final class MishangucIntegrationImpl implements IMishangucIntegration {
      * ??? TextContext.fromNbt ? RegistryLookup ????????????? registries?
      */
     @SuppressWarnings("rawtypes")
-    private static final class DummyWrapperLookup implements RegistryWrapper.WrapperLookup {
+    private static final class DummyWrapperLookup implements HolderLookup.Provider {
         static final DummyWrapperLookup INSTANCE = new DummyWrapperLookup();
 
         private DummyWrapperLookup() {
         }
 
         @Override
-        public <T> Optional<RegistryWrapper.Impl<T>> getOptionalWrapper(net.minecraft.registry.RegistryKey<? extends net.minecraft.registry.Registry<? extends T>> key) {
+        public <T> Optional<HolderLookup.RegistryLookup<T>> lookup(net.minecraft.resources.ResourceKey<? extends net.minecraft.core.Registry<? extends T>> key) {
             return Optional.empty();
         }
 
         @Override
-        public Stream<net.minecraft.registry.RegistryKey<? extends net.minecraft.registry.Registry<?>>> streamAllRegistryKeys() {
+        public Stream<net.minecraft.resources.ResourceKey<? extends net.minecraft.core.Registry<?>>> listRegistries() {
             return Stream.empty();
         }
     }
