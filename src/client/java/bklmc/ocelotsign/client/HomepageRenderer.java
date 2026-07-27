@@ -51,7 +51,7 @@ public final class HomepageRenderer {
         // 主标题
         Component title = Component.translatable("ocelotsignmod.gui.homepage.title");
         int titleWidth = textRenderer.width(title);
-        context.text(textRenderer, title, UIConstants.SIDEBAR_WIDTH + (mainWidth - titleWidth) / 2, currentY, 0x0066CC, false);
+        context.text(textRenderer, title, UIConstants.SIDEBAR_WIDTH + (mainWidth - titleWidth) / 2, currentY, 0xFF0066CC, false);
         currentY += 26;
 
         // 标题下划线

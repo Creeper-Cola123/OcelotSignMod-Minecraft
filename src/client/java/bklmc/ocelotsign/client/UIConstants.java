@@ -52,9 +52,9 @@ public final class UIConstants {
     public static final int COLOR_SCROLLBAR_THUMB = 0xFFC0C0C0;
     public static final int COLOR_SCROLLBAR_THUMB_HOVER = 0xFFB0B0B0;
 
-    public static final int COLOR_H2_TEXT = 0xFFE088;
+    public static final int COLOR_H2_TEXT = 0xFFFFE088;
     public static final int COLOR_H3_TEXT = 0xFFAAAAAA;
-    public static final int COLOR_H3_TEXT_SELECTED = 0xFFE088;
+    public static final int COLOR_H3_TEXT_SELECTED = 0xFFFFE088;
     public static final int COLOR_H3_BG_SELECTED = 0xFF2D2D30;
 
     public static final int COLOR_SECTION_TITLE = 0xFFCC6600;

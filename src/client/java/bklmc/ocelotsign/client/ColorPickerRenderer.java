@@ -182,7 +182,7 @@ public final class ColorPickerRenderer {
             context.fill(sx, sy, sx + presetSize, sy + presetSize, 0xFF000000 | (rgb & 0xFFFFFF));
             context.outline(sx, sy, presetSize, presetSize, 0xFF555555);
             if ((rgb & 0xFFFFFF) == (currentRgb & 0xFFFFFF)) {
-                context.outline(sx - 1, sy - 1, presetSize + 2, presetSize + 2, 0xFFE088);
+                context.outline(sx - 1, sy - 1, presetSize + 2, presetSize + 2, UIConstants.COLOR_H2_TEXT);
             }
         }
     }
