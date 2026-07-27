@@ -2,9 +2,10 @@ package bklmc.ocelotsign.client;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.TextureManager;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -13,7 +14,7 @@ import net.minecraft.util.math.MathHelper;
 import java.util.List;
 
 /**
- * 颜色拾取器状态管理
+ * 颜色拾取器状态管理 (1.19.2 兼容版)
  *
  * @see PatternAndFontOverlay
  */
@@ -78,126 +79,39 @@ public final class ColorPickerState {
 
     // ==================== HSV 字段访问器 ====================
 
-    /**
-     * 获取色相值。
-     *
-     * @return 色相（0..1）
-     */
     public static float getH() { return h; }
-
-    /**
-     * 获取饱和度。
-     *
-     * @return 饱和度（0..1）
-     */
     public static float getS() { return s; }
-
-    /**
-     * 获取明度。
-     *
-     * @return 明度（0..1）
-     */
     public static float getV() { return v; }
-
-    /**
-     * 设置 HSV 值。
-     *
-     * @param nh 色相（0..1）
-     * @param ns 饱和度（0..1）
-     * @param nv 明度（0..1）
-     */
     public static void setHsv(float nh, float ns, float nv) { h = nh; s = ns; v = nv; }
 
     // ==================== 面板位置（每帧写入） ====================
 
-    /**
-     * 记录 SV 面板屏幕位置。
-     *
-     * @param x X 坐标
-     * @param y Y 坐标
-     * @param w 宽度
-     * @param h_ 高度
-     */
     public static void recordSvPanel(int x, int y, int w, int h_) {
         svPanelX = x; svPanelY = y; svPanelW = w; svPanelH = h_;
     }
 
-    /**
-     * 记录色相条屏幕位置。
-     *
-     * @param x X 坐标
-     * @param y Y 坐标
-     * @param w 宽度
-     * @param h_ 高度
-     */
     public static void recordHueBar(int x, int y, int w, int h_) {
         hueBarX = x; hueBarY = y; hueBarW = w; hueBarH = h_;
     }
 
-    /**
-     * 获取 SV 面板 X 坐标。
-     *
-     * @return X 坐标
-     */
     public static int getSvPanelX() { return svPanelX; }
-
-    /**
-     * 获取 SV 面板 Y 坐标。
-     *
-     * @return Y 坐标
-     */
     public static int getSvPanelY() { return svPanelY; }
-
-    /**
-     * 获取 SV 面板宽度。
-     *
-     * @return 宽度
-     */
     public static int getSvPanelW() { return svPanelW; }
-
-    /**
-     * 获取色相条 Y 坐标。
-     *
-     * @return Y 坐标
-     */
     public static int getHueBarY() { return hueBarY; }
-
-    /**
-     * 获取色相条高度。
-     *
-     * @return 高度
-     */
     public static int getHueBarH() { return hueBarH; }
 
     // ==================== 离屏纹理 ====================
 
-    /**
-     * 获取 SV 纹理标识符。
-     *
-     * @return 纹理标识符
-     */
     public static Identifier getSvTextureId() { return svTextureId; }
 
     // ==================== 公开方法 ====================
 
-    /**
-     * 获取当前 RGB 整数值。
-     *
-     * @return RGB 整数（0xRRGGBB 格式）
-     */
     public static int getCurrentRgb() {
         return ((PatternAndFontOverlay.colorPickerR & 0xFF) << 16)
                 | ((PatternAndFontOverlay.colorPickerG & 0xFF) << 8)
                 | (PatternAndFontOverlay.colorPickerB & 0xFF);
     }
 
-    /**
-     * 计算颜色选择器面板的内容总高度。
-     *
-     * @param mainWidth 主内容区域宽度
-     * @param textRenderer 文本渲染器
-     * @return 总内容高度（像素）
-     */
     public static int getColorPickerContentHeight(int mainWidth, TextRenderer textRenderer) {
         int introMaxWidth = mainWidth - 60;
         if (introMaxWidth < 60) introMaxWidth = 60;
@@ -223,11 +137,6 @@ public final class ColorPickerState {
         return introH + svAreaH + 6 + btnH;
     }
 
-    /**
-     * 确保 SV 色板离屏纹理存在（hue 变化时重新生成）。
-     *
-     * @param hue 色相值（0..1）
-     */
     public static void ensureSvTexture(float hue) {
         if (svTextureId != null && Math.abs(hue - svTextureHueCached) < 0.0001f) return;
         if (svTextureImage != null) {
@@ -257,14 +166,6 @@ public final class ColorPickerState {
         svTextureHueCached = hue;
     }
 
-    /**
-     * HSV 转 RGB 整数（不写回字段）。
-     *
-     * @param hue 色相（0..1）
-     * @param sat 饱和度（0..1）
-     * @param val 明度（0..1）
-     * @return RGB 整数（0xRRGGBB 格式）
-     */
     public static int hsvToRawRgb(float hue, float sat, float val) {
         hue = MathHelper.clamp(hue, 0f, 1f);
         sat = MathHelper.clamp(sat, 0f, 1f);
@@ -293,13 +194,6 @@ public final class ColorPickerState {
         return (r << 16) | (g << 8) | b;
     }
 
-    /**
-     * HSV 转 RGB 并写回 colorPickerR/G/B。
-     *
-     * @param hue 色相（0..1）
-     * @param sat 饱和度（0..1）
-     * @param val 明度（0..1）
-     */
     public static void hsvToRgb(float hue, float sat, float val) {
         hue = MathHelper.clamp(hue, 0f, 1f);
         sat = MathHelper.clamp(sat, 0f, 1f);
@@ -331,13 +225,6 @@ public final class ColorPickerState {
         PatternAndFontOverlay.colorPickerB = MathHelper.clamp(b, 0, 255);
     }
 
-    /**
-     * RGB 转 HSV 并写回 h/s/v。
-     *
-     * @param r 红色分量（0..255）
-     * @param g 绿色分量（0..255）
-     * @param b 蓝色分量（0..255）
-     */
     public static void rgbToHsv(int r, int g, int b) {
         r = MathHelper.clamp(r, 0, 255);
         g = MathHelper.clamp(g, 0, 255);
@@ -365,15 +252,6 @@ public final class ColorPickerState {
         h = hue; s = sat; v = max;
     }
 
-    /**
-     * 根据 SV 面板鼠标位置更新 HSV 状态。
-     *
-     * @param mouseX 鼠标 X 坐标
-     * @param mouseY 鼠标 Y 坐标
-     * @param px 面板 X 位置
-     * @param py 面板 Y 位置
-     * @param size 面板尺寸
-     */
     public static void applySvFromMouse(double mouseX, double mouseY, int px, int py, int size) {
         float sat = (float) ((mouseX - px) / (double) Math.max(1, size - 1));
         float val = 1f - (float) ((mouseY - py) / (double) Math.max(1, size - 1));
@@ -382,24 +260,12 @@ public final class ColorPickerState {
         hsvToRgb(h, sat, val);
     }
 
-    /**
-     * 根据色相条鼠标位置更新 HSV 状态。
-     *
-     * @param mouseY 鼠标 Y 坐标
-     * @param py 色相条 Y 位置
-     * @param size 色相条高度
-     */
     public static void applyHueFromMouse(double mouseY, int py, int size) {
         float hue = (float) ((mouseY - py) / (double) Math.max(1, size - 1));
         hue = MathHelper.clamp(hue, 0f, 1f);
         hsvToRgb(hue, s, v);
     }
 
-    /**
-     * 将 HEX 颜色字符串写入系统剪贴板并显示提示。
-     *
-     * @param hexWithHash 带 # 的 HEX 颜色字符串
-     */
     public static void copyHexToClipboard(String hexWithHash) {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client == null) return;
@@ -424,23 +290,25 @@ public final class ColorPickerState {
 
     /**
      * 绘制加减按钮（仅外观）。
-     *
-     * @param context 绘制上下文
-     * @param textRenderer 文本渲染器
-     * @param x 按钮 X 坐标
-     * @param y 按钮 Y 坐标
-     * @param w 按钮宽度
-     * @param h_ 按钮高度
-     * @param label 按钮标签
-     * @param hover 是否悬停
+     * 1.19.2 兼容版 - 移除 context 引用，使用 matrices + DrawableHelper
      */
-    public static void drawStepButton(DrawContext context, TextRenderer textRenderer,
+    public static void drawStepButton(MatrixStack matrices, TextRenderer textRenderer,
                                       int x, int y, int w, int h_, String label, boolean hover) {
-        context.fill(x, y, x + w, y + h_, hover ? UIConstants.COLOR_BTN_BG_HOVER : UIConstants.COLOR_BTN_BG);
-        context.drawBorder(x, y, w, h_, UIConstants.COLOR_BTN_BORDER);
+        DrawableHelper.fill(matrices, x, y, x + w, y + h_, hover ? UIConstants.COLOR_BTN_BG_HOVER : UIConstants.COLOR_BTN_BG);
+        drawBorder(matrices, x, y, w, h_, UIConstants.COLOR_BTN_BORDER);
         int tw = textRenderer.getWidth(label);
-        context.drawText(textRenderer, label,
+        textRenderer.draw(matrices, label,
                 x + (w - tw) / 2, y + (h_ - textRenderer.fontHeight) / 2,
-                UIConstants.COLOR_BTN_TEXT, false);
+                UIConstants.COLOR_BTN_TEXT);
+    }
+
+    /**
+     * 绘制简单边框（1.19.2 兼容）。
+     */
+    private static void drawBorder(MatrixStack matrices, int x, int y, int width, int height, int color) {
+        DrawableHelper.fill(matrices, x, y, x + width, y + 1, color);
+        DrawableHelper.fill(matrices, x, y + height - 1, x + width, y + height, color);
+        DrawableHelper.fill(matrices, x, y, x + 1, y + height, color);
+        DrawableHelper.fill(matrices, x + width - 1, y, x + width, y + height, color);
     }
 }

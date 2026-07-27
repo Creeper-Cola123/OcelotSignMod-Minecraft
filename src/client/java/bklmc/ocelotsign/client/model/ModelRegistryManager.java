@@ -3,7 +3,7 @@ package bklmc.ocelotsign.client.model;
 import bklmc.ocelotsign.OcelotSignMod;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
+import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.client.MinecraftClient;
@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 客户端模型注册表管理器
+ * 客户端模型注册表管理器 (1.19.2 兼容版)
  */
 public class ModelRegistryManager {
     /**
@@ -51,12 +51,12 @@ public class ModelRegistryManager {
                 }
         );
 
-        ModelLoadingPlugin.register(pluginContext -> {
-            ResourceManager manager = MinecraftClient.getInstance().getResourceManager();
+        // 1.19.2: 使用 ModelLoadingRegistry 替代 ModelLoadingPlugin
+        ModelLoadingRegistry.INSTANCE.registerModelProvider((manager, consumer) -> {
             reloadDefinitions(manager);
 
             for (Identifier modelIdentifier : REGISTERED_MODELS) {
-                pluginContext.addModels(modelIdentifier);
+                consumer.accept(modelIdentifier);
                 OcelotSignMod.LOGGER.debug("注册自定义模型: {}", modelIdentifier);
             }
         });
@@ -143,8 +143,6 @@ public class ModelRegistryManager {
 
     /**
      * 获取所有可用模型。
-     *
-     * @return 不可修改的模型映射表
      */
     public static Map<String, ModelDefinition> getAvailableModels() {
         return Collections.unmodifiableMap(AVAILABLE_MODELS);
@@ -152,9 +150,6 @@ public class ModelRegistryManager {
 
     /**
      * 根据模型 ID 获取模型标识符。
-     *
-     * @param modelId 模型ID
-     * @return 模型标识符
      */
     public static Identifier getModelIdentifier(String modelId) {
         ModelDefinition definition = AVAILABLE_MODELS.get(modelId);
@@ -166,11 +161,6 @@ public class ModelRegistryManager {
 
     /**
      * 检查指定模型 ID 是否在本地资源包中有定义。
-     *
-     * <p>当服务器同步了模型 ID，但玩家未加载对应资源包时返回 false。
-     *
-     * @param modelId 模型ID
-     * @return 是否有定义
      */
     public static boolean hasModelDefinition(String modelId) {
         return AVAILABLE_MODELS.containsKey(modelId);
@@ -178,10 +168,6 @@ public class ModelRegistryManager {
 
     /**
      * 获取 Fallback 模型标识符。
-     *
-     * <p>当模型在本地有定义但资源包中的模型 JSON 加载失败时使用。
-     *
-     * @return Fallback模型标识符
      */
     public static Identifier getFallbackModelIdentifier() {
         return OcelotSignMod.id("block/custom_model_fallback");

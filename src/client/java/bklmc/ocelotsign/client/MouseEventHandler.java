@@ -2,7 +2,6 @@ package bklmc.ocelotsign.client;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -10,6 +9,8 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.List;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawableHelper;
 
 /**
  * 鼠标事件处理器

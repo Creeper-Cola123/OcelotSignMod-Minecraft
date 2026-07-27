@@ -1,16 +1,17 @@
 package bklmc.ocelotsign.client;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
-import net.minecraft.util.math.MathHelper;
 
 import java.util.List;
 
 /**
- * 颜色选择器面板的 UI 渲染与交互处理
+ * 颜色选择器面板的 UI 渲染与交互处理 (1.19.2 兼容版)
  *
  * @see ColorPickerState
  * @see PatternAndFontOverlay
@@ -22,16 +23,9 @@ public final class ColorPickerRenderer {
 
     /**
      * 渲染颜色选择器面板。
-     *
-     * @param context 绘制上下文
-     * @param textRenderer 文本渲染器
-     * @param mainWidth 主区域宽度
-     * @param contentStartY 内容起始 Y 坐标
-     * @param scrollWindowStartY 滚动窗口起始 Y 坐标
-     * @param scrollWindowEndY 滚动窗口结束 Y 坐标
      */
-    public static void render(DrawContext context, TextRenderer textRenderer,
-                            int mainWidth, int contentStartY, int scrollWindowStartY, int scrollWindowEndY) {
+    public static void render(MatrixStack matrices, TextRenderer textRenderer,
+                              int mainWidth, int contentStartY, int scrollWindowStartY, int scrollWindowEndY) {
         int centerX = UIConstants.SIDEBAR_WIDTH + mainWidth / 2;
         int y = contentStartY;
 
@@ -40,9 +34,9 @@ public final class ColorPickerRenderer {
         if (introMaxWidth < 60) introMaxWidth = 60;
         Text intro1 = Text.translatable("ocelotsignmod.gui.color_picker.intro1");
         Text intro2 = Text.translatable("ocelotsignmod.gui.color_picker.intro2");
-        int intro1H = drawCenteredWrappedText(context, textRenderer, intro1, centerX, y, introMaxWidth);
+        int intro1H = drawCenteredWrappedText(matrices, textRenderer, intro1, centerX, y, introMaxWidth);
         y += intro1H + 4;
-        int intro2H = drawCenteredWrappedText(context, textRenderer, intro2, centerX, y, introMaxWidth);
+        int intro2H = drawCenteredWrappedText(matrices, textRenderer, intro2, centerX, y, introMaxWidth);
         y += intro2H + 4;
 
         // HSV 主色板区
@@ -62,16 +56,16 @@ public final class ColorPickerRenderer {
         ColorPickerState.recordHueBar(hueX, hueY, hueW, svSize);
 
         // SV 方板
-        renderSvPanel(context, svX, svY, svSize);
+        renderSvPanel(matrices, svX, svY, svSize);
 
         // Hue 滑块
-        renderHueBar(context, hueX, hueY, hueW, svSize);
+        renderHueBar(matrices, hueX, hueY, hueW, svSize);
 
         // 颜色预览 + HEX
-        renderColorPreview(context, textRenderer, previewX, previewY, previewW);
+        renderColorPreview(matrices, textRenderer, previewX, previewY, previewW);
 
         // 快速选色
-        renderPresetColors(context, textRenderer, previewX, previewY, previewW);
+        renderPresetColors(matrices, textRenderer, previewX, previewY, previewW);
 
         // 复制按钮
         int hsvTotalW = svSize + ColorPickerState.HUE_BAR_VISUAL_GAP + ColorPickerState.HUE_BAR_VISUAL_W;
@@ -79,88 +73,88 @@ public final class ColorPickerRenderer {
         int btnH = 26;
         int btnX = svX + (hsvTotalW - btnW) / 2;
         int btnY = y + svSize + 6;
-        renderCopyButton(context, textRenderer, btnX, btnY, btnW, btnH);
+        renderCopyButton(matrices, textRenderer, btnX, btnY, btnW, btnH);
     }
 
     /**
      * 渲染 SV 饱和度-亮度面板。
      */
-    private static void renderSvPanel(DrawContext context, int svX, int svY, int svSize) {
+    private static void renderSvPanel(MatrixStack matrices, int svX, int svY, int svSize) {
         ColorPickerState.ensureSvTexture(ColorPickerState.getH());
         if (ColorPickerState.getSvTextureId() != null) {
-            context.drawTexture(ColorPickerState.getSvTextureId(),
-                    svX, svY, 0, 0, svSize, svSize, svSize, svSize);
+            RenderSystem.setShaderTexture(0, ColorPickerState.getSvTextureId());
+            DrawableHelper.drawTexture(matrices, svX, svY, 0, 0, svSize, svSize, svSize, svSize);
         } else {
             for (int py = 0; py < svSize; py += 4) {
                 for (int px = 0; px < svSize; px += 4) {
                     float s = px / (float) (svSize - 1);
                     float v = 1f - py / (float) (svSize - 1);
                     int rgb = ColorPickerState.hsvToRawRgb(ColorPickerState.getH(), s, v);
-                    context.fill(svX + px, svY + py, svX + px + 4, svY + py + 4, 0xFF000000 | (rgb & 0xFFFFFF));
+                    DrawableHelper.fill(matrices, svX + px, svY + py, svX + px + 4, svY + py + 4, 0xFF000000 | (rgb & 0xFFFFFF));
                 }
             }
         }
-        context.drawBorder(svX, svY, svSize, svSize, 0xFF222222);
+        drawBorder(matrices, svX, svY, svSize, svSize, 0xFF222222);
 
         // SV 圆点指示器
         int indicatorPad = 4;
         int ix = svX + Math.round(ColorPickerState.getS() * (svSize - 1));
         int iy = svY + Math.round((1f - ColorPickerState.getV()) * (svSize - 1));
-        context.fill(ix - indicatorPad, iy - 1, ix + indicatorPad, iy + 1, 0xFFFFFFFF);
-        context.fill(ix - 1, iy - indicatorPad, ix + 1, iy + indicatorPad, 0xFFFFFFFF);
-        context.drawBorder(ix - indicatorPad, iy - 1, indicatorPad * 2, 2, 0xFF222222);
-        context.drawBorder(ix - 1, iy - indicatorPad, 2, indicatorPad * 2, 0xFF222222);
+        DrawableHelper.fill(matrices, ix - indicatorPad, iy - 1, ix + indicatorPad, iy + 1, 0xFFFFFFFF);
+        DrawableHelper.fill(matrices, ix - 1, iy - indicatorPad, ix + 1, iy + indicatorPad, 0xFFFFFFFF);
+        drawBorder(matrices, ix - indicatorPad, iy - 1, indicatorPad * 2, 2, 0xFF222222);
+        drawBorder(matrices, ix - 1, iy - indicatorPad, 2, indicatorPad * 2, 0xFF222222);
     }
 
     /**
      * 渲染色相滑块条。
      */
-    private static void renderHueBar(DrawContext context, int hueX, int hueY, int hueW, int svSize) {
+    private static void renderHueBar(MatrixStack matrices, int hueX, int hueY, int hueW, int svSize) {
         int hueStepPx = 2;
         for (int py = 0; py < svSize; py += hueStepPx) {
             float h = py / (float) (svSize - 1);
             int rgb = ColorPickerState.hsvToRawRgb(h, 1f, 1f);
-            context.fill(hueX, hueY + py, hueX + hueW, hueY + Math.min(py + hueStepPx, svSize),
+            DrawableHelper.fill(matrices, hueX, hueY + py, hueX + hueW, hueY + Math.min(py + hueStepPx, svSize),
                     0xFF000000 | (rgb & 0xFFFFFF));
         }
-        context.drawBorder(hueX, hueY, hueW, svSize, 0xFF222222);
+        drawBorder(matrices, hueX, hueY, hueW, svSize, 0xFF222222);
 
         int hueIndicatorY = hueY + Math.round(ColorPickerState.getH() * (svSize - 1));
         int hueIndicatorPad = 3;
-        context.fill(hueX - hueIndicatorPad, hueIndicatorY - 1, hueX + hueW + hueIndicatorPad, hueIndicatorY + 1, 0xFFFFFFFF);
-        context.drawBorder(hueX - hueIndicatorPad, hueIndicatorY - 1, hueW + hueIndicatorPad * 2, 2, 0xFF222222);
+        DrawableHelper.fill(matrices, hueX - hueIndicatorPad, hueIndicatorY - 1, hueX + hueW + hueIndicatorPad, hueIndicatorY + 1, 0xFFFFFFFF);
+        drawBorder(matrices, hueX - hueIndicatorPad, hueIndicatorY - 1, hueW + hueIndicatorPad * 2, 2, 0xFF222222);
     }
 
     /**
      * 渲染颜色预览区与 HEX 值。
      */
-    private static void renderColorPreview(DrawContext context, TextRenderer textRenderer, int previewX, int previewY, int previewW) {
+    private static void renderColorPreview(MatrixStack matrices, TextRenderer textRenderer, int previewX, int previewY, int previewW) {
         int previewH = 60;
         int argb = 0xFF000000 | ColorPickerState.getCurrentRgb();
-        context.fill(previewX, previewY, previewX + previewW, previewY + previewH, argb);
-        context.drawBorder(previewX, previewY, previewW, previewH, 0xFF222222);
-        context.drawBorder(previewX - 1, previewY - 1, previewW + 2, previewH + 2, 0xFF888888);
+        DrawableHelper.fill(matrices, previewX, previewY, previewX + previewW, previewY + previewH, argb);
+        drawBorder(matrices, previewX, previewY, previewW, previewH, 0xFF222222);
+        drawBorder(matrices, previewX - 1, previewY - 1, previewW + 2, previewH + 2, 0xFF888888);
 
         int stripH = 20;
-        context.fill(previewX, previewY + previewH - stripH, previewX + previewW, previewY + previewH, 0x99000000);
+        DrawableHelper.fill(matrices, previewX, previewY + previewH - stripH, previewX + previewW, previewY + previewH, 0x99000000);
         String hexText = String.format("#%06X", ColorPickerState.getCurrentRgb());
         Text hexLine = Text.literal(hexText);
         int hexW = textRenderer.getWidth(hexLine);
-        context.drawText(textRenderer, hexLine,
+        textRenderer.draw(matrices, hexLine,
                 previewX + (previewW - hexW) / 2,
                 previewY + previewH - stripH + (stripH - textRenderer.fontHeight) / 2,
-                0xFFFFFFFF, false);
+                0xFFFFFFFF);
 
         Text labelCur = Text.translatable("ocelotsignmod.gui.color_picker.current_label");
         int labelCurW = textRenderer.getWidth(labelCur);
-        context.drawText(textRenderer, labelCur,
-                previewX + (previewW - labelCurW) / 2, previewY + previewH + 2, UIConstants.COLOR_DESC_TEXT, false);
+        textRenderer.draw(matrices, labelCur,
+                previewX + (previewW - labelCurW) / 2, previewY + previewH + 2, UIConstants.COLOR_DESC_TEXT);
     }
 
     /**
      * 渲染预设颜色选择面板。
      */
-    private static void renderPresetColors(DrawContext context, TextRenderer textRenderer, int previewX, int previewY, int previewW) {
+    private static void renderPresetColors(MatrixStack matrices, TextRenderer textRenderer, int previewX, int previewY, int previewW) {
         int presetSize = ColorPickerState.COLOR_PICKER_PRESET_SIZE;
         int presetGap = ColorPickerState.COLOR_PICKER_PRESET_GAP;
         int presetCols = ColorPickerState.COLOR_PICKER_PRESET_COLS;
@@ -169,7 +163,7 @@ public final class ColorPickerRenderer {
         int presetGridStartX = previewX + (previewW - presetW) / 2;
         int presetGridStartY = previewY + 60 + 16;
         Text quickLabel = Text.translatable("ocelotsignmod.gui.color_picker.presets_label");
-        context.drawText(textRenderer, quickLabel, presetGridStartX, presetGridStartY, UIConstants.COLOR_DESC_TEXT, false);
+        textRenderer.draw(matrices, quickLabel, presetGridStartX, presetGridStartY, UIConstants.COLOR_DESC_TEXT);
         int presetAreaY = presetGridStartY + 12;
 
         int currentRgb = ColorPickerState.getCurrentRgb();
@@ -179,10 +173,10 @@ public final class ColorPickerRenderer {
             int sx = presetGridStartX + col * (presetSize + presetGap);
             int sy = presetAreaY + row * (presetSize + presetGap);
             int rgb = ColorPickerState.COLOR_PICKER_PRESETS[i];
-            context.fill(sx, sy, sx + presetSize, sy + presetSize, 0xFF000000 | (rgb & 0xFFFFFF));
-            context.drawBorder(sx, sy, presetSize, presetSize, 0xFF555555);
+            DrawableHelper.fill(matrices, sx, sy, sx + presetSize, sy + presetSize, 0xFF000000 | (rgb & 0xFFFFFF));
+            drawBorder(matrices, sx, sy, presetSize, presetSize, 0xFF555555);
             if ((rgb & 0xFFFFFF) == (currentRgb & 0xFFFFFF)) {
-                context.drawBorder(sx - 1, sy - 1, presetSize + 2, presetSize + 2, 0xFFE088);
+                drawBorder(matrices, sx - 1, sy - 1, presetSize + 2, presetSize + 2, 0xFFE088);
             }
         }
     }
@@ -190,16 +184,16 @@ public final class ColorPickerRenderer {
     /**
      * 渲染 HEX 复制按钮。
      */
-    private static void renderCopyButton(DrawContext context, TextRenderer textRenderer, int btnX, int btnY, int btnW, int btnH) {
-        context.fill(btnX, btnY, btnX + btnW, btnY + btnH, UIConstants.COLOR_BTN_BG);
-        context.drawBorder(btnX, btnY, btnW, btnH, UIConstants.COLOR_BTN_BORDER);
+    private static void renderCopyButton(MatrixStack matrices, TextRenderer textRenderer, int btnX, int btnY, int btnW, int btnH) {
+        DrawableHelper.fill(matrices, btnX, btnY, btnX + btnW, btnY + btnH, UIConstants.COLOR_BTN_BG);
+        drawBorder(matrices, btnX, btnY, btnW, btnH, UIConstants.COLOR_BTN_BORDER);
         Text useBtn = Text.translatable("ocelotsignmod.gui.color_picker.copy_value");
         int useBtnTextW = textRenderer.getWidth(useBtn);
         if (useBtnTextW <= btnW - 8) {
-            context.drawText(textRenderer, useBtn,
+            textRenderer.draw(matrices, useBtn,
                     btnX + (btnW - useBtnTextW) / 2,
                     btnY + (btnH - textRenderer.fontHeight) / 2,
-                    UIConstants.COLOR_BTN_TEXT, false);
+                    UIConstants.COLOR_BTN_TEXT);
         } else {
             List<OrderedText> btnLines = textRenderer.wrapLines(useBtn, btnW - 8);
             int lineH = textRenderer.fontHeight;
@@ -207,10 +201,10 @@ public final class ColorPickerRenderer {
             int lineY = btnY + Math.max(0, (btnH - totalH) / 2);
             for (int i = 0; i < btnLines.size(); i++) {
                 int lw = textRenderer.getWidth(btnLines.get(i));
-                context.drawText(textRenderer, btnLines.get(i),
+                textRenderer.draw(matrices, btnLines.get(i),
                         btnX + (btnW - lw) / 2,
                         lineY + i * lineH,
-                        UIConstants.COLOR_BTN_TEXT, false);
+                        UIConstants.COLOR_BTN_TEXT);
             }
         }
     }
@@ -218,27 +212,19 @@ public final class ColorPickerRenderer {
     /**
      * 绘制居中换行文本，返回总高度。
      */
-    private static int drawCenteredWrappedText(DrawContext context, TextRenderer textRenderer,
-                                              Text text, int centerX, int y, int maxWidth) {
+    private static int drawCenteredWrappedText(MatrixStack matrices, TextRenderer textRenderer,
+                                               Text text, int centerX, int y, int maxWidth) {
         List<OrderedText> lines = textRenderer.wrapLines(text, maxWidth);
         int lineH = textRenderer.fontHeight;
         for (int i = 0; i < lines.size(); i++) {
             int lw = textRenderer.getWidth(lines.get(i));
-            context.drawText(textRenderer, lines.get(i), centerX - lw / 2, y + i * lineH, UIConstants.COLOR_DESC_TEXT, false);
+            textRenderer.draw(matrices, lines.get(i), centerX - lw / 2, y + i * lineH, UIConstants.COLOR_DESC_TEXT);
         }
         return lines.size() * lineH;
     }
 
     /**
      * 处理颜色选择器面板的点击事件。
-     *
-     * @param mouseX 鼠标 X 坐标
-     * @param mouseY 鼠标 Y 坐标
-     * @param mainWidth 主区域宽度
-     * @param contentStartY 内容起始 Y 坐标
-     * @param scrollWindowStartY 滚动窗口起始 Y 坐标
-     * @param scrollWindowEndY 滚动窗口结束 Y 坐标
-     * @return 若点击被消费返回 {@code true}
      */
     public static boolean handleClick(double mouseX, double mouseY, int mainWidth, int contentStartY,
                                       int scrollWindowStartY, int scrollWindowEndY) {
@@ -301,8 +287,6 @@ public final class ColorPickerRenderer {
 
     /**
      * 处理预设颜色的点击事件。
-     *
-     * @return 若点击被消费返回 {@code true}
      */
     private static boolean handlePresetClick(double mouseX, double mouseY, int previewX, int y, int previewW) {
         int presetSize = ColorPickerState.COLOR_PICKER_PRESET_SIZE;
@@ -326,5 +310,15 @@ public final class ColorPickerRenderer {
             }
         }
         return false;
+    }
+
+    /**
+     * 绘制简单边框（1.19.2 兼容）。
+     */
+    private static void drawBorder(MatrixStack matrices, int x, int y, int width, int height, int color) {
+        DrawableHelper.fill(matrices, x, y, x + width, y + 1, color);
+        DrawableHelper.fill(matrices, x, y + height - 1, x + width, y + height, color);
+        DrawableHelper.fill(matrices, x, y, x + 1, y + height, color);
+        DrawableHelper.fill(matrices, x + width - 1, y, x + width, y + height, color);
     }
 }

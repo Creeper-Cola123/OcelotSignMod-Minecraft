@@ -4,10 +4,10 @@ import bklmc.ocelotsign.OcelotSignMod;
 import bklmc.ocelotsign.block.custom.RoadMarkBlock;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
+import net.minecraft.block.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.Identifier;
 
 /**
@@ -17,7 +17,7 @@ import net.minecraft.util.Identifier;
  * @see ArrowBlocksLarge
  */
 public class ArrowBlocksStyle3 {
-    private static final FabricBlockSettings ROAD_MARK_SETTINGS = FabricBlockSettings.create().strength(0.5f).nonOpaque().collidable(false);
+    private static final FabricBlockSettings ROAD_MARK_SETTINGS = FabricBlockSettings.of(Material.STONE).strength(0.5f).nonOpaque().collidable(false);
 
     public static final RoadMarkBlock ARROW_LEFT = directional("roadmark_style_3/arrow_left");
     public static final RoadMarkBlock ARROW_RIGHT = directional("roadmark_style_3/arrow_right");
@@ -79,7 +79,7 @@ public class ArrowBlocksStyle3 {
      * @return 已注册的方块
      */
     private static RoadMarkBlock registerWithItem(String id, RoadMarkBlock block) {
-        RoadMarkBlock registeredBlock = Registry.register(Registries.BLOCK, new Identifier(OcelotSignMod.MOD_ID, id), block);
+        RoadMarkBlock registeredBlock = Registry.register(Registry.BLOCK, new Identifier(OcelotSignMod.MOD_ID, id), block);
         registerBlockItem(id, registeredBlock);
         return registeredBlock;
     }
@@ -91,7 +91,7 @@ public class ArrowBlocksStyle3 {
      * @param block 对应的方块
      */
     private static void registerBlockItem(String id, Block block) {
-        Registry.register(Registries.ITEM, new Identifier(OcelotSignMod.MOD_ID, id),
+        Registry.register(Registry.ITEM, new Identifier(OcelotSignMod.MOD_ID, id),
                 new BlockItem(block, new Item.Settings()));
     }
 

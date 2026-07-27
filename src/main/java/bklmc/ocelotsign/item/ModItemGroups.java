@@ -1,362 +1,539 @@
 package bklmc.ocelotsign.item;
 
 import bklmc.ocelotsign.OcelotSignMod;
-import bklmc.ocelotsign.block.ArrowBlocks;
-import bklmc.ocelotsign.block.ArrowBlocksLarge;
-import bklmc.ocelotsign.block.ArrowBlocksStyle2;
-import bklmc.ocelotsign.block.ArrowBlocksStyle3;
-import bklmc.ocelotsign.block.PillarBlocks;
 import bklmc.ocelotsign.block.RoadSignBlocks;
 import bklmc.ocelotsign.block.WallRoadSignBlocks;
+import bklmc.ocelotsign.block.PillarBlocks;
 import bklmc.ocelotsign.integration.mishanguc.MishangAccess;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
+
+import static bklmc.ocelotsign.block.RoadSignBlocks.*;
+import static bklmc.ocelotsign.block.WallRoadSignBlocks.*;
+import static bklmc.ocelotsign.block.PillarBlocks.*;
 
 /**
  * 物品创造栏分组注册
  *
  * @see ModItems
- * @see net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup
  */
 public class ModItemGroups {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ModItemGroups.class); // 日志记录器
+    private static final Logger LOGGER = LoggerFactory.getLogger(ModItemGroups.class);
 
     /**
-     * 道路指示牌分类。
+     * 道路指示牌分类
      */
-    public static final ItemGroup ROAD_SIGNS = FabricItemGroup.builder()
+    public static ItemGroup getRoadSigns() {
+        return ROAD_SIGNS;
+    }
+
+    private static final ItemGroup ROAD_SIGNS = FabricItemGroupBuilder.create(
+                    new Identifier(OcelotSignMod.MOD_ID, "road_signs"))
             .icon(() -> new ItemStack(ModItems.ROAD_SIGNS_ICON))
-            .displayName(Text.translatable("itemGroup.ocelotsign.road_signs"))
-            .entries((context, entries) -> {
-                addAllBlocks(entries,
-                        RoadSignBlocks.BLUE_ROAD_SIGN_LEFT_TOP, RoadSignBlocks.BLUE_ROAD_SIGN_TOP,
-                        RoadSignBlocks.BLUE_ROAD_SIGN_RIGHT_TOP, RoadSignBlocks.BLUE_ROAD_SIGN_LEFT,
-                        RoadSignBlocks.BLUE_ROAD_SIGN_MIDDLE, RoadSignBlocks.BLUE_ROAD_SIGN_RIGHT,
-                        RoadSignBlocks.BLUE_ROAD_SIGN_LEFT_BOTTOM, RoadSignBlocks.BLUE_ROAD_SIGN_BOTTOM,
-                        RoadSignBlocks.BLUE_ROAD_SIGN_RIGHT_BOTTOM, RoadSignBlocks.BLUE_ROAD_SIGN_HORIZONTAL_LEFT,
-                        RoadSignBlocks.BLUE_ROAD_SIGN_HORIZONTAL_MIDDLE, RoadSignBlocks.BLUE_ROAD_SIGN_HORIZONTAL_RIGHT,
-                        RoadSignBlocks.BLUE_ROAD_SIGN_VERTICAL_TOP, RoadSignBlocks.BLUE_ROAD_SIGN_VERTICAL_MIDDLE,
-                        RoadSignBlocks.BLUE_ROAD_SIGN_VERTICAL_BOTTOM, RoadSignBlocks.BLUE_ROAD_SIGN_SMALL_A,
-                        RoadSignBlocks.BLUE_ROAD_SIGN_SMALL_B,
+            .appendItems(stacks -> {
+                // 蓝色
+                stacks.add(new ItemStack(BLUE_ROAD_SIGN_LEFT_TOP));
+                stacks.add(new ItemStack(BLUE_ROAD_SIGN_TOP));
+                stacks.add(new ItemStack(BLUE_ROAD_SIGN_RIGHT_TOP));
+                stacks.add(new ItemStack(BLUE_ROAD_SIGN_LEFT));
+                stacks.add(new ItemStack(BLUE_ROAD_SIGN_MIDDLE));
+                stacks.add(new ItemStack(BLUE_ROAD_SIGN_RIGHT));
+                stacks.add(new ItemStack(BLUE_ROAD_SIGN_LEFT_BOTTOM));
+                stacks.add(new ItemStack(BLUE_ROAD_SIGN_BOTTOM));
+                stacks.add(new ItemStack(BLUE_ROAD_SIGN_RIGHT_BOTTOM));
+                stacks.add(new ItemStack(BLUE_ROAD_SIGN_HORIZONTAL_LEFT));
+                stacks.add(new ItemStack(BLUE_ROAD_SIGN_HORIZONTAL_MIDDLE));
+                stacks.add(new ItemStack(BLUE_ROAD_SIGN_HORIZONTAL_RIGHT));
+                stacks.add(new ItemStack(BLUE_ROAD_SIGN_VERTICAL_TOP));
+                stacks.add(new ItemStack(BLUE_ROAD_SIGN_VERTICAL_MIDDLE));
+                stacks.add(new ItemStack(BLUE_ROAD_SIGN_VERTICAL_BOTTOM));
+                stacks.add(new ItemStack(BLUE_ROAD_SIGN_SMALL_A));
+                stacks.add(new ItemStack(BLUE_ROAD_SIGN_SMALL_B));
 
-                        RoadSignBlocks.GREEN_ROAD_SIGN_LEFT_TOP, RoadSignBlocks.GREEN_ROAD_SIGN_TOP,
-                        RoadSignBlocks.GREEN_ROAD_SIGN_RIGHT_TOP, RoadSignBlocks.GREEN_ROAD_SIGN_LEFT,
-                        RoadSignBlocks.GREEN_ROAD_SIGN_MIDDLE, RoadSignBlocks.GREEN_ROAD_SIGN_RIGHT,
-                        RoadSignBlocks.GREEN_ROAD_SIGN_LEFT_BOTTOM, RoadSignBlocks.GREEN_ROAD_SIGN_BOTTOM,
-                        RoadSignBlocks.GREEN_ROAD_SIGN_RIGHT_BOTTOM, RoadSignBlocks.GREEN_ROAD_SIGN_HORIZONTAL_LEFT,
-                        RoadSignBlocks.GREEN_ROAD_SIGN_HORIZONTAL_MIDDLE, RoadSignBlocks.GREEN_ROAD_SIGN_HORIZONTAL_RIGHT,
-                        RoadSignBlocks.GREEN_ROAD_SIGN_VERTICAL_TOP, RoadSignBlocks.GREEN_ROAD_SIGN_VERTICAL_MIDDLE,
-                        RoadSignBlocks.GREEN_ROAD_SIGN_VERTICAL_BOTTOM, RoadSignBlocks.GREEN_ROAD_SIGN_SMALL_A,
-                        RoadSignBlocks.GREEN_ROAD_SIGN_SMALL_B,
+                // 绿色
+                stacks.add(new ItemStack(GREEN_ROAD_SIGN_LEFT_TOP));
+                stacks.add(new ItemStack(GREEN_ROAD_SIGN_TOP));
+                stacks.add(new ItemStack(GREEN_ROAD_SIGN_RIGHT_TOP));
+                stacks.add(new ItemStack(GREEN_ROAD_SIGN_LEFT));
+                stacks.add(new ItemStack(GREEN_ROAD_SIGN_MIDDLE));
+                stacks.add(new ItemStack(GREEN_ROAD_SIGN_RIGHT));
+                stacks.add(new ItemStack(GREEN_ROAD_SIGN_LEFT_BOTTOM));
+                stacks.add(new ItemStack(GREEN_ROAD_SIGN_BOTTOM));
+                stacks.add(new ItemStack(GREEN_ROAD_SIGN_RIGHT_BOTTOM));
+                stacks.add(new ItemStack(GREEN_ROAD_SIGN_HORIZONTAL_LEFT));
+                stacks.add(new ItemStack(GREEN_ROAD_SIGN_HORIZONTAL_MIDDLE));
+                stacks.add(new ItemStack(GREEN_ROAD_SIGN_HORIZONTAL_RIGHT));
+                stacks.add(new ItemStack(GREEN_ROAD_SIGN_VERTICAL_TOP));
+                stacks.add(new ItemStack(GREEN_ROAD_SIGN_VERTICAL_MIDDLE));
+                stacks.add(new ItemStack(GREEN_ROAD_SIGN_VERTICAL_BOTTOM));
+                stacks.add(new ItemStack(GREEN_ROAD_SIGN_SMALL_A));
+                stacks.add(new ItemStack(GREEN_ROAD_SIGN_SMALL_B));
 
-                        RoadSignBlocks.YELLOW_ROAD_SIGN_LEFT_TOP, RoadSignBlocks.YELLOW_ROAD_SIGN_TOP,
-                        RoadSignBlocks.YELLOW_ROAD_SIGN_RIGHT_TOP, RoadSignBlocks.YELLOW_ROAD_SIGN_LEFT,
-                        RoadSignBlocks.YELLOW_ROAD_SIGN_MIDDLE, RoadSignBlocks.YELLOW_ROAD_SIGN_RIGHT,
-                        RoadSignBlocks.YELLOW_ROAD_SIGN_LEFT_BOTTOM, RoadSignBlocks.YELLOW_ROAD_SIGN_BOTTOM,
-                        RoadSignBlocks.YELLOW_ROAD_SIGN_RIGHT_BOTTOM, RoadSignBlocks.YELLOW_ROAD_SIGN_HORIZONTAL_LEFT,
-                        RoadSignBlocks.YELLOW_ROAD_SIGN_HORIZONTAL_MIDDLE, RoadSignBlocks.YELLOW_ROAD_SIGN_HORIZONTAL_RIGHT,
-                        RoadSignBlocks.YELLOW_ROAD_SIGN_VERTICAL_TOP, RoadSignBlocks.YELLOW_ROAD_SIGN_VERTICAL_MIDDLE,
-                        RoadSignBlocks.YELLOW_ROAD_SIGN_VERTICAL_BOTTOM, RoadSignBlocks.YELLOW_ROAD_SIGN_SMALL_A,
-                        RoadSignBlocks.YELLOW_ROAD_SIGN_SMALL_B,
+                // 黄色
+                stacks.add(new ItemStack(YELLOW_ROAD_SIGN_LEFT_TOP));
+                stacks.add(new ItemStack(YELLOW_ROAD_SIGN_TOP));
+                stacks.add(new ItemStack(YELLOW_ROAD_SIGN_RIGHT_TOP));
+                stacks.add(new ItemStack(YELLOW_ROAD_SIGN_LEFT));
+                stacks.add(new ItemStack(YELLOW_ROAD_SIGN_MIDDLE));
+                stacks.add(new ItemStack(YELLOW_ROAD_SIGN_RIGHT));
+                stacks.add(new ItemStack(YELLOW_ROAD_SIGN_LEFT_BOTTOM));
+                stacks.add(new ItemStack(YELLOW_ROAD_SIGN_BOTTOM));
+                stacks.add(new ItemStack(YELLOW_ROAD_SIGN_RIGHT_BOTTOM));
+                stacks.add(new ItemStack(YELLOW_ROAD_SIGN_HORIZONTAL_LEFT));
+                stacks.add(new ItemStack(YELLOW_ROAD_SIGN_HORIZONTAL_MIDDLE));
+                stacks.add(new ItemStack(YELLOW_ROAD_SIGN_HORIZONTAL_RIGHT));
+                stacks.add(new ItemStack(YELLOW_ROAD_SIGN_VERTICAL_TOP));
+                stacks.add(new ItemStack(YELLOW_ROAD_SIGN_VERTICAL_MIDDLE));
+                stacks.add(new ItemStack(YELLOW_ROAD_SIGN_VERTICAL_BOTTOM));
+                stacks.add(new ItemStack(YELLOW_ROAD_SIGN_SMALL_A));
+                stacks.add(new ItemStack(YELLOW_ROAD_SIGN_SMALL_B));
 
-                        RoadSignBlocks.WHITE_ROAD_SIGN_LEFT_TOP, RoadSignBlocks.WHITE_ROAD_SIGN_TOP,
-                        RoadSignBlocks.WHITE_ROAD_SIGN_RIGHT_TOP, RoadSignBlocks.WHITE_ROAD_SIGN_LEFT,
-                        RoadSignBlocks.WHITE_ROAD_SIGN_MIDDLE, RoadSignBlocks.WHITE_ROAD_SIGN_RIGHT,
-                        RoadSignBlocks.WHITE_ROAD_SIGN_LEFT_BOTTOM, RoadSignBlocks.WHITE_ROAD_SIGN_BOTTOM,
-                        RoadSignBlocks.WHITE_ROAD_SIGN_RIGHT_BOTTOM, RoadSignBlocks.WHITE_ROAD_SIGN_HORIZONTAL_LEFT,
-                        RoadSignBlocks.WHITE_ROAD_SIGN_HORIZONTAL_MIDDLE, RoadSignBlocks.WHITE_ROAD_SIGN_HORIZONTAL_RIGHT,
-                        RoadSignBlocks.WHITE_ROAD_SIGN_VERTICAL_TOP, RoadSignBlocks.WHITE_ROAD_SIGN_VERTICAL_MIDDLE,
-                        RoadSignBlocks.WHITE_ROAD_SIGN_VERTICAL_BOTTOM, RoadSignBlocks.WHITE_ROAD_SIGN_SMALL_A,
-                        RoadSignBlocks.WHITE_ROAD_SIGN_SMALL_B,
+                // 白色
+                stacks.add(new ItemStack(WHITE_ROAD_SIGN_LEFT_TOP));
+                stacks.add(new ItemStack(WHITE_ROAD_SIGN_TOP));
+                stacks.add(new ItemStack(WHITE_ROAD_SIGN_RIGHT_TOP));
+                stacks.add(new ItemStack(WHITE_ROAD_SIGN_LEFT));
+                stacks.add(new ItemStack(WHITE_ROAD_SIGN_MIDDLE));
+                stacks.add(new ItemStack(WHITE_ROAD_SIGN_RIGHT));
+                stacks.add(new ItemStack(WHITE_ROAD_SIGN_LEFT_BOTTOM));
+                stacks.add(new ItemStack(WHITE_ROAD_SIGN_BOTTOM));
+                stacks.add(new ItemStack(WHITE_ROAD_SIGN_RIGHT_BOTTOM));
+                stacks.add(new ItemStack(WHITE_ROAD_SIGN_HORIZONTAL_LEFT));
+                stacks.add(new ItemStack(WHITE_ROAD_SIGN_HORIZONTAL_MIDDLE));
+                stacks.add(new ItemStack(WHITE_ROAD_SIGN_HORIZONTAL_RIGHT));
+                stacks.add(new ItemStack(WHITE_ROAD_SIGN_VERTICAL_TOP));
+                stacks.add(new ItemStack(WHITE_ROAD_SIGN_VERTICAL_MIDDLE));
+                stacks.add(new ItemStack(WHITE_ROAD_SIGN_VERTICAL_BOTTOM));
+                stacks.add(new ItemStack(WHITE_ROAD_SIGN_SMALL_A));
+                stacks.add(new ItemStack(WHITE_ROAD_SIGN_SMALL_B));
 
-                        RoadSignBlocks.BROWN_ROAD_SIGN_LEFT_TOP, RoadSignBlocks.BROWN_ROAD_SIGN_TOP,
-                        RoadSignBlocks.BROWN_ROAD_SIGN_RIGHT_TOP, RoadSignBlocks.BROWN_ROAD_SIGN_LEFT,
-                        RoadSignBlocks.BROWN_ROAD_SIGN_MIDDLE, RoadSignBlocks.BROWN_ROAD_SIGN_RIGHT,
-                        RoadSignBlocks.BROWN_ROAD_SIGN_LEFT_BOTTOM, RoadSignBlocks.BROWN_ROAD_SIGN_BOTTOM,
-                        RoadSignBlocks.BROWN_ROAD_SIGN_RIGHT_BOTTOM, RoadSignBlocks.BROWN_ROAD_SIGN_HORIZONTAL_LEFT,
-                        RoadSignBlocks.BROWN_ROAD_SIGN_HORIZONTAL_MIDDLE, RoadSignBlocks.BROWN_ROAD_SIGN_HORIZONTAL_RIGHT,
-                        RoadSignBlocks.BROWN_ROAD_SIGN_VERTICAL_TOP, RoadSignBlocks.BROWN_ROAD_SIGN_VERTICAL_MIDDLE,
-                        RoadSignBlocks.BROWN_ROAD_SIGN_VERTICAL_BOTTOM, RoadSignBlocks.BROWN_ROAD_SIGN_SMALL_A,
-                        RoadSignBlocks.BROWN_ROAD_SIGN_SMALL_B,
+                // 棕色
+                stacks.add(new ItemStack(BROWN_ROAD_SIGN_LEFT_TOP));
+                stacks.add(new ItemStack(BROWN_ROAD_SIGN_TOP));
+                stacks.add(new ItemStack(BROWN_ROAD_SIGN_RIGHT_TOP));
+                stacks.add(new ItemStack(BROWN_ROAD_SIGN_LEFT));
+                stacks.add(new ItemStack(BROWN_ROAD_SIGN_MIDDLE));
+                stacks.add(new ItemStack(BROWN_ROAD_SIGN_RIGHT));
+                stacks.add(new ItemStack(BROWN_ROAD_SIGN_LEFT_BOTTOM));
+                stacks.add(new ItemStack(BROWN_ROAD_SIGN_BOTTOM));
+                stacks.add(new ItemStack(BROWN_ROAD_SIGN_RIGHT_BOTTOM));
+                stacks.add(new ItemStack(BROWN_ROAD_SIGN_HORIZONTAL_LEFT));
+                stacks.add(new ItemStack(BROWN_ROAD_SIGN_HORIZONTAL_MIDDLE));
+                stacks.add(new ItemStack(BROWN_ROAD_SIGN_HORIZONTAL_RIGHT));
+                stacks.add(new ItemStack(BROWN_ROAD_SIGN_VERTICAL_TOP));
+                stacks.add(new ItemStack(BROWN_ROAD_SIGN_VERTICAL_MIDDLE));
+                stacks.add(new ItemStack(BROWN_ROAD_SIGN_VERTICAL_BOTTOM));
+                stacks.add(new ItemStack(BROWN_ROAD_SIGN_SMALL_A));
+                stacks.add(new ItemStack(BROWN_ROAD_SIGN_SMALL_B));
 
-                        RoadSignBlocks.ORANGE_ROAD_SIGN_LEFT_TOP, RoadSignBlocks.ORANGE_ROAD_SIGN_TOP,
-                        RoadSignBlocks.ORANGE_ROAD_SIGN_RIGHT_TOP, RoadSignBlocks.ORANGE_ROAD_SIGN_LEFT,
-                        RoadSignBlocks.ORANGE_ROAD_SIGN_MIDDLE, RoadSignBlocks.ORANGE_ROAD_SIGN_RIGHT,
-                        RoadSignBlocks.ORANGE_ROAD_SIGN_LEFT_BOTTOM, RoadSignBlocks.ORANGE_ROAD_SIGN_BOTTOM,
-                        RoadSignBlocks.ORANGE_ROAD_SIGN_RIGHT_BOTTOM, RoadSignBlocks.ORANGE_ROAD_SIGN_HORIZONTAL_LEFT,
-                        RoadSignBlocks.ORANGE_ROAD_SIGN_HORIZONTAL_MIDDLE, RoadSignBlocks.ORANGE_ROAD_SIGN_HORIZONTAL_RIGHT,
-                        RoadSignBlocks.ORANGE_ROAD_SIGN_VERTICAL_TOP, RoadSignBlocks.ORANGE_ROAD_SIGN_VERTICAL_MIDDLE,
-                        RoadSignBlocks.ORANGE_ROAD_SIGN_VERTICAL_BOTTOM, RoadSignBlocks.ORANGE_ROAD_SIGN_SMALL_A,
-                        RoadSignBlocks.ORANGE_ROAD_SIGN_SMALL_B
-                );
+                // 橙色
+                stacks.add(new ItemStack(ORANGE_ROAD_SIGN_LEFT_TOP));
+                stacks.add(new ItemStack(ORANGE_ROAD_SIGN_TOP));
+                stacks.add(new ItemStack(ORANGE_ROAD_SIGN_RIGHT_TOP));
+                stacks.add(new ItemStack(ORANGE_ROAD_SIGN_LEFT));
+                stacks.add(new ItemStack(ORANGE_ROAD_SIGN_MIDDLE));
+                stacks.add(new ItemStack(ORANGE_ROAD_SIGN_RIGHT));
+                stacks.add(new ItemStack(ORANGE_ROAD_SIGN_LEFT_BOTTOM));
+                stacks.add(new ItemStack(ORANGE_ROAD_SIGN_BOTTOM));
+                stacks.add(new ItemStack(ORANGE_ROAD_SIGN_RIGHT_BOTTOM));
+                stacks.add(new ItemStack(ORANGE_ROAD_SIGN_HORIZONTAL_LEFT));
+                stacks.add(new ItemStack(ORANGE_ROAD_SIGN_HORIZONTAL_MIDDLE));
+                stacks.add(new ItemStack(ORANGE_ROAD_SIGN_HORIZONTAL_RIGHT));
+                stacks.add(new ItemStack(ORANGE_ROAD_SIGN_VERTICAL_TOP));
+                stacks.add(new ItemStack(ORANGE_ROAD_SIGN_VERTICAL_MIDDLE));
+                stacks.add(new ItemStack(ORANGE_ROAD_SIGN_VERTICAL_BOTTOM));
+                stacks.add(new ItemStack(ORANGE_ROAD_SIGN_SMALL_A));
+                stacks.add(new ItemStack(ORANGE_ROAD_SIGN_SMALL_B));
             })
             .build();
 
     /**
-     * 墙道路指示牌分类。
+     * 墙道路指示牌分类
      */
-    public static final ItemGroup WALL_ROAD_SIGNS = FabricItemGroup.builder()
+    public static ItemGroup getWallRoadSigns() {
+        return WALL_ROAD_SIGNS;
+    }
+
+    private static final ItemGroup WALL_ROAD_SIGNS = FabricItemGroupBuilder.create(
+                    new Identifier(OcelotSignMod.MOD_ID, "wall_road_signs"))
             .icon(() -> new ItemStack(ModItems.WALL_ROAD_SIGNS_ICON))
-            .displayName(Text.translatable("itemGroup.ocelotsign.wall_road_signs"))
-            .entries((context, entries) -> {
-                addAllBlocks(entries,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_LEFT_TOP, WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_TOP,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_RIGHT_TOP, WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_LEFT,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_MIDDLE, WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_RIGHT,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_LEFT_BOTTOM, WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_BOTTOM,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_RIGHT_BOTTOM, WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_HORIZONTAL_LEFT,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_HORIZONTAL_MIDDLE, WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_HORIZONTAL_RIGHT,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_VERTICAL_TOP, WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_VERTICAL_MIDDLE,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_VERTICAL_BOTTOM, WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_SMALL_A,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_SMALL_B, WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_RHOMBUS,
+            .appendItems(stacks -> {
+                // 蓝色墙道路指示牌
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_LEFT_TOP));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_TOP));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_RIGHT_TOP));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_LEFT));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_MIDDLE));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_RIGHT));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_LEFT_BOTTOM));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_BOTTOM));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_RIGHT_BOTTOM));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_HORIZONTAL_LEFT));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_HORIZONTAL_MIDDLE));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_HORIZONTAL_RIGHT));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_VERTICAL_TOP));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_VERTICAL_MIDDLE));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_VERTICAL_BOTTOM));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_SMALL_A));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_SMALL_B));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_RHOMBUS));
 
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_LEFT_TOP, WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_TOP,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_RIGHT_TOP, WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_LEFT,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_MIDDLE, WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_RIGHT,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_LEFT_BOTTOM, WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_BOTTOM,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_RIGHT_BOTTOM, WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_HORIZONTAL_LEFT,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_HORIZONTAL_MIDDLE, WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_HORIZONTAL_RIGHT,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_VERTICAL_TOP, WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_VERTICAL_MIDDLE,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_VERTICAL_BOTTOM, WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_SMALL_A,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_SMALL_B, WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_RHOMBUS,
+                // 绿色墙道路指示牌
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_LEFT_TOP));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_TOP));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_RIGHT_TOP));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_LEFT));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_MIDDLE));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_RIGHT));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_LEFT_BOTTOM));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_BOTTOM));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_RIGHT_BOTTOM));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_HORIZONTAL_LEFT));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_HORIZONTAL_MIDDLE));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_HORIZONTAL_RIGHT));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_VERTICAL_TOP));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_VERTICAL_MIDDLE));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_VERTICAL_BOTTOM));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_SMALL_A));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_SMALL_B));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_RHOMBUS));
 
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_LEFT_TOP, WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_TOP,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_RIGHT_TOP, WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_LEFT,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_MIDDLE, WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_RIGHT,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_LEFT_BOTTOM, WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_BOTTOM,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_RIGHT_BOTTOM, WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_HORIZONTAL_LEFT,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_HORIZONTAL_MIDDLE, WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_HORIZONTAL_RIGHT,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_VERTICAL_TOP, WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_VERTICAL_MIDDLE,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_VERTICAL_BOTTOM, WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_SMALL_A,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_SMALL_B, WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_RHOMBUS,
+                // 黄色墙道路指示牌
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_LEFT_TOP));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_TOP));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_RIGHT_TOP));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_LEFT));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_MIDDLE));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_RIGHT));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_LEFT_BOTTOM));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_BOTTOM));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_RIGHT_BOTTOM));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_HORIZONTAL_LEFT));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_HORIZONTAL_MIDDLE));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_HORIZONTAL_RIGHT));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_VERTICAL_TOP));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_VERTICAL_MIDDLE));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_VERTICAL_BOTTOM));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_SMALL_A));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_SMALL_B));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_RHOMBUS));
 
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_LEFT_TOP, WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_TOP,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_RIGHT_TOP, WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_LEFT,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_MIDDLE, WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_RIGHT,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_LEFT_BOTTOM, WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_BOTTOM,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_RIGHT_BOTTOM, WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_HORIZONTAL_LEFT,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_HORIZONTAL_MIDDLE, WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_HORIZONTAL_RIGHT,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_VERTICAL_TOP, WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_VERTICAL_MIDDLE,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_VERTICAL_BOTTOM, WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_SMALL_A,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_SMALL_B, WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_RHOMBUS,
+                // 白色墙道路指示牌
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_LEFT_TOP));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_TOP));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_RIGHT_TOP));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_LEFT));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_MIDDLE));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_RIGHT));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_LEFT_BOTTOM));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_BOTTOM));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_RIGHT_BOTTOM));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_HORIZONTAL_LEFT));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_HORIZONTAL_MIDDLE));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_HORIZONTAL_RIGHT));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_VERTICAL_TOP));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_VERTICAL_MIDDLE));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_VERTICAL_BOTTOM));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_SMALL_A));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_SMALL_B));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_RHOMBUS));
 
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_LEFT_TOP, WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_TOP,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_RIGHT_TOP, WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_LEFT,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_MIDDLE, WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_RIGHT,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_LEFT_BOTTOM, WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_BOTTOM,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_RIGHT_BOTTOM, WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_HORIZONTAL_LEFT,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_HORIZONTAL_MIDDLE, WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_HORIZONTAL_RIGHT,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_VERTICAL_TOP, WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_VERTICAL_MIDDLE,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_VERTICAL_BOTTOM, WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_SMALL_A,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_SMALL_B, WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_RHOMBUS,
+                // 棕色墙道路指示牌
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_LEFT_TOP));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_TOP));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_RIGHT_TOP));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_LEFT));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_MIDDLE));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_RIGHT));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_LEFT_BOTTOM));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_BOTTOM));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_RIGHT_BOTTOM));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_HORIZONTAL_LEFT));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_HORIZONTAL_MIDDLE));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_HORIZONTAL_RIGHT));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_VERTICAL_TOP));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_VERTICAL_MIDDLE));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_VERTICAL_BOTTOM));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_SMALL_A));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_SMALL_B));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_RHOMBUS));
 
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_LEFT_TOP, WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_TOP,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_RIGHT_TOP, WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_LEFT,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_MIDDLE, WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_RIGHT,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_LEFT_BOTTOM, WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_BOTTOM,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_RIGHT_BOTTOM, WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_HORIZONTAL_LEFT,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_HORIZONTAL_MIDDLE, WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_HORIZONTAL_RIGHT,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_VERTICAL_TOP, WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_VERTICAL_MIDDLE,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_VERTICAL_BOTTOM, WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_SMALL_A,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_SMALL_B,
+                // 橙色墙道路指示牌
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_LEFT_TOP));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_TOP));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_RIGHT_TOP));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_LEFT));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_MIDDLE));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_RIGHT));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_LEFT_BOTTOM));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_BOTTOM));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_RIGHT_BOTTOM));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_HORIZONTAL_LEFT));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_HORIZONTAL_MIDDLE));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_HORIZONTAL_RIGHT));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_VERTICAL_TOP));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_VERTICAL_MIDDLE));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_VERTICAL_BOTTOM));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_SMALL_A));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_SMALL_B));
 
-                        WallRoadSignBlocks.NO_PARKING, WallRoadSignBlocks.NO_LONG_TERM_PARKING,
-                        WallRoadSignBlocks.FORBID_2, WallRoadSignBlocks.BLUE_ROUND, WallRoadSignBlocks.RED_ROUND,
-                        WallRoadSignBlocks.GREEN_ROUND, WallRoadSignBlocks.YELLOW_ROUND, WallRoadSignBlocks.WHITE_ROUND,
-                        WallRoadSignBlocks.FORBID_1, WallRoadSignBlocks.NO_ENTRY, WallRoadSignBlocks.HEIGHT_LIMIT,
-                        WallRoadSignBlocks.WIDTH_LIMIT, WallRoadSignBlocks.WEIGHT_LIMIT, WallRoadSignBlocks.LIFT_SPEED_LIMIT,
-                        WallRoadSignBlocks.LOW_SPEED_LIMIT, WallRoadSignBlocks.MAX_SPEED_LIMIT, WallRoadSignBlocks.WARNING,
-                        WallRoadSignBlocks.WARNING_RED_STROKE, WallRoadSignBlocks.STOP, WallRoadSignBlocks.NATIONAL_EXPRESSWAY,
-                        WallRoadSignBlocks.PROVINCIAL_EXPRESSWAY, WallRoadSignBlocks.NATIONAL_HIGHWAY,
-                        WallRoadSignBlocks.PROVINCIAL_HIGHWAY, WallRoadSignBlocks.COUNTRY_HIGHWAY, WallRoadSignBlocks.YIELD,
-                        WallRoadSignBlocks.GREEN_MILEAGE_SIGN, WallRoadSignBlocks.BLUE_MILEAGE_SIGN,
-                        WallRoadSignBlocks.GREEN_HECTOMETER_SIGN, WallRoadSignBlocks.BLUE_HECTOMETER_SIGN,
-                        WallRoadSignBlocks.YIELD_RED_FILL, WallRoadSignBlocks.FORBID_3, WallRoadSignBlocks.FORBID_4,
-                        WallRoadSignBlocks.MAX_SPEED_LIMIT_YELLOW_FILL, WallRoadSignBlocks.WARNING_RED_STROKE_YELLOW_FILL,
-                        WallRoadSignBlocks.LIFT_SPEED_LIMIT_YELLOW_FILL, WallRoadSignBlocks.WARNING_BLUE_FILL,
-                        WallRoadSignBlocks.WARNING_YELLOW_FILL, WallRoadSignBlocks.WARNING_GREEN_FILL,
-                        WallRoadSignBlocks.WARNING_2,
+                // 特殊标志
+                stacks.add(new ItemStack(NO_PARKING));
+                stacks.add(new ItemStack(NO_LONG_TERM_PARKING));
+                stacks.add(new ItemStack(FORBID_2));
+                stacks.add(new ItemStack(BLUE_ROUND));
+                stacks.add(new ItemStack(RED_ROUND));
+                stacks.add(new ItemStack(GREEN_ROUND));
+                stacks.add(new ItemStack(YELLOW_ROUND));
+                stacks.add(new ItemStack(WHITE_ROUND));
+                stacks.add(new ItemStack(FORBID_1));
+                stacks.add(new ItemStack(NO_ENTRY));
+                stacks.add(new ItemStack(HEIGHT_LIMIT));
+                stacks.add(new ItemStack(WIDTH_LIMIT));
+                stacks.add(new ItemStack(WEIGHT_LIMIT));
+                stacks.add(new ItemStack(LIFT_SPEED_LIMIT));
+                stacks.add(new ItemStack(LOW_SPEED_LIMIT));
+                stacks.add(new ItemStack(MAX_SPEED_LIMIT));
+                stacks.add(new ItemStack(WARNING));
+                stacks.add(new ItemStack(WARNING_RED_STROKE));
+                stacks.add(new ItemStack(STOP));
+                stacks.add(new ItemStack(NATIONAL_EXPRESSWAY));
+                stacks.add(new ItemStack(PROVINCIAL_EXPRESSWAY));
+                stacks.add(new ItemStack(NATIONAL_HIGHWAY));
+                stacks.add(new ItemStack(PROVINCIAL_HIGHWAY));
+                stacks.add(new ItemStack(COUNTRY_HIGHWAY));
+                stacks.add(new ItemStack(YIELD));
+                stacks.add(new ItemStack(GREEN_MILEAGE_SIGN));
+                stacks.add(new ItemStack(BLUE_MILEAGE_SIGN));
+                stacks.add(new ItemStack(GREEN_HECTOMETER_SIGN));
+                stacks.add(new ItemStack(BLUE_HECTOMETER_SIGN));
+                stacks.add(new ItemStack(YIELD_RED_FILL));
+                stacks.add(new ItemStack(FORBID_3));
+                stacks.add(new ItemStack(FORBID_4));
+                stacks.add(new ItemStack(MAX_SPEED_LIMIT_YELLOW_FILL));
+                stacks.add(new ItemStack(WARNING_RED_STROKE_YELLOW_FILL));
+                stacks.add(new ItemStack(LIFT_SPEED_LIMIT_YELLOW_FILL));
+                stacks.add(new ItemStack(WARNING_BLUE_FILL));
+                stacks.add(new ItemStack(WARNING_YELLOW_FILL));
+                stacks.add(new ItemStack(WARNING_GREEN_FILL));
+                stacks.add(new ItemStack(WARNING_2));
 
-                        WallRoadSignBlocks.BLUE_CHEVRON_ALIGNMENT_A_LEFT, WallRoadSignBlocks.BLUE_CHEVRON_ALIGNMENT_A_RIGHT,
-                        WallRoadSignBlocks.BLUE_CHEVRON_ALIGNMENT_B_LEFT, WallRoadSignBlocks.BLUE_CHEVRON_ALIGNMENT_B_RIGHT,
-                        WallRoadSignBlocks.BLUE_CHEVRON_ALIGNMENT_C_LEFT, WallRoadSignBlocks.BLUE_CHEVRON_ALIGNMENT_C_RIGHT,
-                        WallRoadSignBlocks.BLUE_CHEVRON_ALIGNMENT_C_UP,
+                // 蓝色箭头
+                stacks.add(new ItemStack(BLUE_CHEVRON_ALIGNMENT_A_LEFT));
+                stacks.add(new ItemStack(BLUE_CHEVRON_ALIGNMENT_A_RIGHT));
+                stacks.add(new ItemStack(BLUE_CHEVRON_ALIGNMENT_B_LEFT));
+                stacks.add(new ItemStack(BLUE_CHEVRON_ALIGNMENT_B_RIGHT));
+                stacks.add(new ItemStack(BLUE_CHEVRON_ALIGNMENT_C_LEFT));
+                stacks.add(new ItemStack(BLUE_CHEVRON_ALIGNMENT_C_RIGHT));
+                stacks.add(new ItemStack(BLUE_CHEVRON_ALIGNMENT_C_UP));
 
-                        WallRoadSignBlocks.GREEN_CHEVRON_ALIGNMENT_A_LEFT, WallRoadSignBlocks.GREEN_CHEVRON_ALIGNMENT_A_RIGHT,
-                        WallRoadSignBlocks.GREEN_CHEVRON_ALIGNMENT_B_LEFT, WallRoadSignBlocks.GREEN_CHEVRON_ALIGNMENT_B_RIGHT,
-                        WallRoadSignBlocks.GREEN_CHEVRON_ALIGNMENT_C_LEFT, WallRoadSignBlocks.GREEN_CHEVRON_ALIGNMENT_C_RIGHT,
-                        WallRoadSignBlocks.GREEN_CHEVRON_ALIGNMENT_C_UP,
+                // 绿色箭头
+                stacks.add(new ItemStack(GREEN_CHEVRON_ALIGNMENT_A_LEFT));
+                stacks.add(new ItemStack(GREEN_CHEVRON_ALIGNMENT_A_RIGHT));
+                stacks.add(new ItemStack(GREEN_CHEVRON_ALIGNMENT_B_LEFT));
+                stacks.add(new ItemStack(GREEN_CHEVRON_ALIGNMENT_B_RIGHT));
+                stacks.add(new ItemStack(GREEN_CHEVRON_ALIGNMENT_C_LEFT));
+                stacks.add(new ItemStack(GREEN_CHEVRON_ALIGNMENT_C_RIGHT));
+                stacks.add(new ItemStack(GREEN_CHEVRON_ALIGNMENT_C_UP));
 
-                        WallRoadSignBlocks.RED_CHEVRON_ALIGNMENT_A_LEFT, WallRoadSignBlocks.RED_CHEVRON_ALIGNMENT_A_RIGHT,
-                        WallRoadSignBlocks.RED_CHEVRON_ALIGNMENT_B_LEFT, WallRoadSignBlocks.RED_CHEVRON_ALIGNMENT_B_RIGHT,
-                        WallRoadSignBlocks.RED_CHEVRON_ALIGNMENT_C_LEFT, WallRoadSignBlocks.RED_CHEVRON_ALIGNMENT_C_RIGHT,
-                        WallRoadSignBlocks.RED_CHEVRON_ALIGNMENT_C_UP,
+                // 红色箭头
+                stacks.add(new ItemStack(RED_CHEVRON_ALIGNMENT_A_LEFT));
+                stacks.add(new ItemStack(RED_CHEVRON_ALIGNMENT_A_RIGHT));
+                stacks.add(new ItemStack(RED_CHEVRON_ALIGNMENT_B_LEFT));
+                stacks.add(new ItemStack(RED_CHEVRON_ALIGNMENT_B_RIGHT));
+                stacks.add(new ItemStack(RED_CHEVRON_ALIGNMENT_C_LEFT));
+                stacks.add(new ItemStack(RED_CHEVRON_ALIGNMENT_C_RIGHT));
+                stacks.add(new ItemStack(RED_CHEVRON_ALIGNMENT_C_UP));
 
-                        WallRoadSignBlocks.YELLOW_CHEVRON_ALIGNMENT_A_LEFT, WallRoadSignBlocks.YELLOW_CHEVRON_ALIGNMENT_A_RIGHT,
-                        WallRoadSignBlocks.YELLOW_CHEVRON_ALIGNMENT_B_LEFT, WallRoadSignBlocks.YELLOW_CHEVRON_ALIGNMENT_B_RIGHT,
-                        WallRoadSignBlocks.YELLOW_CHEVRON_ALIGNMENT_C_LEFT, WallRoadSignBlocks.YELLOW_CHEVRON_ALIGNMENT_C_RIGHT,
-                        WallRoadSignBlocks.YELLOW_CHEVRON_ALIGNMENT_C_UP,
+                // 黄色箭头
+                stacks.add(new ItemStack(YELLOW_CHEVRON_ALIGNMENT_A_LEFT));
+                stacks.add(new ItemStack(YELLOW_CHEVRON_ALIGNMENT_A_RIGHT));
+                stacks.add(new ItemStack(YELLOW_CHEVRON_ALIGNMENT_B_LEFT));
+                stacks.add(new ItemStack(YELLOW_CHEVRON_ALIGNMENT_B_RIGHT));
+                stacks.add(new ItemStack(YELLOW_CHEVRON_ALIGNMENT_C_LEFT));
+                stacks.add(new ItemStack(YELLOW_CHEVRON_ALIGNMENT_C_RIGHT));
+                stacks.add(new ItemStack(YELLOW_CHEVRON_ALIGNMENT_C_UP));
 
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_MINI_01,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_MINI_02,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_MINI_03,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_MINI_04,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_MINI_05,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_MINI_06,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_MINI_07,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_MINI_08,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_MINI_09,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_MINI_10,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_MINI_11,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_MINI_12,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_MINI_13,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_MINI_14,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_MINI_15,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_MINI_16,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_MINI_17,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_MINI_18,
-                        WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_MINI_19,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_MINI_01,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_MINI_02,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_MINI_03,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_MINI_04,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_MINI_05,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_MINI_06,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_MINI_07,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_MINI_08,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_MINI_09,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_MINI_10,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_MINI_11,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_MINI_12,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_MINI_13,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_MINI_14,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_MINI_15,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_MINI_16,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_MINI_17,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_MINI_18,
-                        WallRoadSignBlocks.GREEN_WALL_ROAD_SIGN_MINI_19,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_MINI_01,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_MINI_02,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_MINI_03,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_MINI_04,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_MINI_05,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_MINI_06,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_MINI_07,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_MINI_08,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_MINI_09,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_MINI_10,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_MINI_11,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_MINI_12,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_MINI_13,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_MINI_14,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_MINI_15,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_MINI_16,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_MINI_17,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_MINI_18,
-                        WallRoadSignBlocks.YELLOW_WALL_ROAD_SIGN_MINI_19,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_MINI_01,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_MINI_02,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_MINI_03,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_MINI_04,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_MINI_05,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_MINI_06,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_MINI_07,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_MINI_08,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_MINI_09,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_MINI_10,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_MINI_11,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_MINI_12,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_MINI_13,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_MINI_14,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_MINI_15,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_MINI_16,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_MINI_17,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_MINI_18,
-                        WallRoadSignBlocks.WHITE_WALL_ROAD_SIGN_MINI_19,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_MINI_01,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_MINI_02,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_MINI_03,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_MINI_04,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_MINI_05,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_MINI_06,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_MINI_07,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_MINI_08,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_MINI_09,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_MINI_10,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_MINI_11,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_MINI_12,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_MINI_13,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_MINI_14,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_MINI_15,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_MINI_16,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_MINI_17,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_MINI_18,
-                        WallRoadSignBlocks.BROWN_WALL_ROAD_SIGN_MINI_19,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_MINI_01,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_MINI_02,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_MINI_03,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_MINI_04,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_MINI_05,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_MINI_06,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_MINI_07,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_MINI_08,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_MINI_09,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_MINI_10,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_MINI_11,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_MINI_12,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_MINI_13,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_MINI_14,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_MINI_15,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_MINI_16,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_MINI_17,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_MINI_18,
-                        WallRoadSignBlocks.ORANGE_WALL_ROAD_SIGN_MINI_19,
-                        WallRoadSignBlocks.OVERHEAD_ROAD_EDGE_MARKER
-                );
+                // 迷你标志 - 蓝色
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_MINI_01));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_MINI_02));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_MINI_03));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_MINI_04));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_MINI_05));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_MINI_06));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_MINI_07));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_MINI_08));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_MINI_09));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_MINI_10));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_MINI_11));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_MINI_12));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_MINI_13));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_MINI_14));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_MINI_15));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_MINI_16));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_MINI_17));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_MINI_18));
+                stacks.add(new ItemStack(BLUE_WALL_ROAD_SIGN_MINI_19));
+
+                // 迷你标志 - 绿色
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_MINI_01));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_MINI_02));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_MINI_03));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_MINI_04));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_MINI_05));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_MINI_06));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_MINI_07));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_MINI_08));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_MINI_09));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_MINI_10));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_MINI_11));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_MINI_12));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_MINI_13));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_MINI_14));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_MINI_15));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_MINI_16));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_MINI_17));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_MINI_18));
+                stacks.add(new ItemStack(GREEN_WALL_ROAD_SIGN_MINI_19));
+
+                // 迷你标志 - 黄色
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_MINI_01));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_MINI_02));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_MINI_03));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_MINI_04));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_MINI_05));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_MINI_06));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_MINI_07));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_MINI_08));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_MINI_09));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_MINI_10));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_MINI_11));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_MINI_12));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_MINI_13));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_MINI_14));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_MINI_15));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_MINI_16));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_MINI_17));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_MINI_18));
+                stacks.add(new ItemStack(YELLOW_WALL_ROAD_SIGN_MINI_19));
+
+                // 迷你标志 - 白色
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_MINI_01));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_MINI_02));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_MINI_03));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_MINI_04));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_MINI_05));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_MINI_06));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_MINI_07));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_MINI_08));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_MINI_09));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_MINI_10));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_MINI_11));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_MINI_12));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_MINI_13));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_MINI_14));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_MINI_15));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_MINI_16));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_MINI_17));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_MINI_18));
+                stacks.add(new ItemStack(WHITE_WALL_ROAD_SIGN_MINI_19));
+
+                // 迷你标志 - 棕色
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_MINI_01));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_MINI_02));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_MINI_03));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_MINI_04));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_MINI_05));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_MINI_06));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_MINI_07));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_MINI_08));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_MINI_09));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_MINI_10));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_MINI_11));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_MINI_12));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_MINI_13));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_MINI_14));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_MINI_15));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_MINI_16));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_MINI_17));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_MINI_18));
+                stacks.add(new ItemStack(BROWN_WALL_ROAD_SIGN_MINI_19));
+
+                // 迷你标志 - 橙色
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_MINI_01));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_MINI_02));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_MINI_03));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_MINI_04));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_MINI_05));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_MINI_06));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_MINI_07));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_MINI_08));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_MINI_09));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_MINI_10));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_MINI_11));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_MINI_12));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_MINI_13));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_MINI_14));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_MINI_15));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_MINI_16));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_MINI_17));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_MINI_18));
+                stacks.add(new ItemStack(ORANGE_WALL_ROAD_SIGN_MINI_19));
+
+                stacks.add(new ItemStack(OVERHEAD_ROAD_EDGE_MARKER));
             })
             .build();
 
     /**
-     * 支柱分类。
+     * 支柱分类
      */
-    public static final ItemGroup PILLARS = FabricItemGroup.builder()
+    public static ItemGroup getPillars() {
+        return PILLARS;
+    }
+
+    private static final ItemGroup PILLARS = FabricItemGroupBuilder.create(
+                    new Identifier(OcelotSignMod.MOD_ID, "pillars"))
             .icon(() -> new ItemStack(ModItems.PILLARS_ICON))
-            .displayName(Text.translatable("itemGroup.ocelotsign.pillars"))
-            .entries((context, entries) -> {
-                addAllBlocks(entries,
-                        PillarBlocks.ROAD_PILLAR_FOUR_SIDES_A, PillarBlocks.ROAD_PILLAR_FOUR_SIDES_A_TOP,
-                        PillarBlocks.ROAD_PILLAR_THREE_SIDES_A_LEFT, PillarBlocks.ROAD_PILLAR_THREE_SIDES_A_RIGHT,
-                        PillarBlocks.ROAD_PILLAR_THREE_SIDES_A_TOP_LEFT, PillarBlocks.ROAD_PILLAR_THREE_SIDES_A_TOP_RIGHT,
-                        PillarBlocks.ROAD_PILLAR_HORIZONTAL_A, PillarBlocks.ROAD_PILLAR_UPRIGHT_A,
-                        PillarBlocks.ROAD_PILLAR_UPRIGHT_B_DOUBLE, PillarBlocks.ROAD_PILLAR_UPRIGHT_B_LEFT,
-                        PillarBlocks.ROAD_PILLAR_UPRIGHT_B_RIGHT,
-                        PillarBlocks.ROAD_PILLAR_UPRIGHT_C, PillarBlocks.ROAD_PILLAR_UPRIGHT_C_HALF,
-                        PillarBlocks.ROAD_PILLAR_UPRIGHT_C_INCLINED_LEFT, PillarBlocks.ROAD_PILLAR_UPRIGHT_C_INCLINED_RIGHT,
-                        PillarBlocks.ROAD_PILLAR_FOUR_SIDES_D, PillarBlocks.ROAD_PILLAR_FOUR_SIDES_D_LEFT,
-                        PillarBlocks.ROAD_PILLAR_FOUR_SIDES_D_RIGHT, PillarBlocks.ROAD_PILLAR_HORIZONTAL_D,
-                        PillarBlocks.ROAD_PILLAR_HORIZONTAL_D_DOWN, PillarBlocks.ROAD_PILLAR_HORIZONTAL_D_UP
-                );
+            .appendItems(stacks -> {
+                stacks.add(new ItemStack(ROAD_PILLAR_FOUR_SIDES_A));
+                stacks.add(new ItemStack(ROAD_PILLAR_FOUR_SIDES_A_TOP));
+                stacks.add(new ItemStack(ROAD_PILLAR_THREE_SIDES_A_LEFT));
+                stacks.add(new ItemStack(ROAD_PILLAR_THREE_SIDES_A_RIGHT));
+                stacks.add(new ItemStack(ROAD_PILLAR_THREE_SIDES_A_TOP_LEFT));
+                stacks.add(new ItemStack(ROAD_PILLAR_THREE_SIDES_A_TOP_RIGHT));
+                stacks.add(new ItemStack(ROAD_PILLAR_HORIZONTAL_A));
+                stacks.add(new ItemStack(ROAD_PILLAR_UPRIGHT_A));
+                stacks.add(new ItemStack(ROAD_PILLAR_UPRIGHT_B_DOUBLE));
+                stacks.add(new ItemStack(ROAD_PILLAR_UPRIGHT_B_LEFT));
+                stacks.add(new ItemStack(ROAD_PILLAR_UPRIGHT_B_RIGHT));
+                stacks.add(new ItemStack(ROAD_PILLAR_UPRIGHT_C));
+                stacks.add(new ItemStack(ROAD_PILLAR_UPRIGHT_C_HALF));
+                stacks.add(new ItemStack(ROAD_PILLAR_UPRIGHT_C_INCLINED_LEFT));
+                stacks.add(new ItemStack(ROAD_PILLAR_UPRIGHT_C_INCLINED_RIGHT));
+                stacks.add(new ItemStack(ROAD_PILLAR_FOUR_SIDES_D));
+                stacks.add(new ItemStack(ROAD_PILLAR_FOUR_SIDES_D_LEFT));
+                stacks.add(new ItemStack(ROAD_PILLAR_FOUR_SIDES_D_RIGHT));
+                stacks.add(new ItemStack(ROAD_PILLAR_HORIZONTAL_D));
+                stacks.add(new ItemStack(ROAD_PILLAR_HORIZONTAL_D_DOWN));
+                stacks.add(new ItemStack(ROAD_PILLAR_HORIZONTAL_D_UP));
 
-                entries.add(OcelotSignMod.CUSTOM_MODEL_BLOCK);
-                entries.add(OcelotSignMod.MODEL_WAND);
+                stacks.add(new ItemStack(OcelotSignMod.CUSTOM_MODEL_BLOCK));
+                stacks.add(new ItemStack(OcelotSignMod.MODEL_WAND));
 
-                addMishangucTextCopyTool(entries);
+                addMishangucTextCopyTool(stacks);
             })
             .build();
 
     /**
      * 向分类中添加 mishanguc 的文本复制工具（如果可用）。
-     *
-     * @param entries 物品分类条目
      */
-    private static void addMishangucTextCopyTool(ItemGroup.Entries entries) {
+    private static void addMishangucTextCopyTool(List<ItemStack> stacks) {
         if (!MishangAccess.isAvailable()) {
             LOGGER.debug("Mishanguc 不可用；跳过 TEXT_COPY_TOOL");
             return;
@@ -364,152 +541,10 @@ public class ModItemGroups {
 
         Object tool = MishangAccess.getTextCopyTool();
         if (tool instanceof net.minecraft.item.Item item) {
-            entries.add(item);
+            stacks.add(new ItemStack(item));
         }
     }
 
-    /**
-     * 批量向分类中添加方块物品。
-     *
-     * @param entries 物品分类条目
-     * @param blocks  要添加的方块数组
-     */
-    @SafeVarargs
-    private static void addAllBlocks(ItemGroup.Entries entries, net.minecraft.block.Block... blocks) {
-        for (net.minecraft.block.Block block : blocks) {
-            entries.add(block.asItem());
-        }
-    }
-
-    /**
-     * 注册三个物品分类。
-     *
-     * <p>三个分类连续注册，ID 前缀统一，防止被其他模组拆散。
-     * ArrowBlocks 另行注册到 mishanguc 的 {@code roads} 分组中。</p>
-     */
     public static void registerItemGroups() {
-        Registry.register(Registries.ITEM_GROUP, new Identifier(OcelotSignMod.MOD_ID, "ocelotsign_1_road_signs"), ROAD_SIGNS);
-        Registry.register(Registries.ITEM_GROUP, new Identifier(OcelotSignMod.MOD_ID, "ocelotsign_2_wall_road_signs"), WALL_ROAD_SIGNS);
-        Registry.register(Registries.ITEM_GROUP, new Identifier(OcelotSignMod.MOD_ID, "ocelotsign_3_pillars"), PILLARS);
-    }
-
-    /** 将 ArrowBlocks 注入到 mishanguc 的 roads 分组中，不影响本模组分类顺序 */
-    static {
-        var roadsGroupKey = net.minecraft.registry.RegistryKey.of(
-                net.minecraft.registry.RegistryKeys.ITEM_GROUP,
-                new Identifier("mishanguc", "roads")
-        );
-        net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents.modifyEntriesEvent(roadsGroupKey)
-                .register(entries -> {
-                    addAllBlocks(entries,
-                            ArrowBlocks.SPEED_BUMP, ArrowBlocks.YIELD, ArrowBlocks.DISTANCE_CONFIRM,
-
-                            ArrowBlocks.ADVANCE_ARROW_STRAIGHT, ArrowBlocks.ADVANCE_ARROW_LEFT,
-                            ArrowBlocks.ADVANCE_ARROW_RIGHT, ArrowBlocks.ADVANCE_ARROW_LEFT_UTURN,
-                            ArrowBlocks.ADVANCE_ARROW_RIGHT_UTURN, ArrowBlocks.ADVANCE_ARROW_LEFT_RIGHT,
-                            ArrowBlocks.ADVANCE_ARROW_STRAIGHT_LEFT_RIGHT, ArrowBlocks.ADVANCE_ARROW_STRAIGHT_LEFT,
-                            ArrowBlocks.ADVANCE_ARROW_STRAIGHT_RIGHT, ArrowBlocks.ADVANCE_ARROW_UTURN_LEFT,
-                            ArrowBlocks.ADVANCE_ARROW_UTURN_RIGHT, ArrowBlocks.ADVANCE_ARROW_STRAIGHT_UTURN_LEFT,
-                            ArrowBlocks.ADVANCE_ARROW_STRAIGHT_UTURN_RIGHT,
-
-                            ArrowBlocks.ORANGE_ARROW_STRAIGHT, ArrowBlocks.ORANGE_ARROW_LEFT,
-                            ArrowBlocks.ORANGE_ARROW_RIGHT, ArrowBlocks.ORANGE_ARROW_LEFT_UTURN,
-                            ArrowBlocks.ORANGE_ARROW_RIGHT_UTURN, ArrowBlocks.ORANGE_ARROW_LEFT_RIGHT,
-                            ArrowBlocks.ORANGE_ARROW_STRAIGHT_LEFT_RIGHT, ArrowBlocks.ORANGE_ARROW_STRAIGHT_LEFT,
-                            ArrowBlocks.ORANGE_ARROW_STRAIGHT_RIGHT, ArrowBlocks.ORANGE_ARROW_UTURN_LEFT,
-                            ArrowBlocks.ORANGE_ARROW_UTURN_RIGHT, ArrowBlocks.ORANGE_ARROW_STRAIGHT_UTURN_LEFT,
-                            ArrowBlocks.ORANGE_ARROW_STRAIGHT_UTURN_RIGHT,
-
-                            ArrowBlocks.ARROW_PROHIBITED, ArrowBlocks.PROHIBITED_ARROW_STRAIGHT,
-                            ArrowBlocks.PROHIBITED_ARROW_LEFT, ArrowBlocks.PROHIBITED_ARROW_RIGHT,
-                            ArrowBlocks.PROHIBITED_ARROW_LEFT_UTURN, ArrowBlocks.PROHIBITED_ARROW_RIGHT_UTURN,
-                            ArrowBlocks.PROHIBITED_ARROW_LEFT_RIGHT, ArrowBlocks.PROHIBITED_ARROW_STRAIGHT_LEFT_RIGHT,
-                            ArrowBlocks.PROHIBITED_ARROW_STRAIGHT_LEFT, ArrowBlocks.PROHIBITED_ARROW_STRAIGHT_RIGHT,
-                            ArrowBlocks.PROHIBITED_ARROW_UTURN_LEFT, ArrowBlocks.PROHIBITED_ARROW_UTURN_RIGHT,
-                            ArrowBlocks.PROHIBITED_ARROW_STRAIGHT_UTURN_LEFT, ArrowBlocks.PROHIBITED_ARROW_STRAIGHT_UTURN_RIGHT,
-
-                            ArrowBlocksLarge.ARROW_LEFT, ArrowBlocksLarge.ARROW_LEFT_MERGE,
-                            ArrowBlocksLarge.ARROW_LEFT_RIGHT, ArrowBlocksLarge.ARROW_LEFT_UTURN,
-                            ArrowBlocksLarge.ARROW_RIGHT, ArrowBlocksLarge.ARROW_RIGHT_MERGE,
-                            ArrowBlocksLarge.ARROW_RIGHT_UTURN, ArrowBlocksLarge.ARROW_STRAIGHT,
-                            ArrowBlocksLarge.ARROW_STRAIGHT_LEFT, ArrowBlocksLarge.ARROW_STRAIGHT_LEFT_RIGHT,
-                            ArrowBlocksLarge.ARROW_STRAIGHT_RIGHT, ArrowBlocksLarge.ARROW_STRAIGHT_UTURN_LEFT,
-                            ArrowBlocksLarge.ARROW_STRAIGHT_UTURN_RIGHT, ArrowBlocksLarge.ARROW_UTURN_LEFT,
-                            ArrowBlocksLarge.ARROW_UTURN_RIGHT,
-
-                            ArrowBlocksLarge.DECELERATION_CROSSROADS, ArrowBlocksLarge.SPEED_BUMP,
-                            ArrowBlocksLarge.YIELD, ArrowBlocksLarge.DISTANCE_CONFIRM,
-
-                            ArrowBlocksLarge.ADVANCE_ARROW_STRAIGHT, ArrowBlocksLarge.ADVANCE_ARROW_LEFT,
-                            ArrowBlocksLarge.ADVANCE_ARROW_RIGHT, ArrowBlocksLarge.ADVANCE_ARROW_LEFT_UTURN,
-                            ArrowBlocksLarge.ADVANCE_ARROW_RIGHT_UTURN, ArrowBlocksLarge.ADVANCE_ARROW_LEFT_RIGHT,
-                            ArrowBlocksLarge.ADVANCE_ARROW_STRAIGHT_LEFT_RIGHT, ArrowBlocksLarge.ADVANCE_ARROW_STRAIGHT_LEFT,
-                            ArrowBlocksLarge.ADVANCE_ARROW_STRAIGHT_RIGHT, ArrowBlocksLarge.ADVANCE_ARROW_UTURN_LEFT,
-                            ArrowBlocksLarge.ADVANCE_ARROW_UTURN_RIGHT, ArrowBlocksLarge.ADVANCE_ARROW_STRAIGHT_UTURN_LEFT,
-                            ArrowBlocksLarge.ADVANCE_ARROW_STRAIGHT_UTURN_RIGHT,
-
-                            ArrowBlocksLarge.ARROW_PROHIBITED, ArrowBlocksLarge.PROHIBITED_ARROW_STRAIGHT,
-                            ArrowBlocksLarge.PROHIBITED_ARROW_LEFT, ArrowBlocksLarge.PROHIBITED_ARROW_RIGHT,
-                            ArrowBlocksLarge.PROHIBITED_ARROW_LEFT_UTURN, ArrowBlocksLarge.PROHIBITED_ARROW_RIGHT_UTURN,
-                            ArrowBlocksLarge.PROHIBITED_ARROW_LEFT_RIGHT, ArrowBlocksLarge.PROHIBITED_ARROW_STRAIGHT_LEFT_RIGHT,
-                            ArrowBlocksLarge.PROHIBITED_ARROW_STRAIGHT_LEFT, ArrowBlocksLarge.PROHIBITED_ARROW_STRAIGHT_RIGHT,
-                            ArrowBlocksLarge.PROHIBITED_ARROW_UTURN_LEFT, ArrowBlocksLarge.PROHIBITED_ARROW_UTURN_RIGHT,
-                            ArrowBlocksLarge.PROHIBITED_ARROW_STRAIGHT_UTURN_LEFT, ArrowBlocksLarge.PROHIBITED_ARROW_STRAIGHT_UTURN_RIGHT,
-
-                            ArrowBlocksLarge.ORANGE_ARROW_STRAIGHT, ArrowBlocksLarge.ORANGE_ARROW_LEFT,
-                            ArrowBlocksLarge.ORANGE_ARROW_RIGHT, ArrowBlocksLarge.ORANGE_ARROW_LEFT_UTURN,
-                            ArrowBlocksLarge.ORANGE_ARROW_RIGHT_UTURN, ArrowBlocksLarge.ORANGE_ARROW_LEFT_RIGHT,
-                            ArrowBlocksLarge.ORANGE_ARROW_STRAIGHT_LEFT_RIGHT, ArrowBlocksLarge.ORANGE_ARROW_STRAIGHT_LEFT,
-                            ArrowBlocksLarge.ORANGE_ARROW_STRAIGHT_RIGHT, ArrowBlocksLarge.ORANGE_ARROW_UTURN_LEFT,
-                            ArrowBlocksLarge.ORANGE_ARROW_UTURN_RIGHT, ArrowBlocksLarge.ORANGE_ARROW_STRAIGHT_UTURN_LEFT,
-                            ArrowBlocksLarge.ORANGE_ARROW_STRAIGHT_UTURN_RIGHT,
-
-                            ArrowBlocksStyle2.ARROW_PROHIBITED, ArrowBlocksStyle2.PROHIBITED_ARROW_STRAIGHT,
-                            ArrowBlocksStyle2.PROHIBITED_ARROW_LEFT, ArrowBlocksStyle2.PROHIBITED_ARROW_RIGHT,
-                            ArrowBlocksStyle2.PROHIBITED_ARROW_DOUBLE_LEFT, ArrowBlocksStyle2.PROHIBITED_ARROW_DOUBLE_RIGHT,
-                            ArrowBlocksStyle2.PROHIBITED_ARROW_LEFT_RIGHT, ArrowBlocksStyle2.PROHIBITED_ARROW_STRAIGHT_LEFT_RIGHT,
-                            ArrowBlocksStyle2.PROHIBITED_ARROW_STRAIGHT_LEFT, ArrowBlocksStyle2.PROHIBITED_ARROW_STRAIGHT_RIGHT,
-                            ArrowBlocksStyle2.PROHIBITED_ARROW_UTURN_LEFT, ArrowBlocksStyle2.PROHIBITED_ARROW_UTURN_RIGHT,
-
-                            ArrowBlocksStyle2.ADVANCE_ARROW_STRAIGHT, ArrowBlocksStyle2.ADVANCE_ARROW_LEFT,
-                            ArrowBlocksStyle2.ADVANCE_ARROW_RIGHT, ArrowBlocksStyle2.ADVANCE_ARROW_LEFT_RIGHT,
-                            ArrowBlocksStyle2.ADVANCE_ARROW_STRAIGHT_LEFT_RIGHT, ArrowBlocksStyle2.ADVANCE_ARROW_STRAIGHT_LEFT,
-                            ArrowBlocksStyle2.ADVANCE_ARROW_STRAIGHT_RIGHT, ArrowBlocksStyle2.ADVANCE_ARROW_UTURN_LEFT,
-                            ArrowBlocksStyle2.ADVANCE_ARROW_UTURN_RIGHT,
-
-                            ArrowBlocksStyle2.ORANGE_ARROW_STRAIGHT, ArrowBlocksStyle2.ORANGE_ARROW_LEFT,
-                            ArrowBlocksStyle2.ORANGE_ARROW_RIGHT, ArrowBlocksStyle2.ORANGE_ARROW_LEFT_RIGHT,
-                            ArrowBlocksStyle2.ORANGE_ARROW_STRAIGHT_LEFT_RIGHT, ArrowBlocksStyle2.ORANGE_ARROW_STRAIGHT_LEFT,
-                            ArrowBlocksStyle2.ORANGE_ARROW_STRAIGHT_RIGHT, ArrowBlocksStyle2.ORANGE_ARROW_UTURN_LEFT,
-                            ArrowBlocksStyle2.ORANGE_ARROW_UTURN_RIGHT,
-                            ArrowBlocksStyle2.ORANGE_ARROW_DOUBLE_LEFT, ArrowBlocksStyle2.ORANGE_ARROW_DOUBLE_RIGHT,
-
-                            ArrowBlocksStyle2.ARROW_STRAIGHT, ArrowBlocksStyle2.ARROW_LEFT,
-                            ArrowBlocksStyle2.ARROW_RIGHT, ArrowBlocksStyle2.ARROW_DOUBLE_LEFT,
-                            ArrowBlocksStyle2.ARROW_DOUBLE_RIGHT, ArrowBlocksStyle2.ARROW_LEFT_RIGHT,
-                            ArrowBlocksStyle2.ARROW_STRAIGHT_LEFT_RIGHT, ArrowBlocksStyle2.ARROW_STRAIGHT_LEFT,
-                            ArrowBlocksStyle2.ARROW_STRAIGHT_RIGHT, ArrowBlocksStyle2.ARROW_UTURN_LEFT,
-                            ArrowBlocksStyle2.ARROW_UTURN_RIGHT,
-
-                            ArrowBlocksStyle3.ARROW_PROHIBITED, ArrowBlocksStyle3.PROHIBITED_ARROW_STRAIGHT,
-                            ArrowBlocksStyle3.PROHIBITED_ARROW_LEFT, ArrowBlocksStyle3.PROHIBITED_ARROW_RIGHT,
-                            ArrowBlocksStyle3.PROHIBITED_ARROW_LEFT_UTURN, ArrowBlocksStyle3.PROHIBITED_ARROW_RIGHT_UTURN,
-                            ArrowBlocksStyle3.PROHIBITED_ARROW_LEFT_RIGHT, ArrowBlocksStyle3.PROHIBITED_ARROW_STRAIGHT_LEFT_RIGHT,
-                            ArrowBlocksStyle3.PROHIBITED_ARROW_STRAIGHT_LEFT, ArrowBlocksStyle3.PROHIBITED_ARROW_STRAIGHT_RIGHT,
-                            ArrowBlocksStyle3.PROHIBITED_ARROW_UTURN_LEFT, ArrowBlocksStyle3.PROHIBITED_ARROW_UTURN_RIGHT,
-
-                            ArrowBlocksStyle3.ORANGE_ARROW_STRAIGHT, ArrowBlocksStyle3.ORANGE_ARROW_LEFT,
-                            ArrowBlocksStyle3.ORANGE_ARROW_RIGHT, ArrowBlocksStyle3.ORANGE_ARROW_LEFT_RIGHT,
-                            ArrowBlocksStyle3.ORANGE_ARROW_STRAIGHT_LEFT_RIGHT, ArrowBlocksStyle3.ORANGE_ARROW_STRAIGHT_LEFT,
-                            ArrowBlocksStyle3.ORANGE_ARROW_STRAIGHT_RIGHT, ArrowBlocksStyle3.ORANGE_ARROW_UTURN_LEFT,
-                            ArrowBlocksStyle3.ORANGE_ARROW_UTURN_RIGHT,
-
-                            ArrowBlocksStyle3.ARROW_STRAIGHT, ArrowBlocksStyle3.ARROW_LEFT,
-                            ArrowBlocksStyle3.ARROW_RIGHT, ArrowBlocksStyle3.ARROW_LEFT_RIGHT,
-                            ArrowBlocksStyle3.ARROW_STRAIGHT_LEFT_RIGHT, ArrowBlocksStyle3.ARROW_STRAIGHT_LEFT,
-                            ArrowBlocksStyle3.ARROW_STRAIGHT_RIGHT, ArrowBlocksStyle3.ARROW_UTURN_LEFT,
-                            ArrowBlocksStyle3.ARROW_UTURN_RIGHT
-                    );
-                });
     }
 }

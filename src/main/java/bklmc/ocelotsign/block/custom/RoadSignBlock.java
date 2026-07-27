@@ -100,14 +100,15 @@ public class RoadSignBlock extends pers.solid.mishang.uc.block.FullWallSignBlock
 
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        Direction horizontalFacing = ctx.getHorizontalPlayerFacing().getOpposite();
-        if (horizontalFacing.getAxis().isHorizontal()) {
+        Direction facing = ctx.getPlayerFacing().getOpposite();
+        if (facing.getAxis().isHorizontal()) {
             return this.getDefaultState()
-                    .with(FACING, horizontalFacing)
+                    .with(FACING, facing)
                     .with(FACE, WallMountLocation.WALL)
                     .with(Properties.WATERLOGGED, false);
         }
         return this.getDefaultState()
+                .with(FACING, Direction.NORTH)
                 .with(FACE, WallMountLocation.WALL)
                 .with(Properties.WATERLOGGED, false);
     }
@@ -142,7 +143,6 @@ public class RoadSignBlock extends pers.solid.mishang.uc.block.FullWallSignBlock
         return super.onUse(state, world, pos, player, hand, hit);
     }
 
-    @Override
     public void registerModels(net.minecraft.data.client.ModelProvider modelProvider,
                                BlockStateModelGenerator blockStateModelGenerator) {
         final TextureMap textures = TextureMap.all(this);

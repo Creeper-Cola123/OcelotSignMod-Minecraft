@@ -1,7 +1,9 @@
 package bklmc.ocelotsign.client;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -10,7 +12,7 @@ import net.minecraft.util.Util;
 import java.util.List;
 
 /**
- * 文档列表（主页）渲染逻辑
+ * 文档列表（主页）渲染逻辑 (1.19.2 兼容版)
  *
  * @see PatternAndFontOverlay
  */
@@ -21,19 +23,9 @@ public final class HomepageRenderer {
 
     /**
      * 渲染主页/文档列表页完整内容。
-     *
-     * @param context 绘制上下文
-     * @param textRenderer 文本渲染器
-     * @param mouseX 鼠标 X 坐标
-     * @param mouseY 鼠标 Y 坐标
-     * @param mainWidth 主区域宽度
-     * @param contentStartY 内容起始 Y 坐标
-     * @param scrollWindowStartY 滚动窗口起始 Y 坐标
-     * @param scrollWindowEndY 滚动窗口结束 Y 坐标
-     * @return 内容总高度（像素）
      */
-    public static int render(DrawContext context, TextRenderer textRenderer, int mouseX, int mouseY,
-                              int mainWidth, int contentStartY, int scrollWindowStartY, int scrollWindowEndY) {
+    public static int render(MatrixStack matrices, TextRenderer textRenderer, int mouseX, int mouseY,
+                             int mainWidth, int contentStartY, int scrollWindowStartY, int scrollWindowEndY) {
         int currentY = contentStartY;
 
         // 绘制头图
@@ -44,39 +36,40 @@ public final class HomepageRenderer {
 
         if (headerImageY + headerImageHeight >= scrollWindowStartY && headerImageY <= scrollWindowEndY) {
             Identifier headerImage = new Identifier("ocelotsignmod", "textures/image/bg1.png");
-            context.drawTexture(headerImage, headerImageX, headerImageY, 0, 0, headerImageWidth, headerImageHeight, headerImageWidth, headerImageHeight);
+            RenderSystem.setShaderTexture(0, headerImage);
+            DrawableHelper.drawTexture(matrices, headerImageX, headerImageY, 0, 0, headerImageWidth, headerImageHeight, headerImageWidth, headerImageHeight);
         }
         currentY += headerImageHeight + 10;
 
         // 主标题
         Text title = Text.translatable("ocelotsignmod.gui.homepage.title");
         int titleWidth = textRenderer.getWidth(title);
-        context.drawText(textRenderer, title, UIConstants.SIDEBAR_WIDTH + (mainWidth - titleWidth) / 2, currentY, 0x0066CC, false);
+        textRenderer.draw(matrices, title, UIConstants.SIDEBAR_WIDTH + (mainWidth - titleWidth) / 2, currentY, 0x0066CC);
         currentY += 26;
 
         // 标题下划线
         int dividerY = currentY;
-        context.fill(UIConstants.SIDEBAR_WIDTH + 40, dividerY, LayoutHelper.getScreenWidth() - 40, dividerY + 2, UIConstants.COLOR_HOMEPAGE_DIVIDER);
+        DrawableHelper.fill(matrices, UIConstants.SIDEBAR_WIDTH + 40, dividerY, LayoutHelper.getScreenWidth() - 40, dividerY + 2, UIConstants.COLOR_HOMEPAGE_DIVIDER);
         currentY += 20;
 
         // 副标题
         Text welcome = Text.translatable("ocelotsignmod.gui.homepage.welcome");
         int welcomeWidth = textRenderer.getWidth(welcome);
-        context.drawText(textRenderer, welcome, UIConstants.SIDEBAR_WIDTH + (mainWidth - welcomeWidth) / 2, currentY, UIConstants.COLOR_HOMEPAGE_SUBTITLE, false);
+        textRenderer.draw(matrices, welcome, UIConstants.SIDEBAR_WIDTH + (mainWidth - welcomeWidth) / 2, currentY, UIConstants.COLOR_HOMEPAGE_SUBTITLE);
         currentY += 28;
 
         // 提示文字
-        currentY = renderHintText(context, textRenderer, mainWidth, currentY, scrollWindowStartY, scrollWindowEndY);
+        currentY = renderHintText(matrices, textRenderer, mainWidth, currentY, scrollWindowStartY, scrollWindowEndY);
 
         // Introduction 章节
         currentY += 10;
-        currentY = renderIntroSection(context, textRenderer, mainWidth, currentY, scrollWindowStartY, scrollWindowEndY);
+        currentY = renderIntroSection(matrices, textRenderer, mainWidth, currentY, scrollWindowStartY, scrollWindowEndY);
 
         // Project Links 章节
-        currentY = renderLinksSection(context, textRenderer, mouseX, mouseY, mainWidth, currentY, scrollWindowStartY, scrollWindowEndY);
+        currentY = renderLinksSection(matrices, textRenderer, mouseX, mouseY, mainWidth, currentY, scrollWindowStartY, scrollWindowEndY);
 
         // 免责声明
-        currentY = renderDisclaimerSection(context, textRenderer, mainWidth, currentY, scrollWindowStartY, scrollWindowEndY);
+        currentY = renderDisclaimerSection(matrices, textRenderer, mainWidth, currentY, scrollWindowStartY, scrollWindowEndY);
 
         currentY += 45;
         return currentY;
@@ -85,7 +78,7 @@ public final class HomepageRenderer {
     /**
      * 渲染提示文本区域。
      */
-    private static int renderHintText(DrawContext context, TextRenderer textRenderer,
+    private static int renderHintText(MatrixStack matrices, TextRenderer textRenderer,
                                       int mainWidth, int currentY, int scrollWindowStartY, int scrollWindowEndY) {
         Text hintText = Text.translatable("ocelotsignmod.gui.homepage.hint");
         int hintPaddingY = 5;
@@ -94,11 +87,11 @@ public final class HomepageRenderer {
         List<OrderedText> hintLines = textRenderer.wrapLines(hintText, hintMaxWidth);
         int hintBgHeight = hintLines.size() * 12 + hintPaddingY * 2;
         if (currentY + hintBgHeight >= scrollWindowStartY && currentY <= scrollWindowEndY) {
-            context.fill(hintX, currentY, hintX + hintMaxWidth, currentY + hintBgHeight, UIConstants.COLOR_HEADER_BG_HELP);
+            DrawableHelper.fill(matrices, hintX, currentY, hintX + hintMaxWidth, currentY + hintBgHeight, UIConstants.COLOR_HEADER_BG_HELP);
             int textY = currentY + hintPaddingY + (hintBgHeight - hintLines.size() * 12) / 2;
             for (int i = 0; i < hintLines.size(); i++) {
                 int lineW = textRenderer.getWidth(hintLines.get(i));
-                context.drawText(textRenderer, hintLines.get(i), hintX + (hintMaxWidth - lineW) / 2, textY + i * 12, UIConstants.COLOR_HEADER_TEXT, false);
+                textRenderer.draw(matrices, hintLines.get(i), hintX + (hintMaxWidth - lineW) / 2, textY + i * 12, UIConstants.COLOR_HEADER_TEXT);
             }
         }
         return currentY + hintBgHeight + 12;
@@ -107,10 +100,10 @@ public final class HomepageRenderer {
     /**
      * 渲染介绍章节。
      */
-    private static int renderIntroSection(DrawContext context, TextRenderer textRenderer,
+    private static int renderIntroSection(MatrixStack matrices, TextRenderer textRenderer,
                                           int mainWidth, int currentY, int scrollWindowStartY, int scrollWindowEndY) {
         Text introTitle = Text.translatable("ocelotsignmod.gui.homepage.section.intro");
-        context.drawText(textRenderer, introTitle, UIConstants.SIDEBAR_WIDTH + 20, currentY, UIConstants.COLOR_HOMEPAGE_SECTION_TITLE, false);
+        textRenderer.draw(matrices, introTitle, UIConstants.SIDEBAR_WIDTH + 20, currentY, UIConstants.COLOR_HOMEPAGE_SECTION_TITLE);
         currentY += 22;
 
         int introX = UIConstants.SIDEBAR_WIDTH + 20;
@@ -119,15 +112,15 @@ public final class HomepageRenderer {
         int introParaGap = 20;
 
         Text introP1 = Text.translatable("ocelotsignmod.gui.homepage.intro.p1");
-        currentY = renderTextBlock(context, textRenderer, introP1, introX, introMaxWidth, currentY, scrollWindowStartY, scrollWindowEndY, UIConstants.COLOR_HOMEPAGE_BODY, introLineHeight);
+        currentY = renderTextBlock(matrices, textRenderer, introP1, introX, introMaxWidth, currentY, scrollWindowStartY, scrollWindowEndY, UIConstants.COLOR_HOMEPAGE_BODY, introLineHeight);
         currentY += introParaGap;
 
         Text introP2 = Text.translatable("ocelotsignmod.gui.homepage.intro.p2");
-        currentY = renderTextBlock(context, textRenderer, introP2, introX, introMaxWidth, currentY, scrollWindowStartY, scrollWindowEndY, UIConstants.COLOR_HOMEPAGE_BODY, introLineHeight);
+        currentY = renderTextBlock(matrices, textRenderer, introP2, introX, introMaxWidth, currentY, scrollWindowStartY, scrollWindowEndY, UIConstants.COLOR_HOMEPAGE_BODY, introLineHeight);
         currentY += introParaGap;
 
         Text introP3 = Text.translatable("ocelotsignmod.gui.homepage.intro.p3");
-        currentY = renderTextBlock(context, textRenderer, introP3, introX, introMaxWidth, currentY, scrollWindowStartY, scrollWindowEndY, UIConstants.COLOR_HOMEPAGE_BODY, introLineHeight);
+        currentY = renderTextBlock(matrices, textRenderer, introP3, introX, introMaxWidth, currentY, scrollWindowStartY, scrollWindowEndY, UIConstants.COLOR_HOMEPAGE_BODY, introLineHeight);
 
         currentY += 45;
         return currentY;
@@ -136,17 +129,17 @@ public final class HomepageRenderer {
     /**
      * 渲染项目链接章节（双列卡片布局）。
      */
-    private static int renderLinksSection(DrawContext context, TextRenderer textRenderer, int mouseX, int mouseY,
+    private static int renderLinksSection(MatrixStack matrices, TextRenderer textRenderer, int mouseX, int mouseY,
                                           int mainWidth, int currentY, int scrollWindowStartY, int scrollWindowEndY) {
         // 分割线
         int sectionDividerY = currentY;
-        context.fill(UIConstants.SIDEBAR_WIDTH + 40, sectionDividerY, LayoutHelper.getScreenWidth() - 40, sectionDividerY + 1, UIConstants.COLOR_HOMEPAGE_DIVIDER);
+        DrawableHelper.fill(matrices, UIConstants.SIDEBAR_WIDTH + 40, sectionDividerY, LayoutHelper.getScreenWidth() - 40, sectionDividerY + 1, UIConstants.COLOR_HOMEPAGE_DIVIDER);
         currentY += 20;
 
         // 章节标题
         currentY += 5;
         Text linksTitle = Text.translatable("ocelotsignmod.gui.homepage.section.links");
-        context.drawText(textRenderer, linksTitle, UIConstants.SIDEBAR_WIDTH + 20, currentY, UIConstants.COLOR_HOMEPAGE_SECTION_TITLE, false);
+        textRenderer.draw(matrices, linksTitle, UIConstants.SIDEBAR_WIDTH + 20, currentY, UIConstants.COLOR_HOMEPAGE_SECTION_TITLE);
         currentY += 22;
 
         // 两列卡片布局
@@ -161,14 +154,14 @@ public final class HomepageRenderer {
                 "https://github.com/SolidBlock-cn/mishanguc",
                 "https://www.mcmod.cn/class/5743.html");
 
-        int leftCardEndY = renderCard(context, textRenderer, mouseX, mouseY,
+        int leftCardEndY = renderCard(matrices, textRenderer, mouseX, mouseY,
                 leftColumnX, cardStartY, columnWidth,
                 Text.translatable("ocelotsignmod.gui.homepage.mishang.title"),
                 "https://github.com/SolidBlock-cn/mishanguc",
                 "https://www.mcmod.cn/class/5743.html",
                 scrollWindowStartY, scrollWindowEndY, fixedCardHeight);
 
-        int rightCardEndY = renderCard(context, textRenderer, mouseX, mouseY,
+        int rightCardEndY = renderCard(matrices, textRenderer, mouseX, mouseY,
                 rightColumnX, cardStartY, columnWidth,
                 Text.translatable("ocelotsignmod.gui.homepage.ocelot.title"),
                 "https://github.com/Creeper-Cola123/ocelotsignmod-minecraft",
@@ -181,11 +174,11 @@ public final class HomepageRenderer {
     /**
      * 渲染免责声明章节。
      */
-    private static int renderDisclaimerSection(DrawContext context, TextRenderer textRenderer,
+    private static int renderDisclaimerSection(MatrixStack matrices, TextRenderer textRenderer,
                                                int mainWidth, int currentY, int scrollWindowStartY, int scrollWindowEndY) {
         currentY += 10;
         Text disclaimerTitle = Text.translatable("ocelotsignmod.gui.homepage.disclaimer.title");
-        context.drawText(textRenderer, disclaimerTitle, UIConstants.SIDEBAR_WIDTH + 20, currentY, UIConstants.COLOR_HOMEPAGE_SECTION_TITLE, false);
+        textRenderer.draw(matrices, disclaimerTitle, UIConstants.SIDEBAR_WIDTH + 20, currentY, UIConstants.COLOR_HOMEPAGE_SECTION_TITLE);
         currentY += 22;
 
         int disclaimerX = UIConstants.SIDEBAR_WIDTH + 20;
@@ -194,15 +187,15 @@ public final class HomepageRenderer {
         int disclaimerParaGap = 20;
 
         Text disclaimerP1 = Text.translatable("ocelotsignmod.gui.homepage.disclaimer.p1");
-        currentY = renderTextBlock(context, textRenderer, disclaimerP1, disclaimerX, disclaimerMaxWidth, currentY, scrollWindowStartY, scrollWindowEndY, UIConstants.COLOR_HOMEPAGE_BODY, disclaimerLineHeight);
+        currentY = renderTextBlock(matrices, textRenderer, disclaimerP1, disclaimerX, disclaimerMaxWidth, currentY, scrollWindowStartY, scrollWindowEndY, UIConstants.COLOR_HOMEPAGE_BODY, disclaimerLineHeight);
         currentY += disclaimerParaGap;
 
         Text disclaimerP2 = Text.translatable("ocelotsignmod.gui.homepage.disclaimer.p2");
-        currentY = renderTextBlock(context, textRenderer, disclaimerP2, disclaimerX, disclaimerMaxWidth, currentY, scrollWindowStartY, scrollWindowEndY, UIConstants.COLOR_HOMEPAGE_BODY, disclaimerLineHeight);
+        currentY = renderTextBlock(matrices, textRenderer, disclaimerP2, disclaimerX, disclaimerMaxWidth, currentY, scrollWindowStartY, scrollWindowEndY, UIConstants.COLOR_HOMEPAGE_BODY, disclaimerLineHeight);
         currentY += disclaimerParaGap;
 
         Text disclaimerP3 = Text.translatable("ocelotsignmod.gui.homepage.disclaimer.p3");
-        currentY = renderTextBlock(context, textRenderer, disclaimerP3, disclaimerX, disclaimerMaxWidth, currentY, scrollWindowStartY, scrollWindowEndY, UIConstants.COLOR_HOMEPAGE_BODY, disclaimerLineHeight);
+        currentY = renderTextBlock(matrices, textRenderer, disclaimerP3, disclaimerX, disclaimerMaxWidth, currentY, scrollWindowStartY, scrollWindowEndY, UIConstants.COLOR_HOMEPAGE_BODY, disclaimerLineHeight);
 
         return currentY + 45;
     }
@@ -210,7 +203,7 @@ public final class HomepageRenderer {
     /**
      * 渲染文本块（支持多段落换行）。
      */
-    private static int renderTextBlock(DrawContext context, TextRenderer textRenderer, Text text,
+    private static int renderTextBlock(MatrixStack matrices, TextRenderer textRenderer, Text text,
                                        int x, int maxWidth, int currentY,
                                        int scrollWindowStartY, int scrollWindowEndY, int textColor, int lineHeight) {
         String rawText = text.getString();
@@ -221,14 +214,14 @@ public final class HomepageRenderer {
             List<OrderedText> lines = textRenderer.wrapLines(para, maxWidth);
             for (int i = 0; i < lines.size(); i++) {
                 if (currentY + lineHeight >= scrollWindowStartY && currentY <= scrollWindowEndY) {
-                    context.drawText(textRenderer, lines.get(i), x, currentY, textColor, false);
+                    textRenderer.draw(matrices, lines.get(i), x, currentY, textColor);
                 }
                 currentY += lineHeight;
             }
             if (p < paragraphs.length - 1) {
                 currentY += lineHeight;
                 if (currentY >= scrollWindowStartY && currentY - lineHeight <= scrollWindowEndY) {
-                    context.drawText(textRenderer, Text.literal(" "), x, currentY - lineHeight, textColor, false);
+                    textRenderer.draw(matrices, Text.literal(" "), x, currentY - lineHeight, textColor);
                 }
             }
         }
@@ -239,7 +232,7 @@ public final class HomepageRenderer {
      * 计算链接卡片的高度。
      */
     private static int calculateCardHeight(TextRenderer textRenderer, int width, int padding,
-                                            Text teamTitle, String repoUrl, String docUrl) {
+                                           Text teamTitle, String repoUrl, String docUrl) {
         int titleHeight = 14;
         Text repoName = getShortLinkText(repoUrl);
         Text docName = getShortLinkText(docUrl);
@@ -254,33 +247,33 @@ public final class HomepageRenderer {
     /**
      * 渲染单个链接卡片。
      */
-    private static int renderCard(DrawContext context, TextRenderer textRenderer, int mouseX, int mouseY,
-                                   int x, int currentY, int width,
-                                   Text teamTitle, String repoUrl, String docUrl,
-                                   int scrollWindowStartY, int scrollWindowEndY, int fixedCardHeight) {
+    private static int renderCard(MatrixStack matrices, TextRenderer textRenderer, int mouseX, int mouseY,
+                                  int x, int currentY, int width,
+                                  Text teamTitle, String repoUrl, String docUrl,
+                                  int scrollWindowStartY, int scrollWindowEndY, int fixedCardHeight) {
         int padding = 12;
         int cardHeight = fixedCardHeight;
 
         if (currentY + cardHeight >= scrollWindowStartY && currentY <= scrollWindowEndY) {
-            context.fill(x, currentY, x + width, currentY + cardHeight, UIConstants.COLOR_HOMEPAGE_CARD_BG);
-            context.fill(x, currentY, x + 3, currentY + cardHeight, UIConstants.COLOR_HOMEPAGE_CARD_TITLE);
-            context.fill(x, currentY + cardHeight - 1, x + width, currentY + cardHeight, UIConstants.COLOR_HOMEPAGE_CARD_BORDER);
-            context.fill(x, currentY, x + width, currentY + 1, UIConstants.COLOR_HOMEPAGE_CARD_BORDER);
-            context.fill(x + width - 1, currentY, x + width, currentY + cardHeight, UIConstants.COLOR_HOMEPAGE_CARD_BORDER);
+            DrawableHelper.fill(matrices, x, currentY, x + width, currentY + cardHeight, UIConstants.COLOR_HOMEPAGE_CARD_BG);
+            DrawableHelper.fill(matrices, x, currentY, x + 3, currentY + cardHeight, UIConstants.COLOR_HOMEPAGE_CARD_TITLE);
+            DrawableHelper.fill(matrices, x, currentY + cardHeight - 1, x + width, currentY + cardHeight, UIConstants.COLOR_HOMEPAGE_CARD_BORDER);
+            DrawableHelper.fill(matrices, x, currentY, x + width, currentY + 1, UIConstants.COLOR_HOMEPAGE_CARD_BORDER);
+            DrawableHelper.fill(matrices, x + width - 1, currentY, x + width, currentY + cardHeight, UIConstants.COLOR_HOMEPAGE_CARD_BORDER);
         }
 
         int cardY = currentY + padding;
 
         if (cardY + 14 >= scrollWindowStartY && cardY <= scrollWindowEndY) {
-            context.drawText(textRenderer, teamTitle, x + padding, cardY, UIConstants.COLOR_HOMEPAGE_CARD_TITLE, false);
+            textRenderer.draw(matrices, teamTitle, x + padding, cardY, UIConstants.COLOR_HOMEPAGE_CARD_TITLE);
         }
         cardY += 14;
         cardY += 12;
 
         int btnMaxWidth = width - padding * 2;
 
-        cardY = renderLinkButton(context, textRenderer, mouseX, mouseY, x + padding, cardY, btnMaxWidth, repoUrl, scrollWindowStartY, scrollWindowEndY);
-        cardY = renderLinkButton(context, textRenderer, mouseX, mouseY, x + padding, cardY, btnMaxWidth, docUrl, scrollWindowStartY, scrollWindowEndY);
+        cardY = renderLinkButton(matrices, textRenderer, mouseX, mouseY, x + padding, cardY, btnMaxWidth, repoUrl, scrollWindowStartY, scrollWindowEndY);
+        cardY = renderLinkButton(matrices, textRenderer, mouseX, mouseY, x + padding, cardY, btnMaxWidth, docUrl, scrollWindowStartY, scrollWindowEndY);
 
         return currentY + cardHeight;
     }
@@ -288,9 +281,9 @@ public final class HomepageRenderer {
     /**
      * 渲染链接按钮。
      */
-    private static int renderLinkButton(DrawContext context, TextRenderer textRenderer, int mouseX, int mouseY,
-                                         int cardX, int currentY, int cardWidth, String url,
-                                         int scrollWindowStartY, int scrollWindowEndY) {
+    private static int renderLinkButton(MatrixStack matrices, TextRenderer textRenderer, int mouseX, int mouseY,
+                                        int cardX, int currentY, int cardWidth, String url,
+                                        int scrollWindowStartY, int scrollWindowEndY) {
         Text linkText = getShortLinkText(url);
         int btnWidth = cardWidth;
         int lineHeight = 10;
@@ -307,14 +300,14 @@ public final class HomepageRenderer {
 
         if (isVisible) {
             int bgColor = isHover ? UIConstants.COLOR_BTN_BG_HOVER : UIConstants.COLOR_BTN_BG;
-            context.fill(cardX, currentY, cardX + btnWidth, currentY + actualBtnHeight, bgColor);
-            context.drawBorder(cardX, currentY, btnWidth, actualBtnHeight, UIConstants.COLOR_BTN_BORDER);
+            DrawableHelper.fill(matrices, cardX, currentY, cardX + btnWidth, currentY + actualBtnHeight, bgColor);
+            drawBorder(matrices, cardX, currentY, btnWidth, actualBtnHeight, UIConstants.COLOR_BTN_BORDER);
 
             int textColor = isHover ? 0xFF004499 : UIConstants.COLOR_LINK_NORMAL;
             int yOffset = 0;
             for (OrderedText line : wrappedLines) {
                 int lineW = textRenderer.getWidth(line);
-                context.drawText(textRenderer, line, cardX + (btnWidth - lineW) / 2, textY + yOffset, textColor, false);
+                textRenderer.draw(matrices, line, cardX + (btnWidth - lineW) / 2, textY + yOffset, textColor);
                 yOffset += lineHeight;
             }
         }
@@ -328,11 +321,6 @@ public final class HomepageRenderer {
 
     /**
      * 获取 URL 的短显示文本。
-     *
-     * <p>对已知域名返回国际化标签，其他 URL 截取路径部分并省略过长内容。
-     *
-     * @param url 原始 URL
-     * @return 简化后的显示文本
      */
     public static Text getShortLinkText(String url) {
         if (url == null || url.isEmpty()) {
@@ -376,9 +364,6 @@ public final class HomepageRenderer {
 
     /**
      * 使用系统默认浏览器打开 URL。
-     *
-     * @param url 要打开的 URL
-     * @return 若成功打开返回 {@code true}
      */
     public static boolean openUrl(String url) {
         if (url != null && !url.isEmpty()) {
@@ -386,5 +371,15 @@ public final class HomepageRenderer {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 绘制简单边框（1.19.2 兼容）。
+     */
+    private static void drawBorder(MatrixStack matrices, int x, int y, int width, int height, int color) {
+        DrawableHelper.fill(matrices, x, y, x + width, y + 1, color);
+        DrawableHelper.fill(matrices, x, y + height - 1, x + width, y + height, color);
+        DrawableHelper.fill(matrices, x, y, x + 1, y + height, color);
+        DrawableHelper.fill(matrices, x + width - 1, y, x + width, y + height, color);
     }
 }
