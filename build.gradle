@@ -85,12 +85,6 @@ jar {
 	archiveClassifier = "dev"
 }
 
-//jar {
-//	inputFile = jar.archiveFile
-//	archiveClassifier = null
-//	dependsOn jar
-//}
-
 // configure the maven publication
 publishing {
 	publications {
@@ -98,16 +92,6 @@ publishing {
 			artifactId = project.archives_base_name
 			from components.java
 		}
-//		mavenJava(MavenPublication) {
-//			artifactId = project.archives_base_name
-//			// 显式指定混淆后的产物
-//			artifact(jar) {
-//				builtBy jar
-//			}
-//			artifact(sourcesJar) {
-//				builtBy remapSourcesJar
-//			}
-//		}
 	}
 
 	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
