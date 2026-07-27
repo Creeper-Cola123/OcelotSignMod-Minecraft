@@ -1,9 +1,5 @@
 package bklmc.ocelotsign;
 
-import bklmc.ocelotsign.block.ArrowBlocks;
-import bklmc.ocelotsign.block.ArrowBlocksLarge;
-import bklmc.ocelotsign.block.ArrowBlocksStyle2;
-import bklmc.ocelotsign.block.ArrowBlocksStyle3;
 import bklmc.ocelotsign.block.custom.CustomModelBlock;
 import bklmc.ocelotsign.blockentity.ModBlockEntities;
 import bklmc.ocelotsign.client.PatternAndFontBlankScreen;
@@ -25,11 +21,10 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import org.lwjgl.glfw.GLFW;
 
 /**

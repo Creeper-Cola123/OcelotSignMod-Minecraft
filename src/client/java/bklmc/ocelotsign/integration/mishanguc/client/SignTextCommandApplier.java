@@ -1,19 +1,18 @@
 package bklmc.ocelotsign.integration.mishanguc.client;
 
+import bklmc.ocelotsign.integration.mishanguc.MishangAccess;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.ReportedException;
 import pers.solid.mishang.uc.screen.AbstractSignBlockEditScreen;
 import pers.solid.mishang.uc.screen.TextFieldListWidget;
 import pers.solid.mishang.uc.text.SpecialDrawable;
-import bklmc.ocelotsign.integration.mishanguc.MishangAccess;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

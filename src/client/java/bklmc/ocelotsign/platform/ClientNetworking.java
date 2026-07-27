@@ -2,7 +2,6 @@ package bklmc.ocelotsign.platform;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 /**
  * 客户端网络通道注册。

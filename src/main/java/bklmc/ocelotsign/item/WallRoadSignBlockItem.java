@@ -1,8 +1,9 @@
 package bklmc.ocelotsign.item;
 
-import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+
+import java.util.List;
 
 /**
  * 墙面道路指示牌方块对应的物品

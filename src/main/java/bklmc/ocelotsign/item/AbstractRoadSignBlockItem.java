@@ -1,17 +1,16 @@
 package bklmc.ocelotsign.item;
 
-import bklmc.ocelotsign.OcelotSignMod;
 import bklmc.ocelotsign.integration.mishanguc.MishangAccess;
 import bklmc.ocelotsign.integration.mishanguc.TextContextNbtReader;
 import com.google.common.collect.ImmutableList;
-import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.block.Block;
+
+import java.util.List;
 
 /**
  * 道路指示牌方块对应的物品基类

@@ -2,12 +2,12 @@ package bklmc.ocelotsign.block;
 
 import bklmc.ocelotsign.OcelotSignMod;
 import bklmc.ocelotsign.block.custom.RoadMarkBlock;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 
 /**
  * 道路箭头方块样式二注册中心

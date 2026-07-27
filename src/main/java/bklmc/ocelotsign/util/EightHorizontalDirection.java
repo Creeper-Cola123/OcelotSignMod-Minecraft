@@ -1,14 +1,13 @@
 package bklmc.ocelotsign.util;
 
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Arrays;
-import java.util.Optional;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /**
  * 八个水平方向枚举：四个主方向与四个对角方向。

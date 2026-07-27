@@ -1,12 +1,12 @@
 package bklmc.ocelotsign.integration.mishanguc.client;
 
 import bklmc.ocelotsign.client.PatternAndFontOverlay;
-import bklmc.ocelotsign.mixin.client.AbstractSignBlockEditScreenAccessor;
-import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.AbstractWidget;
-import pers.solid.mishang.uc.screen.AbstractSignBlockEditScreen;
 import bklmc.ocelotsign.integration.mishanguc.MishangAccess;
+import bklmc.ocelotsign.mixin.client.AbstractSignBlockEditScreenAccessor;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
+import pers.solid.mishang.uc.screen.AbstractSignBlockEditScreen;
 
 /**
  * 扩展 mishanguc 告示牌编辑界面的底部工具栏，插入图案列表按钮。

@@ -1,13 +1,7 @@
 package bklmc.ocelotsign.item;
 
 import bklmc.ocelotsign.OcelotSignMod;
-import bklmc.ocelotsign.block.ArrowBlocks;
-import bklmc.ocelotsign.block.ArrowBlocksLarge;
-import bklmc.ocelotsign.block.ArrowBlocksStyle2;
-import bklmc.ocelotsign.block.ArrowBlocksStyle3;
-import bklmc.ocelotsign.block.PillarBlocks;
-import bklmc.ocelotsign.block.RoadSignBlocks;
-import bklmc.ocelotsign.block.WallRoadSignBlocks;
+import bklmc.ocelotsign.block.*;
 import bklmc.ocelotsign.integration.mishanguc.MishangAccess;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
