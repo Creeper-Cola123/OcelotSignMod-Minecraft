@@ -2,7 +2,6 @@ package bklmc.ocelotsign.integration.mishanguc.client;
 
 import com.google.gson.JsonParseException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
 import pers.solid.mishang.uc.screen.AbstractSignBlockEditScreen;
@@ -15,39 +14,28 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 解析并应用告示牌编辑界面文本框中的命令语法。
- * 支持 {@code -literal}、{@code -json} 以及 mishanguc 的图案类命令。
+ * 解析并应用告示牌编辑界面文本框中的命令语法。(1.19.2 兼容版)
  */
 public final class SignTextCommandApplier {
-    /**
-     * 匹配形如 {@code -<命令名> <内容>} 的文本。
-     */
     private static final Pattern TEXT_COMMAND_PATTERN = Pattern.compile("^-(\\w+?) (.+)$");
 
     private SignTextCommandApplier() {
     }
 
-    /**
-     * 将文本框内容作为命令解析并应用到文本上下文。
-     *
-     * @param entry  文本框条目。
-     * @param screen 所属编辑界面，用于标记变更状态。
-     */
-    public static void apply(TextFieldListWidget.Entry entry, AbstractSignBlockEditScreen<?> screen) {
+    public static void apply(TextFieldListWidget.Entry entry, AbstractSignBlockEditScreen<?> screen, TextContext textContext) {
         try {
-            applyInternal(entry);
+            applyInternal(entry, textContext);
         } catch (CommandSyntaxException e) {
             entry.textFieldWidget.setEditableColor(0xffff5555);
-            entry.textFieldWidget.setTooltip(Tooltip.of(Text.literal(e.getRawMessage().getString())));
         }
         screen.changed = true;
     }
 
-    private static void applyInternal(TextFieldListWidget.Entry entry) throws CommandSyntaxException {
+    private static void applyInternal(TextFieldListWidget.Entry entry, TextContext textContext) throws CommandSyntaxException {
         String text = entry.textFieldWidget.getText();
-        TextContext textContext = entry.textContext;
+        if (textContext == null) return;
+
         Matcher matcher = TEXT_COMMAND_PATTERN.matcher(text);
-        entry.textFieldWidget.setTooltip(null);
         entry.textFieldWidget.setEditableColor(0xffe0e0e0);
         if (matcher.matches()) {
             String name = matcher.group(1);
@@ -63,7 +51,6 @@ public final class SignTextCommandApplier {
                         textContext.text = Text.Serializer.fromLenientJson(value);
                     } catch (JsonParseException | IllegalStateException e) {
                         entry.textFieldWidget.setEditableColor(0xffff5555);
-                        entry.textFieldWidget.setTooltip(Tooltip.of(Text.literal(e.getMessage())));
                     }
                 }
                 default -> {

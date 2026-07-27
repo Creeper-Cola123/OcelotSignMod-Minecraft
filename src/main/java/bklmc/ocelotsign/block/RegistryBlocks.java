@@ -6,8 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.Identifier;
 
 /**
@@ -24,7 +23,7 @@ public class RegistryBlocks {
      * @return 已注册的方块
      */
     private static Block registerWithItem(String id, Block block) {
-        Block registeredBlock = Registry.register(Registries.BLOCK, new Identifier(OcelotSignMod.MOD_ID, id), block);
+        Block registeredBlock = Registry.register(Registry.BLOCK, new Identifier(OcelotSignMod.MOD_ID, id), block);
         registerBlockItem(id, registeredBlock);
         return registeredBlock;
     }
@@ -36,7 +35,7 @@ public class RegistryBlocks {
      * @param block 对应的方块
      */
     private static void registerBlockItem(String id, Block block) {
-        Registry.register(Registries.ITEM, new Identifier(OcelotSignMod.MOD_ID, id),
+        Registry.register(Registry.ITEM, new Identifier(OcelotSignMod.MOD_ID, id),
                 new BlockItem(block, new Item.Settings()));
     }
 

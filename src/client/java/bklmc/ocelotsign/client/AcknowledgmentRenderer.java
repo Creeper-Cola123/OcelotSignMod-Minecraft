@@ -1,7 +1,8 @@
 package bklmc.ocelotsign.client;
 
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 鸣谢与模组声明页渲染器
+ * 鸣谢与模组声明页渲染器 (1.19.2 兼容版)
  *
  * @see PatternAndFontOverlay
  */
@@ -63,18 +64,8 @@ public final class AcknowledgmentRenderer {
 
     /**
      * 渲染整个鸣谢页面内容，返回占用总高度。
-     *
-     * @param context 绘制上下文
-     * @param textRenderer 文本渲染器
-     * @param mouseX 鼠标 X 坐标
-     * @param mouseY 鼠标 Y 坐标
-     * @param mainWidth 主区域宽度
-     * @param contentStartY 内容起始 Y 坐标
-     * @param scrollWindowStartY 滚动窗口起始 Y 坐标
-     * @param scrollWindowEndY 滚动窗口结束 Y 坐标
-     * @return 内容总高度（像素）
      */
-    public static int render(DrawContext context, TextRenderer textRenderer,
+    public static int render(MatrixStack matrices, TextRenderer textRenderer,
                              int mouseX, int mouseY, int mainWidth, int contentStartY,
                              int scrollWindowStartY, int scrollWindowEndY) {
         PatternAndFontOverlay.clearLastHoveredUrl();
@@ -82,18 +73,18 @@ public final class AcknowledgmentRenderer {
         int currentY = contentStartY;
 
         // 页面顶部大标题
-        currentY = renderBigTitle(context, textRenderer, mainWidth, currentY,
+        currentY = renderBigTitle(matrices, textRenderer, mainWidth, currentY,
                 scrollWindowStartY, scrollWindowEndY);
 
         // 鸣谢区
         Block ack = buildAcknowledgmentBlock();
-        currentY = renderBlock(context, textRenderer, mouseX, mouseY,
+        currentY = renderBlock(matrices, textRenderer, mouseX, mouseY,
                 mainWidth, currentY, scrollWindowStartY, scrollWindowEndY, ack);
 
         // 模组声明区
         List<Block> declBlocks = buildDeclarationBlocks();
         for (Block decl : declBlocks) {
-            currentY = renderBlock(context, textRenderer, mouseX, mouseY,
+            currentY = renderBlock(matrices, textRenderer, mouseX, mouseY,
                     mainWidth, currentY, scrollWindowStartY, scrollWindowEndY, decl);
         }
 
@@ -102,11 +93,7 @@ public final class AcknowledgmentRenderer {
     }
 
     /**
-     * 获取内容区总高度，用于滚动计算（与 render 一一对应）。
-     *
-     * @param mainWidth 主区域宽度
-     * @param textRenderer 文本渲染器
-     * @return 内容总高度（像素）
+     * 获取内容区总高度，用于滚动计算。
      */
     public static int getContentHeight(int mainWidth, TextRenderer textRenderer) {
         int height = estimateBigTitleHeight(textRenderer, mainWidth);
@@ -132,14 +119,11 @@ public final class AcknowledgmentRenderer {
                 UIConstants.COLOR_HOMEPAGE_SECTION_TITLE);
         b.introLines.add(Text.translatable("ocelotsignmod.gui.ack.section.ack_p1"));
 
-        // Column headers (rendered inside the card)
         b.col1Header = Text.translatable("ocelotsignmod.gui.ack.column.ocelot_dev");
         b.col2Header = Text.translatable("ocelotsignmod.gui.ack.column.mishang_dev");
+        b.col2Header = Text.translatable("ocelotsignmod.gui.ack.column.ack_transplant_label");
 
-        // Column 1: Ocelot Sign Mod Developers
         b.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.section.ack_contributors_label")));
-
-        // Column 2: MishangUC Development Team
         b.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.section.ack_mishang_dev_label")));
 
         b.twoColumn = true;
@@ -165,14 +149,11 @@ public final class AcknowledgmentRenderer {
                 "https://github.com/SolidBlock-cn/mishanguc",
                 Text.translatable("ocelotsignmod.gui.ack.link.github_repo")));
         b1.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.mod.mishang.label.note")));
-        // 引用块（MISHANGUC）
         b1.quoteTitle = Text.translatable("ocelotsignmod.gui.ack.quote_excerpt_title");
         b1.quoteLines.add(Text.translatable("ocelotsignmod.gui.ack.mod.mishang.quote"));
         blocks.add(b1);
 
-        /**
-         * 字体使用声明。
-         */
+        // 字体使用声明
         Block b2 = new Block(
                 Text.translatable("ocelotsignmod.gui.ack.fonts.h2"),
                 0xFF2A6F2A);
@@ -180,76 +161,46 @@ public final class AcknowledgmentRenderer {
         blocks.add(b2);
 
         // MiSans
-        Block b3 = new Block(
-                Text.translatable("ocelotsignmod.gui.ack.font.misans.h3"),
-                0xFF2A6F2A);
-        b3.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.font.misans.label.owner")));
-        b3.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.font.misans.label.license")));
-        b3.entries.add(new Entry(
-                Text.translatable("ocelotsignmod.gui.ack.font.misans.label.link"),
+        addFontEntries(blocks, "misans",
                 "https://hyperos.mi.com/font/zh/",
-                Text.translatable("ocelotsignmod.gui.ack.link.xiaomi")));
-        b3.entries.add(new Entry(
-                Text.translatable("ocelotsignmod.gui.ack.font.misans.label.license_link"),
-                "https://hyperos.mi.com/font/zh/faq/",
-                Text.translatable("ocelotsignmod.gui.ack.link.misans_license")));
-        blocks.add(b3);
+                Text.translatable("ocelotsignmod.gui.ack.link.xiaomi"));
 
         // Roadgeek 2014
-        Block b4 = new Block(
-                Text.translatable("ocelotsignmod.gui.ack.font.roadgeek.h3"),
-                0xFF2A6F2A);
-        b4.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.font.roadgeek.label.owner")));
-        b4.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.font.roadgeek.label.license")));
-        b4.entries.add(new Entry(
-                Text.translatable("ocelotsignmod.gui.ack.font.roadgeek.label.link"),
+        addFontEntries(blocks, "roadgeek",
                 "https://github.com/sammdot/roadgeek-fonts",
-                Text.translatable("ocelotsignmod.gui.ack.link.github_repo")));
-        blocks.add(b4);
+                Text.translatable("ocelotsignmod.gui.ack.link.github_repo"));
 
         // Source Han Sans
-        Block b5 = new Block(
-                Text.translatable("ocelotsignmod.gui.ack.font.sans.h3"),
-                0xFF2A6F2A);
-        b5.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.font.sans.label.license")));
-        b5.entries.add(new Entry(
-                Text.translatable("ocelotsignmod.gui.ack.font.sans.label.link"),
-                "https://github.com/adobe-fonts/source-han-sans",
-                Text.translatable("ocelotsignmod.gui.ack.link.github_repo")));
-        blocks.add(b5);
+        addFontEntriesWithOflLicense(blocks, "sans",
+                "https://github.com/adobe-fonts/source-han-sans");
 
         // Source Han Serif
-        Block b6 = new Block(
-                Text.translatable("ocelotsignmod.gui.ack.font.serif.h3"),
-                0xFF2A6F2A);
-        b6.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.font.serif.label.license")));
-        b6.entries.add(new Entry(
-                Text.translatable("ocelotsignmod.gui.ack.font.serif.label.link"),
-                "https://github.com/adobe-fonts/source-han-serif",
-                Text.translatable("ocelotsignmod.gui.ack.link.github_repo")));
-        blocks.add(b6);
+        addFontEntriesWithOflLicense(blocks, "serif",
+                "https://github.com/adobe-fonts/source-han-serif");
 
         return blocks;
     }
 
     /**
-     * 添加一种字体声明的多行条目，并附带仓库链接。
+     * 添加一种字体声明（带标题）。1.19.2 版使用新 Block 而非追加到已有 Block。
      */
-    private static void addFontEntries(Block b, String prefix, String repoUrl, Text repoBtnText) {
-        b.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.font." + prefix + ".h3")));
+    private static void addFontEntries(List<Block> blocks, String prefix, String repoUrl, Text repoBtnText) {
+        Block b = new Block(
+                Text.translatable("ocelotsignmod.gui.ack.font." + prefix + ".h3"),
+                0xFF2A6F2A);
         b.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.font." + prefix + ".label.owner")));
         b.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.font." + prefix + ".label.license")));
         b.entries.add(new Entry(
                 Text.translatable("ocelotsignmod.gui.ack.font." + prefix + ".label.link"),
                 repoUrl,
                 repoBtnText));
+        blocks.add(b);
     }
 
-    /**
-     * 添加字体声明条目，license 行额外附带 OFL 协议链接。
-     */
-    private static void addFontEntriesWithOflLicense(Block b, String prefix, String repoUrl) {
-        b.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.font." + prefix + ".h3")));
+    private static void addFontEntriesWithOflLicense(List<Block> blocks, String prefix, String repoUrl) {
+        Block b = new Block(
+                Text.translatable("ocelotsignmod.gui.ack.font." + prefix + ".h3"),
+                0xFF2A6F2A);
         b.entries.add(new Entry(Text.translatable("ocelotsignmod.gui.ack.font." + prefix + ".label.license")));
         b.entries.add(new Entry(
                 Text.translatable("ocelotsignmod.gui.ack.font." + prefix + ".label.license_link"),
@@ -259,23 +210,25 @@ public final class AcknowledgmentRenderer {
                 Text.translatable("ocelotsignmod.gui.ack.font." + prefix + ".label.link"),
                 repoUrl,
                 Text.translatable("ocelotsignmod.gui.ack.link.github_repo")));
+        blocks.add(b);
     }
 
     /**
      * 渲染页面大标题。
      */
-    private static int renderBigTitle(DrawContext context, TextRenderer textRenderer, int mainWidth,
+    private static int renderBigTitle(MatrixStack matrices, TextRenderer textRenderer, int mainWidth,
                                       int currentY, int scrollWindowStartY, int scrollWindowEndY) {
         Text title = Text.translatable("ocelotsignmod.gui.ack.title");
         int titleWidth = textRenderer.getWidth(title);
         int titleX = UIConstants.SIDEBAR_WIDTH + (mainWidth - titleWidth) / 2;
         if (currentY + 22 >= scrollWindowStartY && currentY <= scrollWindowEndY) {
-            context.drawText(textRenderer, title, titleX, currentY, 0xFF1A1A1A, false);
+            textRenderer.draw(matrices, title, titleX, currentY, 0xFF1A1A1A);
         }
         currentY += 24;
 
         if (currentY + 4 >= scrollWindowStartY && currentY <= scrollWindowEndY) {
-            context.fill(UIConstants.SIDEBAR_WIDTH + 60, currentY,
+            DrawableHelper.fill(matrices,
+                    UIConstants.SIDEBAR_WIDTH + 60, currentY,
                     UIConstants.SIDEBAR_WIDTH + mainWidth - 60, currentY + 2,
                     UIConstants.COLOR_HOMEPAGE_DIVIDER);
         }
@@ -293,21 +246,21 @@ public final class AcknowledgmentRenderer {
     }
 
     /**
-     * 渲染一个内容区块（含标题、介绍、条目、引用）。
+     * 渲染一个内容区块。
      */
-    private static int renderBlock(DrawContext context, TextRenderer textRenderer,
+    private static int renderBlock(MatrixStack matrices, TextRenderer textRenderer,
                                    int mouseX, int mouseY, int mainWidth, int currentY,
                                    int scrollWindowStartY, int scrollWindowEndY, Block block) {
         // 章节大标题
         if (currentY + 22 >= scrollWindowStartY && currentY <= scrollWindowEndY) {
-            context.drawText(textRenderer, block.title,
-                    UIConstants.SIDEBAR_WIDTH + 24, currentY, block.titleColor, false);
+            textRenderer.draw(matrices, block.title,
+                    UIConstants.SIDEBAR_WIDTH + 24, currentY, block.titleColor);
         }
         currentY += 24;
 
         // intro 行
         for (Text t : block.introLines) {
-            currentY = renderWrappedParagraph(context, textRenderer, t,
+            currentY = renderWrappedParagraph(matrices, textRenderer, t,
                     UIConstants.SIDEBAR_WIDTH + 24, mainWidth - 48,
                     currentY, scrollWindowStartY, scrollWindowEndY,
                     UIConstants.COLOR_HOMEPAGE_BODY, 14, 6);
@@ -318,11 +271,11 @@ public final class AcknowledgmentRenderer {
         if (!block.entries.isEmpty()) {
             currentY += 4;
             if (block.twoColumn) {
-                currentY = renderTwoColumnEntries(context, textRenderer, mouseX, mouseY,
+                currentY = renderTwoColumnEntries(matrices, textRenderer, mouseX, mouseY,
                         mainWidth, currentY, scrollWindowStartY, scrollWindowEndY,
                         block.entries, block.col1Header, block.col2Header);
             } else {
-                currentY = renderEntries(context, textRenderer, mouseX, mouseY,
+                currentY = renderEntries(matrices, textRenderer, mouseX, mouseY,
                         mainWidth, currentY, scrollWindowStartY, scrollWindowEndY,
                         block.entries);
             }
@@ -331,7 +284,7 @@ public final class AcknowledgmentRenderer {
         // 引用块
         if (block.quoteTitle != null || !block.quoteLines.isEmpty()) {
             currentY += 6;
-            currentY = renderQuote(context, textRenderer, mainWidth, currentY,
+            currentY = renderQuote(matrices, textRenderer, mainWidth, currentY,
                     scrollWindowStartY, scrollWindowEndY, block);
         }
 
@@ -367,7 +320,7 @@ public final class AcknowledgmentRenderer {
     /**
      * 渲染单列条目卡片列表。
      */
-    private static int renderEntries(DrawContext context, TextRenderer textRenderer,
+    private static int renderEntries(MatrixStack matrices, TextRenderer textRenderer,
                                      int mouseX, int mouseY, int mainWidth, int currentY,
                                      int scrollWindowStartY, int scrollWindowEndY,
                                      List<Entry> entries) {
@@ -377,18 +330,18 @@ public final class AcknowledgmentRenderer {
         int totalH = estimateEntriesHeight(textRenderer, mainWidth, entries);
         if (currentY + totalH >= scrollWindowStartY && currentY <= scrollWindowEndY) {
             // 卡片背景
-            context.fill(blockX, currentY, blockX + blockW, currentY + totalH, 0xFFFAFAFA);
-            context.fill(blockX + blockW - 1, currentY, blockX + blockW, currentY + totalH, 0xFFE0E0E0);
-            context.fill(blockX, currentY + totalH - 1, blockX + blockW, currentY + totalH, 0xFFE0E0E0);
-            context.fill(blockX, currentY, blockX + 1, currentY + totalH, 0xFFE0E0E0);
-            context.fill(blockX, currentY, blockX + blockW, currentY + 1, 0xFFE0E0E0);
+            DrawableHelper.fill(matrices, blockX, currentY, blockX + blockW, currentY + totalH, 0xFFFAFAFA);
+            DrawableHelper.fill(matrices, blockX + blockW - 1, currentY, blockX + blockW, currentY + totalH, 0xFFE0E0E0);
+            DrawableHelper.fill(matrices, blockX, currentY + totalH - 1, blockX + blockW, currentY + totalH, 0xFFE0E0E0);
+            DrawableHelper.fill(matrices, blockX, currentY, blockX + 1, currentY + totalH, 0xFFE0E0E0);
+            DrawableHelper.fill(matrices, blockX, currentY, blockX + blockW, currentY + 1, 0xFFE0E0E0);
             // 左侧色条
-            context.fill(blockX, currentY, blockX + 3, currentY + totalH, 0xFF888888);
+            DrawableHelper.fill(matrices, blockX, currentY, blockX + 3, currentY + totalH, 0xFF888888);
         }
 
         int y = currentY + 6;
         for (Entry e : entries) {
-            y = renderEntry(context, textRenderer, mouseX, mouseY,
+            y = renderEntry(matrices, textRenderer, mouseX, mouseY,
                     blockX, blockW, y, scrollWindowStartY, scrollWindowEndY, e);
             y += 4;
         }
@@ -396,11 +349,9 @@ public final class AcknowledgmentRenderer {
     }
 
     /**
-     * 渲染双列条目卡片（鸣谢页面专用）。
-     *
-     * <p>假设 entries 顺序为：列1内容, 列2内容。
+     * 渲染双列条目卡片。
      */
-    private static int renderTwoColumnEntries(DrawContext context, TextRenderer textRenderer,
+    private static int renderTwoColumnEntries(MatrixStack matrices, TextRenderer textRenderer,
                                               int mouseX, int mouseY, int mainWidth, int currentY,
                                               int scrollWindowStartY, int scrollWindowEndY,
                                               List<Entry> entries, Text col1Header, Text col2Header) {
@@ -418,46 +369,31 @@ public final class AcknowledgmentRenderer {
         int totalH = headerH + contentH;
 
         if (currentY + totalH >= scrollWindowStartY && currentY <= scrollWindowEndY) {
-            // 内容区域背景
-            context.fill(blockX, currentY + headerH, blockX + blockW, currentY + totalH, 0xFFFAFAFA);
-            // 顶部标题栏背景（蓝色）
-            context.fill(blockX, currentY, blockX + blockW, currentY + headerH, 0xFF1A6EB5);
-            // 左侧色条（蓝色）
-            context.fill(blockX, currentY, blockX + 3, currentY + totalH, 0xFF1A6EB5);
-            // 底部边框
-            context.fill(blockX, currentY + totalH - 1, blockX + blockW, currentY + totalH, UIConstants.COLOR_HOMEPAGE_CARD_BORDER);
-            // 右侧边框
-            context.fill(blockX + blockW - 1, currentY, blockX + blockW, currentY + totalH, UIConstants.COLOR_HOMEPAGE_CARD_BORDER);
-            // 中间分隔线（从标题栏底部到内容区底部）
-            context.fill(leftX + colW + gap / 2 - 1, currentY + headerH, leftX + colW + gap / 2, currentY + totalH, 0xFFE0E0E0);
+            DrawableHelper.fill(matrices, blockX, currentY + headerH, blockX + blockW, currentY + totalH, 0xFFFAFAFA);
+            DrawableHelper.fill(matrices, blockX, currentY, blockX + blockW, currentY + headerH, 0xFF1A6EB5);
+            DrawableHelper.fill(matrices, blockX, currentY, blockX + 3, currentY + totalH, 0xFF1A6EB5);
+            DrawableHelper.fill(matrices, blockX, currentY + totalH - 1, blockX + blockW, currentY + totalH, UIConstants.COLOR_HOMEPAGE_CARD_BORDER);
+            DrawableHelper.fill(matrices, blockX + blockW - 1, currentY, blockX + blockW, currentY + totalH, UIConstants.COLOR_HOMEPAGE_CARD_BORDER);
+            DrawableHelper.fill(matrices, leftX + colW + gap / 2 - 1, currentY + headerH, leftX + colW + gap / 2, currentY + totalH, 0xFFE0E0E0);
 
-            // 列标题（白色文字在蓝色背景上）
             int headerY = currentY + 5;
-            int headerColor = 0xFFFFFFFF;
-            context.drawText(textRenderer, col1Header, leftX + 8, headerY, headerColor, false);
+            textRenderer.draw(matrices, col1Header, leftX + 8, headerY, 0xFFFFFFFF);
             if (col2Header != null) {
-                context.drawText(textRenderer, col2Header, rightX + 8, headerY, headerColor, false);
+                textRenderer.draw(matrices, col2Header, rightX + 8, headerY, 0xFFFFFFFF);
             }
         }
 
         int contentY = currentY + headerH + 6;
-
-        // 渲染左列
-        renderEntry(context, textRenderer, mouseX, mouseY,
+        renderEntry(matrices, textRenderer, mouseX, mouseY,
                 leftX, colW, contentY, scrollWindowStartY, scrollWindowEndY, entries.get(0));
-
-        // 渲染右列
         if (entries.size() > 1) {
-            renderEntry(context, textRenderer, mouseX, mouseY,
+            renderEntry(matrices, textRenderer, mouseX, mouseY,
                     rightX, colW, contentY, scrollWindowStartY, scrollWindowEndY, entries.get(1));
         }
 
         return currentY + totalH;
     }
 
-    /**
-     * 估算双列条目卡片总高度。
-     */
     private static int estimateTwoColumnEntriesHeight(TextRenderer textRenderer, int mainWidth, List<Entry> entries) {
         int blockW = mainWidth - 48;
         int gap = 16;
@@ -466,12 +402,9 @@ public final class AcknowledgmentRenderer {
         int leftH = entries.get(0) != null ? estimateEntryHeight(textRenderer, colW, entries.get(0)) : 0;
         int rightH = entries.size() > 1 && entries.get(1) != null ? estimateEntryHeight(textRenderer, colW, entries.get(1)) : 0;
         int contentH = Math.max(leftH, rightH);
-        return headerH + contentH + 6; // header + content + padding
+        return headerH + contentH + 6;
     }
 
-    /**
-     * 估算单个条目高度。
-     */
     private static int estimateEntryHeight(TextRenderer textRenderer, int colW, Entry entry) {
         int padding = 6;
         int innerW = colW - padding * 2;
@@ -487,7 +420,7 @@ public final class AcknowledgmentRenderer {
     /**
      * 渲染单个条目。
      */
-    private static int renderEntry(DrawContext context, TextRenderer textRenderer,
+    private static int renderEntry(MatrixStack matrices, TextRenderer textRenderer,
                                    int mouseX, int mouseY,
                                    int blockX, int blockW, int currentY,
                                    int scrollWindowStartY, int scrollWindowEndY,
@@ -505,16 +438,14 @@ public final class AcknowledgmentRenderer {
         }
 
         if (currentY + entryHeight >= scrollWindowStartY && currentY <= scrollWindowEndY) {
-            // 文本
             for (int i = 0; i < labelLines.size(); i++) {
-                context.drawText(textRenderer, labelLines.get(i),
+                textRenderer.draw(matrices, labelLines.get(i),
                         innerX + 4, currentY + padding + i * 12,
-                        0xFF333333, false);
+                        0xFF333333);
             }
-            // 按钮
             if (entry.url != null && !entry.url.isEmpty()) {
                 int btnY = currentY + padding + labelHeight + 4;
-                renderUrlButton(context, textRenderer, mouseX, mouseY,
+                renderUrlButton(matrices, textRenderer, mouseX, mouseY,
                         innerX + 4, btnY, innerW - 16, entry.url, entry.buttonText,
                         scrollWindowStartY, scrollWindowEndY);
             }
@@ -522,9 +453,6 @@ public final class AcknowledgmentRenderer {
         return currentY + entryHeight;
     }
 
-    /**
-     * 估算单列条目列表总高度。
-     */
     private static int estimateEntriesHeight(TextRenderer textRenderer, int mainWidth, List<Entry> entries) {
         int blockW = mainWidth - 48;
         int padding = 6;
@@ -545,7 +473,7 @@ public final class AcknowledgmentRenderer {
     /**
      * 渲染 URL 链接按钮。
      */
-    private static void renderUrlButton(DrawContext context, TextRenderer textRenderer,
+    private static void renderUrlButton(MatrixStack matrices, TextRenderer textRenderer,
                                         int mouseX, int mouseY,
                                         int x, int y, int maxWidth,
                                         String url, Text customText,
@@ -562,15 +490,15 @@ public final class AcknowledgmentRenderer {
 
         if (isVisible) {
             int bgColor = isHover ? UIConstants.COLOR_BTN_BG_HOVER : UIConstants.COLOR_BTN_BG;
-            context.fill(x, y, x + btnW, y + actualH, bgColor);
-            context.drawBorder(x, y, btnW, actualH, UIConstants.COLOR_BTN_BORDER);
+            DrawableHelper.fill(matrices, x, y, x + btnW, y + actualH, bgColor);
+            drawBorder(matrices, x, y, btnW, actualH, UIConstants.COLOR_BTN_BORDER);
 
             int color = isHover ? UIConstants.COLOR_LINK_HOVER : UIConstants.COLOR_LINK_NORMAL;
             int textY = y + (actualH - wrapped.size() * 10) / 2;
             for (int i = 0; i < wrapped.size(); i++) {
                 int lw = textRenderer.getWidth(wrapped.get(i));
-                context.drawText(textRenderer, wrapped.get(i),
-                        x + (btnW - lw) / 2, textY + i * 10, color, false);
+                textRenderer.draw(matrices, wrapped.get(i),
+                        x + (btnW - lw) / 2, textY + i * 10, color);
             }
         }
         if (isHover) {
@@ -579,8 +507,19 @@ public final class AcknowledgmentRenderer {
     }
 
     /**
-     * 简化 URL 为短显示文本。
+     * 绘制简单边框（替代 1.20+ 的 drawBorder）。
      */
+    private static void drawBorder(MatrixStack matrices, int x, int y, int width, int height, int color) {
+        // 上
+        DrawableHelper.fill(matrices, x, y, x + width, y + 1, color);
+        // 下
+        DrawableHelper.fill(matrices, x, y + height - 1, x + width, y + height, color);
+        // 左
+        DrawableHelper.fill(matrices, x, y, x + 1, y + height, color);
+        // 右
+        DrawableHelper.fill(matrices, x + width - 1, y, x + width, y + height, color);
+    }
+
     private static Text simplifyUrl(String url) {
         if (url == null || url.isEmpty()) return Text.empty();
         String trimmed = url;
@@ -595,7 +534,7 @@ public final class AcknowledgmentRenderer {
     /**
      * 渲染引用块。
      */
-    private static int renderQuote(DrawContext context, TextRenderer textRenderer,
+    private static int renderQuote(MatrixStack matrices, TextRenderer textRenderer,
                                    int mainWidth, int currentY,
                                    int scrollWindowStartY, int scrollWindowEndY,
                                    Block block) {
@@ -608,19 +547,19 @@ public final class AcknowledgmentRenderer {
         int totalH = estimateQuoteHeight(textRenderer, mainWidth, block);
 
         if (currentY + totalH >= scrollWindowStartY && currentY <= scrollWindowEndY) {
-            context.fill(blockX, currentY, blockX + blockW, currentY + totalH, UIConstants.COLOR_HEADER_BG_FONT);
-            context.fill(blockX, currentY, blockX + 4, currentY + totalH, UIConstants.COLOR_SECTION_TITLE);
+            DrawableHelper.fill(matrices, blockX, currentY, blockX + blockW, currentY + totalH, UIConstants.COLOR_HEADER_BG_FONT);
+            DrawableHelper.fill(matrices, blockX, currentY, blockX + 4, currentY + totalH, UIConstants.COLOR_SECTION_TITLE);
 
             int y = currentY + padding;
             if (block.quoteTitle != null) {
-                context.drawText(textRenderer, block.quoteTitle,
-                        innerX, y, UIConstants.COLOR_SECTION_TITLE, false);
+                textRenderer.draw(matrices, block.quoteTitle,
+                        innerX, y, UIConstants.COLOR_SECTION_TITLE);
                 y += 16 + 6;
             }
             for (Text t : block.quoteLines) {
                 List<OrderedText> lines = textRenderer.wrapLines(t, innerW - 8);
                 for (OrderedText line : lines) {
-                    context.drawText(textRenderer, line, innerX, y, UIConstants.COLOR_DESC_TEXT, false);
+                    textRenderer.draw(matrices, line, innerX, y, UIConstants.COLOR_DESC_TEXT);
                     y += 13;
                 }
                 y += 4;
@@ -629,9 +568,6 @@ public final class AcknowledgmentRenderer {
         return currentY + totalH;
     }
 
-    /**
-     * 估算引用块高度。
-     */
     private static int estimateQuoteHeight(TextRenderer textRenderer, int mainWidth, Block block) {
         int blockW = mainWidth - 48;
         int padding = 10;
@@ -648,7 +584,7 @@ public final class AcknowledgmentRenderer {
     /**
      * 渲染换行文本段落。
      */
-    private static int renderWrappedParagraph(DrawContext context, TextRenderer textRenderer,
+    private static int renderWrappedParagraph(MatrixStack matrices, TextRenderer textRenderer,
                                               Text text, int x, int maxWidth, int currentY,
                                               int scrollWindowStartY, int scrollWindowEndY,
                                               int color, int lineHeight, int paraGap) {
@@ -658,7 +594,7 @@ public final class AcknowledgmentRenderer {
             List<OrderedText> lines = textRenderer.wrapLines(Text.literal(paragraphs[p]), maxWidth);
             for (int i = 0; i < lines.size(); i++) {
                 if (currentY + lineHeight >= scrollWindowStartY && currentY <= scrollWindowEndY) {
-                    context.drawText(textRenderer, lines.get(i), x, currentY, color, false);
+                    textRenderer.draw(matrices, lines.get(i), x, currentY, color);
                 }
                 currentY += lineHeight;
             }

@@ -9,7 +9,7 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.loot.context.LootContextParameterSet;
+import net.minecraft.loot.context.LootContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
@@ -104,7 +104,7 @@ public class RoadMarkBlock extends Block implements Waterloggable {
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState,
                                                  WorldAccess world, BlockPos pos, BlockPos neighborPos) {
         if (state.get(Properties.WATERLOGGED)) {
-            world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+            world.createAndScheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
         }
         if (direction == Direction.DOWN) {
             if (!this.canPlaceAt(state, world, pos)) {
@@ -127,7 +127,7 @@ public class RoadMarkBlock extends Block implements Waterloggable {
 
     @SuppressWarnings("deprecation")
     @Override
-    public List<ItemStack> getDroppedStacks(BlockState state, LootContextParameterSet.Builder builder) {
+    public List<ItemStack> getDroppedStacks(BlockState state, LootContext.Builder builder) {
         List<ItemStack> drops = super.getDroppedStacks(state, builder);
         if (drops.isEmpty()) {
             drops.add(new ItemStack(this));
@@ -182,7 +182,11 @@ public class RoadMarkBlock extends Block implements Waterloggable {
         public @Nullable BlockState getPlacementState(ItemPlacementContext ctx) {
             final BlockState state = super.getPlacementState(ctx);
             if (state != null) {
-                return state.with(AXIS, FourHorizontalAxis.fromDirection(ctx.getHorizontalPlayerFacing()));
+                Direction facing = ctx.getPlayerFacing();
+                if (facing.getAxis().isHorizontal()) {
+                    return state.with(AXIS, FourHorizontalAxis.fromDirection(facing));
+                }
+                return state.with(AXIS, FourHorizontalAxis.X);
             }
             return null;
         }

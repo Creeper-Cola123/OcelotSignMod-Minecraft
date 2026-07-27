@@ -15,10 +15,10 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,19 +59,19 @@ public class OcelotSignMod implements ModInitializer {
     }
 
     private static void registerCustomModelBlock() {
-        CUSTOM_MODEL_BLOCK = new CustomModelBlock(AbstractBlock.Settings.create().strength(1.0f).nonOpaque());
+        CUSTOM_MODEL_BLOCK = new CustomModelBlock(AbstractBlock.Settings.of(Material.STONE).strength(1.0f).nonOpaque());
         CUSTOM_MODEL_BLOCK_ENTITY = Registry.register(
-                Registries.BLOCK_ENTITY_TYPE,
+                Registry.BLOCK_ENTITY_TYPE,
                 id("custom_model_block_entity"),
                 FabricBlockEntityTypeBuilder.create(CustomModelBlockEntity::new, CUSTOM_MODEL_BLOCK).build(null)
         );
-        Registry.register(Registries.BLOCK, id("custom_model_block"), CUSTOM_MODEL_BLOCK);
-        Registry.register(Registries.ITEM, id("custom_model_block"),
+        Registry.register(Registry.BLOCK, id("custom_model_block"), CUSTOM_MODEL_BLOCK);
+        Registry.register(Registry.ITEM, id("custom_model_block"),
                 new CustomModelBlockItem(CUSTOM_MODEL_BLOCK, new Item.Settings()));
     }
 
     private static void registerModelWand() {
         MODEL_WAND = new ModelWandItem(new Item.Settings().maxCount(1));
-        Registry.register(Registries.ITEM, id("model_wand"), MODEL_WAND);
+        Registry.register(Registry.ITEM, id("model_wand"), MODEL_WAND);
     }
 }

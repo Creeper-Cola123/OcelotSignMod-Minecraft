@@ -73,7 +73,8 @@ public final class ServerNetworking {
                     var blockEntity = player.getWorld().getBlockEntity(blockPos);
                     if (blockEntity instanceof CustomModelBlockEntity customBE) {
                         customBE.setModelId(selectedId);
-                        if (player.getWorld() instanceof ServerWorld serverWorld) {
+                        if (player.getWorld() instanceof ServerWorld) {
+                            ServerWorld serverWorld = (ServerWorld) player.getWorld();
                             serverWorld.getChunkManager().markForUpdate(blockPos);
                         }
                     }

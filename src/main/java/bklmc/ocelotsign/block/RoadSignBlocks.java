@@ -6,8 +6,7 @@ import bklmc.ocelotsign.item.RoadSignBlockItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 
@@ -127,13 +126,13 @@ public class RoadSignBlocks {
     public static final Block ORANGE_ROAD_SIGN_SMALL_B = registerWithItem("roadsign/orange/small_b", new RoadSignBlock(Blocks.ORANGE_CONCRETE, FabricBlockSettings.copyOf(Blocks.ORANGE_CONCRETE).strength(0.2f,0.2f).nonOpaque()));
 
     private static Block registerWithItem(String id, Block block) {
-        Block registeredBlock = Registry.register(Registries.BLOCK, new Identifier(OcelotSignMod.MOD_ID, id), block);
+        Block registeredBlock = Registry.register(Registry.BLOCK, new Identifier(OcelotSignMod.MOD_ID, id), block);
         registerBlockItem(id, registeredBlock);
         return registeredBlock;
     }
 
     private static void registerBlockItem(String id, Block block) {
-        Registry.register(Registries.ITEM, new Identifier(OcelotSignMod.MOD_ID, id),
+        Registry.register(Registry.ITEM, new Identifier(OcelotSignMod.MOD_ID, id),
                 new RoadSignBlockItem(block, new Item.Settings()));
     }
 

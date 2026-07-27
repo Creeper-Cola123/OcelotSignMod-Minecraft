@@ -6,8 +6,7 @@ import bklmc.ocelotsign.item.WallRoadSignBlockItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 
@@ -327,8 +326,8 @@ public class WallRoadSignBlocks {
     }
 
     private static Block registerWallRoadSignBlock(String id, Block block) {
-        Block registeredBlock = Registry.register(Registries.BLOCK, new Identifier(OcelotSignMod.MOD_ID, id), block);
-        Registry.register(Registries.ITEM, new Identifier(OcelotSignMod.MOD_ID, id),
+        Block registeredBlock = Registry.register(Registry.BLOCK, new Identifier(OcelotSignMod.MOD_ID, id), block);
+        Registry.register(Registry.ITEM, new Identifier(OcelotSignMod.MOD_ID, id),
                 new WallRoadSignBlockItem(block, new Item.Settings()));
         return registeredBlock;
     }
@@ -338,7 +337,7 @@ public class WallRoadSignBlocks {
      */
     @Deprecated
     private static Block registerWallRoadSignBlock(String id, Block block, net.minecraft.item.Item item) {
-        Block registeredBlock = Registry.register(Registries.BLOCK, new Identifier(OcelotSignMod.MOD_ID, id), block);
+        Block registeredBlock = Registry.register(Registry.BLOCK, new Identifier(OcelotSignMod.MOD_ID, id), block);
         registerBlockItem(id, registeredBlock, item);
         return registeredBlock;
     }
@@ -348,6 +347,6 @@ public class WallRoadSignBlocks {
      */
     @Deprecated
     private static void registerBlockItem(String id, Block block, net.minecraft.item.Item item) {
-        Registry.register(Registries.ITEM, new Identifier(OcelotSignMod.MOD_ID, id), item);
+        Registry.register(Registry.ITEM, new Identifier(OcelotSignMod.MOD_ID, id), item);
     }
 }

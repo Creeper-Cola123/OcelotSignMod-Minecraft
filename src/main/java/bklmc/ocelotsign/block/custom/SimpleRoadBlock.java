@@ -34,7 +34,7 @@ public class SimpleRoadBlock extends Block {
 
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        Direction horizontalFacing = ctx.getHorizontalPlayerFacing().getOpposite();
+        Direction horizontalFacing = ctx.getPlayerFacing().getOpposite();
         if (horizontalFacing.getAxis().isHorizontal()) {
             return this.getDefaultState().with(FACING, horizontalFacing);
         }
