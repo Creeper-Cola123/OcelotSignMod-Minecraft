@@ -358,8 +358,8 @@ public final class HomepageRenderer {
                 String[] parts = path.split("/");
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < Math.min(3, parts.length); i++) {
-                    if (parts[i].length() > 0) {
-                        if (sb.length() > 0) sb.append("/");
+                    if (!parts[i].isEmpty()) {
+                        if (!sb.isEmpty()) sb.append("/");
                         sb.append(parts[i]);
                     }
                 }

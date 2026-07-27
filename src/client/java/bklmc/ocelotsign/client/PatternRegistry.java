@@ -459,7 +459,7 @@ public final class PatternRegistry {
 
     /**
      * 收集来自所有资源包的目标资源。
-     * <p>遍历所有命名空间与路径匹配的 Identifier，使用 {@link ResourceManager#getAllResources(Identifier)}
+     * <p>遍历所有命名空间与路径匹配的 Identifier，使用 {@link ResourceManager#getResourceStack(Identifier)}
      * 逐个收集同名资源，确保来自多个资源包的同名文件都被加载。
      *
      * @param manager 资源管理器

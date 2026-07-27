@@ -11,6 +11,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -127,7 +128,7 @@ public final class PatternAndFontOverlay {
         public H4Section setExtensionFilter(FilterMode mode, String... exts) {
             this.extFilterMode = mode;
             this.extFilterList.clear();
-            for (String ext : exts) this.extFilterList.add(ext);
+            this.extFilterList.addAll(Arrays.asList(exts));
             return this;
         }
 

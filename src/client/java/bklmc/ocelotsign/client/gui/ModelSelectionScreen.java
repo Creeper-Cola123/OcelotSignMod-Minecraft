@@ -345,9 +345,8 @@ public class ModelSelectionScreen extends Screen {
     /**
      * 鼠标点击事件。
      *
-     * @param mx 鼠标X坐标
-     * @param my 鼠标Y坐标
-     * @param btn 鼠标按钮
+     * @param event 鼠标事件
+     * @param doubleClick 是否是双击
      * @return 是否消费事件
      */
     @Override
@@ -413,9 +412,7 @@ public class ModelSelectionScreen extends Screen {
     /**
      * 鼠标释放事件。
      *
-     * @param mx 鼠标X坐标
-     * @param my 鼠标Y坐标
-     * @param btn 鼠标按钮
+     * @param event 鼠标事件
      * @return 是否消费事件
      */
     @Override
@@ -433,9 +430,7 @@ public class ModelSelectionScreen extends Screen {
     /**
      * 鼠标拖拽事件。
      *
-     * @param mx 鼠标X坐标
-     * @param my 鼠标Y坐标
-     * @param btn 鼠标按钮
+     * @param event 鼠标事件
      * @param dx X轴偏移量
      * @param dy Y轴偏移量
      * @return 是否消费事件
@@ -455,9 +450,7 @@ public class ModelSelectionScreen extends Screen {
     /**
      * 按键按下事件。
      *
-     * @param keyCode 键码
-     * @param sc 扫描码
-     * @param mods 修饰键
+     * @param event 按键事件
      * @return 是否消费事件
      */
     @Override

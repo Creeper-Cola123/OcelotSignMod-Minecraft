@@ -74,8 +74,8 @@ public class SignTemplateRegistry {
 
     /**
      * 收集来自所有资源包的同名资源。
-     * <p>{@link ResourceManager#getAllResources(Identifier)} 在同名资源被合并后只返回合并结果，
-     * 此处先通过 {@link ResourceManager#findResources(String, java.util.function.Predicate)} 找到所有匹配项，
+     * <p>{@link ResourceManager#getResourceStack(Identifier)} 在同名资源被合并后只返回合并结果，
+     * 此处先通过 {@link ResourceManager#listResources(String, java.util.function.Predicate)} 找到所有匹配项，
      * 再对每个 Identifier 调用 {@code getAllResources} 取回全部原始数据。
      */
     private static List<Resource> collectAllTemplateResources(ResourceManager manager, Identifier targetId) {
