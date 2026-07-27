@@ -1,6 +1,6 @@
 package bklmc.ocelotsign.mixin_interfaces;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 /**
  * 告示牌编辑器屏幕的 Mixin 扩展接口。

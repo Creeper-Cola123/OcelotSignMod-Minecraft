@@ -1,7 +1,7 @@
 package bklmc.ocelotsign.platform;
 
 import bklmc.ocelotsign.OcelotSignMod;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 /**
  * 本模组标识符的集中定义
@@ -21,6 +21,6 @@ public final class ModIdentifiers {
      * @return 对应的标识符
      */
     public static Identifier of(String path) {
-        return Identifier.of(OcelotSignMod.MOD_ID, path);
+        return Identifier.fromNamespaceAndPath(OcelotSignMod.MOD_ID, path);
     }
 }

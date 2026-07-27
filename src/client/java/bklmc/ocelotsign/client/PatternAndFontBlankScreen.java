@@ -1,8 +1,8 @@
 package bklmc.ocelotsign.client;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 /**
  * 空白编辑界面
@@ -12,20 +12,20 @@ import net.minecraft.text.Text;
 public class PatternAndFontBlankScreen extends Screen {
 
     public PatternAndFontBlankScreen() {
-        super(Text.empty());
+        super(Component.empty());
     }
 
     @Override
-    public boolean shouldPause() {
+    public boolean isPauseScreen() {
         return false;
     }
 
-    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void renderBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
     }
 
     @Override
-    public void close() {
+    public void onClose() {
         PatternAndFontOverlay.isVisible = false;
-        super.close();
+        super.onClose();
     }
 }

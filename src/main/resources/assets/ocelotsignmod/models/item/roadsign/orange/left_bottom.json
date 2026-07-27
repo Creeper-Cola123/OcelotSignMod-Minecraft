@@ -9,7 +9,7 @@
 		"0": "ocelotsignmod:block/roadsign/orange/left_bottom",
 		"1": "ocelotsignmod:block/roadsign/orange/pillar",
 		"particle": "ocelotsignmod:block/roadsign/orange/pillar",
-		"overlay": "ocelotsignmod:item/item_group/road_signs_item"
+		"overlay": "ocelotsignmod:block/item_group/road_signs_item"
 	},
 	"elements": [
 		{

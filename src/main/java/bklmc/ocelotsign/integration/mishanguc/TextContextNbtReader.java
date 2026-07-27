@@ -1,8 +1,8 @@
 package bklmc.ocelotsign.integration.mishanguc;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.MutableText;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.MutableComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -18,12 +18,12 @@ public final class TextContextNbtReader {
     }
 
     /** 从方块实体 NBT 读取文本上下文 */
-    public static @NotNull @Unmodifiable List<?> fromBlockEntityTag(@NotNull NbtCompound nbt) {
+    public static @NotNull @Unmodifiable List<?> fromBlockEntityTag(@NotNull CompoundTag nbt) {
         return MishangAccess.readTextContextsFromNbt(nbt);
     }
 
     /** 从方块实体 NBT 读取文本上下文并转换为样式化文本 */
-    public static @NotNull @Unmodifiable List<MutableText> fromBlockEntityTagAsStyledText(@NotNull NbtCompound nbt) {
+    public static @NotNull @Unmodifiable List<MutableComponent> fromBlockEntityTagAsStyledText(@NotNull CompoundTag nbt) {
         return MishangAccess.readTextContextsFromNbt(nbt).stream()
                 .map(MishangAccess::toStyledText)
                 .collect(ImmutableList.toImmutableList());

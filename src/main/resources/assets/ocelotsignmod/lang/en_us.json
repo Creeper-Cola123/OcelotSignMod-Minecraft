@@ -641,7 +641,7 @@
   "ocelotsignmod.gui.ack.title": "Acknowledgments & Mod Declaration",
   "ocelotsignmod.gui.ack.section.ack_title": "■ Acknowledgments",
   "ocelotsignmod.gui.ack.section.ack_p1": "This mod could not have been developed without the generous contributions of talented creators from the sandbox community. We extend our sincerest thanks to the following teams and individuals:",
-  "ocelotsignmod.gui.ack.section.ack_contributors_label": "• Project Lead / Code / Model / Art: Ocelot Creeper Cola\n• Traffic Sign Advisor: Hua laohua\n• Game Tester: XFunny",
+  "ocelotsignmod.gui.ack.section.ack_contributors_label": "• Project Lead / Code / Model / Art: Ocelot Creeper Cola\n• Traffic Sign Advisor: Hua laohua\n• Game Tester: XFunny\n26.1.2 Migration: Pigeon0v0",
   "ocelotsignmod.gui.ack.section.ack_special_label": "• Special thanks: SolidBlock, author of the \"Mishang Urban Construction\" mod",
   "ocelotsignmod.gui.ack.section.ack_mishang_dev_label": "• MishangUC Development: SolidBlock",
   "ocelotsignmod.gui.ack.column.ocelot_dev": "Ocelot Sign Mod Developers",

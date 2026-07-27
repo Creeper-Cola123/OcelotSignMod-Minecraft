@@ -4,10 +4,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -41,13 +41,13 @@ public class SignTemplateRegistry {
         CATEGORIZED_TEMPLATES.clear();
         ALL_TEMPLATES.clear();
 
-        ResourceManager manager = MinecraftClient.getInstance().getResourceManager();
-        Identifier jsonId = Identifier.of("ocelotsignmod", "sign_templates.json");
+        ResourceManager manager = Minecraft.getInstance().getResourceManager();
+        Identifier jsonId = Identifier.fromNamespaceAndPath("ocelotsignmod", "sign_templates.json");
 
         try {
             List<Resource> resources = collectAllTemplateResources(manager, jsonId);
             for (Resource resource : resources) {
-                try (InputStreamReader reader = new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8)) {
+                try (InputStreamReader reader = new InputStreamReader(resource.open(), StandardCharsets.UTF_8)) {
                     JsonElement root = JsonParser.parseReader(reader);
                     if (root.isJsonArray()) {
                         JsonArray array = root.getAsJsonArray();
@@ -57,7 +57,7 @@ public class SignTemplateRegistry {
                             item.id = obj.get("id").getAsString();
                             item.category = obj.has("category") ? obj.get("category").getAsString() : "其他";
                             item.name = obj.get("name").getAsString();
-                            item.model = Identifier.of(obj.get("model").getAsString());
+                            item.model = Identifier.parse(obj.get("model").getAsString());
                             item.zOffset = obj.has("z_offset") ? obj.get("z_offset").getAsFloat() : 0.0f;
                             item.renderMode = obj.has("render_mode") ? obj.get("render_mode").getAsString() : "SINGLE_SIDED";
 
@@ -74,21 +74,21 @@ public class SignTemplateRegistry {
 
     /**
      * 收集来自所有资源包的同名资源。
-     * <p>{@link ResourceManager#getAllResources(Identifier)} 在同名资源被合并后只返回合并结果，
-     * 此处先通过 {@link ResourceManager#findResources(String, java.util.function.Predicate)} 找到所有匹配项，
+     * <p>{@link ResourceManager#getResourceStack(Identifier)} 在同名资源被合并后只返回合并结果，
+     * 此处先通过 {@link ResourceManager#listResources(String, java.util.function.Predicate)} 找到所有匹配项，
      * 再对每个 Identifier 调用 {@code getAllResources} 取回全部原始数据。
      */
     private static List<Resource> collectAllTemplateResources(ResourceManager manager, Identifier targetId) {
         List<Resource> result = new ArrayList<>();
         try {
-            Map<Identifier, Resource> allById = manager.findResources(
+            Map<Identifier, Resource> allById = manager.listResources(
                     targetId.getPath(),
                     id -> id.getNamespace().equals(targetId.getNamespace())
                             && id.getPath().equals(targetId.getPath())
             );
             for (Identifier id : allById.keySet()) {
                 try {
-                    result.addAll(manager.getAllResources(id));
+                    result.addAll(manager.getResourceStack(id));
                 } catch (Exception ignored) {
                 }
             }
@@ -96,7 +96,7 @@ public class SignTemplateRegistry {
         }
         if (result.isEmpty()) {
             try {
-                result.addAll(manager.getAllResources(targetId));
+                result.addAll(manager.getResourceStack(targetId));
             } catch (Exception ignored) {
             }
         }

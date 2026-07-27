@@ -1,17 +1,16 @@
 package bklmc.ocelotsign.block.custom;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
  * 简易道路方块
@@ -19,36 +18,36 @@ import net.minecraft.world.BlockView;
  * @see RoadSignBlock
  */
 public class SimpleRoadBlock extends Block {
-    public static final DirectionProperty FACING = DirectionProperty.of("facing",
+    public static final EnumProperty<Direction> FACING = EnumProperty.create("facing", Direction.class,
             Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST);
 
-    public static final VoxelShape SHAPE_N = Block.createCuboidShape(0, 0, 0, 16, 16, 3);
-    public static final VoxelShape SHAPE_S = Block.createCuboidShape(0, 0, 13, 16, 16, 16);
-    public static final VoxelShape SHAPE_E = Block.createCuboidShape(13, 0, 0, 16, 16, 16);
-    public static final VoxelShape SHAPE_W = Block.createCuboidShape(0, 0, 0, 3, 16, 16);
+    public static final VoxelShape SHAPE_N = Block.box(0, 0, 0, 16, 16, 3);
+    public static final VoxelShape SHAPE_S = Block.box(0, 0, 13, 16, 16, 16);
+    public static final VoxelShape SHAPE_E = Block.box(13, 0, 0, 16, 16, 16);
+    public static final VoxelShape SHAPE_W = Block.box(0, 0, 0, 3, 16, 16);
 
-    public SimpleRoadBlock(Settings settings) {
+    public SimpleRoadBlock(Properties settings) {
         super(settings);
-        this.setDefaultState(this.getStateManager().getDefaultState().with(FACING, Direction.NORTH));
+        this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
     }
 
     @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        Direction horizontalFacing = ctx.getHorizontalPlayerFacing().getOpposite();
+    public BlockState getStateForPlacement(BlockPlaceContext ctx) {
+        Direction horizontalFacing = ctx.getHorizontalDirection().getOpposite();
         if (horizontalFacing.getAxis().isHorizontal()) {
-            return this.getDefaultState().with(FACING, horizontalFacing);
+            return this.defaultBlockState().setValue(FACING, horizontalFacing);
         }
-        return this.getDefaultState();
+        return this.defaultBlockState();
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return getShapeForFacing(state.get(FACING));
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        return getShapeForFacing(state.getValue(FACING));
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return getShapeForFacing(state.get(FACING));
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        return getShapeForFacing(state.getValue(FACING));
     }
 
     private VoxelShape getShapeForFacing(Direction facing) {
@@ -61,12 +60,12 @@ public class SimpleRoadBlock extends Block {
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING);
     }
 
     @Override
-    public BlockState rotate(BlockState state, BlockRotation rotation) {
-        return state.with(FACING, rotation.rotate(state.get(FACING)));
+    public BlockState rotate(BlockState state, Rotation rotation) {
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 }

@@ -1,5 +1,5 @@
 plugins {
-	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
 	id 'maven-publish'
 }
 
@@ -25,10 +25,6 @@ repositories {
 loom {
 	splitEnvironmentSourceSets()
 
-	mixin {
-		defaultRefmapName = "${archives_base_name}-refmap.json"
-	}
-
 	mods {
 		"ocelotsignmod" {
 			sourceSet sourceSets.main
@@ -46,14 +42,13 @@ fabricApi {
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
 	// Local MishangUC integration library supplied in the project's libs directory.
-	modImplementation files('libs/mishanguc-1.6.1-1.21.1.jar')
+	implementation files('libs/mishanguc-1.6.3-beta.5+mc26.1.2.jar')
 }
 
 processResources {
@@ -65,7 +60,7 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 21
+	it.options.release = 25
 }
 
 java {
@@ -74,8 +69,8 @@ java {
 	// If you remove this line, sources will not be generated.
 	withSourcesJar()
 
-	sourceCompatibility = JavaVersion.VERSION_21
-	targetCompatibility = JavaVersion.VERSION_21
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
 }
 
 jar {
@@ -90,24 +85,12 @@ jar {
 	archiveClassifier = "dev"
 }
 
-remapJar {
-	inputFile = jar.archiveFile
-	archiveClassifier = null
-	dependsOn jar
-}
-
 // configure the maven publication
 publishing {
 	publications {
-		mavenJava(MavenPublication) {
+		create("mavenJava", MavenPublication) {
 			artifactId = project.archives_base_name
-			// 显式指定混淆后的产物
-			artifact(remapJar) {
-				builtBy remapJar
-			}
-			artifact(sourcesJar) {
-				builtBy remapSourcesJar
-			}
+			from components.java
 		}
 	}
 

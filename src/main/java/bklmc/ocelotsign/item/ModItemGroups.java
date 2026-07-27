@@ -1,21 +1,16 @@
 package bklmc.ocelotsign.item;
 
 import bklmc.ocelotsign.OcelotSignMod;
-import bklmc.ocelotsign.block.ArrowBlocks;
-import bklmc.ocelotsign.block.ArrowBlocksLarge;
-import bklmc.ocelotsign.block.ArrowBlocksStyle2;
-import bklmc.ocelotsign.block.ArrowBlocksStyle3;
-import bklmc.ocelotsign.block.PillarBlocks;
-import bklmc.ocelotsign.block.RoadSignBlocks;
-import bklmc.ocelotsign.block.WallRoadSignBlocks;
+import bklmc.ocelotsign.block.*;
 import bklmc.ocelotsign.integration.mishanguc.MishangAccess;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +18,7 @@ import org.slf4j.LoggerFactory;
  * 物品创造栏分组注册
  *
  * @see ModItems
- * @see net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup
+ * @see net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab
  */
 public class ModItemGroups {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModItemGroups.class); // 日志记录器
@@ -31,10 +26,10 @@ public class ModItemGroups {
     /**
      * 道路指示牌分类。
      */
-    public static final ItemGroup ROAD_SIGNS = FabricItemGroup.builder()
+    public static final CreativeModeTab ROAD_SIGNS = FabricCreativeModeTab.builder()
             .icon(() -> new ItemStack(ModItems.ROAD_SIGNS_ICON))
-            .displayName(Text.translatable("itemGroup.ocelotsign.road_signs"))
-            .entries((context, entries) -> {
+            .title(Component.translatable("itemGroup.ocelotsign.road_signs"))
+            .displayItems((context, entries) -> {
                 addAllBlocks(entries,
                         RoadSignBlocks.BLUE_ROAD_SIGN_LEFT_TOP, RoadSignBlocks.BLUE_ROAD_SIGN_TOP,
                         RoadSignBlocks.BLUE_ROAD_SIGN_RIGHT_TOP, RoadSignBlocks.BLUE_ROAD_SIGN_LEFT,
@@ -102,10 +97,10 @@ public class ModItemGroups {
     /**
      * 墙道路指示牌分类。
      */
-    public static final ItemGroup WALL_ROAD_SIGNS = FabricItemGroup.builder()
+    public static final CreativeModeTab WALL_ROAD_SIGNS = FabricCreativeModeTab.builder()
             .icon(() -> new ItemStack(ModItems.WALL_ROAD_SIGNS_ICON))
-            .displayName(Text.translatable("itemGroup.ocelotsign.wall_road_signs"))
-            .entries((context, entries) -> {
+            .title(Component.translatable("itemGroup.ocelotsign.wall_road_signs"))
+            .displayItems((context, entries) -> {
                 addAllBlocks(entries,
                         WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_LEFT_TOP, WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_TOP,
                         WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_RIGHT_TOP, WallRoadSignBlocks.BLUE_WALL_ROAD_SIGN_LEFT,
@@ -326,10 +321,10 @@ public class ModItemGroups {
     /**
      * 支柱分类。
      */
-    public static final ItemGroup PILLARS = FabricItemGroup.builder()
+    public static final CreativeModeTab PILLARS = FabricCreativeModeTab.builder()
             .icon(() -> new ItemStack(ModItems.PILLARS_ICON))
-            .displayName(Text.translatable("itemGroup.ocelotsign.pillars"))
-            .entries((context, entries) -> {
+            .title(Component.translatable("itemGroup.ocelotsign.pillars"))
+            .displayItems((context, entries) -> {
                 addAllBlocks(entries,
                         PillarBlocks.ROAD_PILLAR_FOUR_SIDES_A, PillarBlocks.ROAD_PILLAR_FOUR_SIDES_A_TOP,
                         PillarBlocks.ROAD_PILLAR_THREE_SIDES_A_LEFT, PillarBlocks.ROAD_PILLAR_THREE_SIDES_A_RIGHT,
@@ -344,8 +339,8 @@ public class ModItemGroups {
                         PillarBlocks.ROAD_PILLAR_HORIZONTAL_D_DOWN, PillarBlocks.ROAD_PILLAR_HORIZONTAL_D_UP
                 );
 
-                entries.add(OcelotSignMod.CUSTOM_MODEL_BLOCK);
-                entries.add(OcelotSignMod.MODEL_WAND);
+                entries.accept(OcelotSignMod.CUSTOM_MODEL_BLOCK);
+                entries.accept(OcelotSignMod.MODEL_WAND);
 
                 addMishangucTextCopyTool(entries);
             })
@@ -356,15 +351,15 @@ public class ModItemGroups {
      *
      * @param entries 物品分类条目
      */
-    private static void addMishangucTextCopyTool(ItemGroup.Entries entries) {
+    private static void addMishangucTextCopyTool(CreativeModeTab.Output entries) {
         if (!MishangAccess.isAvailable()) {
             LOGGER.debug("Mishanguc 不可用；跳过 TEXT_COPY_TOOL");
             return;
         }
 
         Object tool = MishangAccess.getTextCopyTool();
-        if (tool instanceof net.minecraft.item.Item item) {
-            entries.add(item);
+        if (tool instanceof net.minecraft.world.item.Item item) {
+            entries.accept(item);
         }
     }
 
@@ -375,9 +370,9 @@ public class ModItemGroups {
      * @param blocks  要添加的方块数组
      */
     @SafeVarargs
-    private static void addAllBlocks(ItemGroup.Entries entries, net.minecraft.block.Block... blocks) {
-        for (net.minecraft.block.Block block : blocks) {
-            entries.add(block.asItem());
+    private static void addAllBlocks(CreativeModeTab.Output entries, net.minecraft.world.level.block.Block... blocks) {
+        for (net.minecraft.world.level.block.Block block : blocks) {
+            entries.accept(block.asItem());
         }
     }
 
@@ -388,18 +383,18 @@ public class ModItemGroups {
      * ArrowBlocks 另行注册到 mishanguc 的 {@code roads} 分组中。</p>
      */
     public static void registerItemGroups() {
-        Registry.register(Registries.ITEM_GROUP, Identifier.of(OcelotSignMod.MOD_ID, "ocelotsign_1_road_signs"), ROAD_SIGNS);
-        Registry.register(Registries.ITEM_GROUP, Identifier.of(OcelotSignMod.MOD_ID, "ocelotsign_2_wall_road_signs"), WALL_ROAD_SIGNS);
-        Registry.register(Registries.ITEM_GROUP, Identifier.of(OcelotSignMod.MOD_ID, "ocelotsign_3_pillars"), PILLARS);
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, OcelotSignMod.id("ocelotsign_1_road_signs"), ROAD_SIGNS);
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, OcelotSignMod.id("ocelotsign_2_wall_road_signs"), WALL_ROAD_SIGNS);
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, OcelotSignMod.id("ocelotsign_3_pillars"), PILLARS);
     }
 
     /** 将 ArrowBlocks 注入到 mishanguc 的 roads 分组中，不影响本模组分类顺序 */
     static {
-        var roadsGroupKey = net.minecraft.registry.RegistryKey.of(
-                net.minecraft.registry.RegistryKeys.ITEM_GROUP,
-                Identifier.of("mishanguc", "roads")
+        var roadsGroupKey = net.minecraft.resources.ResourceKey.create(
+                net.minecraft.core.registries.Registries.CREATIVE_MODE_TAB,
+                Identifier.fromNamespaceAndPath("mishanguc", "roads")
         );
-        net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents.modifyEntriesEvent(roadsGroupKey)
+        CreativeModeTabEvents.modifyOutputEvent(roadsGroupKey)
                 .register(entries -> {
                     addAllBlocks(entries,
                             ArrowBlocks.SPEED_BUMP, ArrowBlocks.YIELD, ArrowBlocks.DISTANCE_CONFIRM,

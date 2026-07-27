@@ -1,7 +1,7 @@
 package bklmc.ocelotsign.item;
 
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
@@ -13,16 +13,16 @@ import java.util.List;
  */
 public class RoadSignBlockItem extends AbstractRoadSignBlockItem {
 
-    private static final Text HINT_LINE_1 = Text.translatable(Tooltip.ROAD_SIGN_TOOLTIP_3).formatted(Formatting.GRAY);
-    private static final Text HINT_LINE_2 = Text.translatable(Tooltip.ROAD_SIGN_TOOLTIP_4).formatted(Formatting.GRAY);
-    private static final Text HINT_LINE_3 = Text.translatable(Tooltip.ROAD_SIGN_TOOLTIP_5).formatted(Formatting.GRAY);
+    private static final Component HINT_LINE_1 = Component.translatable(Tooltip.ROAD_SIGN_TOOLTIP_3).withStyle(ChatFormatting.GRAY);
+    private static final Component HINT_LINE_2 = Component.translatable(Tooltip.ROAD_SIGN_TOOLTIP_4).withStyle(ChatFormatting.GRAY);
+    private static final Component HINT_LINE_3 = Component.translatable(Tooltip.ROAD_SIGN_TOOLTIP_5).withStyle(ChatFormatting.GRAY);
 
-    public RoadSignBlockItem(net.minecraft.block.Block block, Settings settings) {
+    public RoadSignBlockItem(net.minecraft.world.level.block.Block block, Properties settings) {
         super(block, settings);
     }
 
     @Override
-    protected void addHintTooltipToList(List<Text> tooltip) {
+    protected void addHintTooltipToList(List<Component> tooltip) {
         tooltip.add(HINT_LINE_1);
         tooltip.add(HINT_LINE_2);
         tooltip.add(HINT_LINE_3);

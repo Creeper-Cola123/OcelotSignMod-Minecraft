@@ -1,7 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "ocelotsignmod:block/roadmark_large/orange_arrow_straight_left_right",
-    "layer1": "ocelotsignmod:item/item_group/large"
+    "layer0": "ocelotsignmod:block/roadmark_large/orange_arrow_straight_left_right"
   }
 }

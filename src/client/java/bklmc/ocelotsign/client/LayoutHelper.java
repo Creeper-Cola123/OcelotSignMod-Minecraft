@@ -1,10 +1,9 @@
 package bklmc.ocelotsign.client;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 
 import java.util.List;
 
@@ -24,10 +23,10 @@ public final class LayoutHelper {
      * @param textRenderer 文本渲染器
      * @return 项高度（像素）
      */
-    public static int getSidebarTopItemHeight(Text text, TextRenderer textRenderer) {
+    public static int getSidebarTopItemHeight(Component text, Font textRenderer) {
         int maxWidth = UIConstants.SIDEBAR_WIDTH - 24;
         if (maxWidth < 20) maxWidth = 20;
-        List<OrderedText> lines = textRenderer.wrapLines(text, maxWidth);
+        List<FormattedCharSequence> lines = textRenderer.split(text, maxWidth);
         return Math.max(UIConstants.DOC_LIST_ITEM_HEIGHT, lines.size() * 10 + 6);
     }
 
@@ -40,11 +39,11 @@ public final class LayoutHelper {
      * @param textRenderer 文本渲染器
      * @return 分类项高度（像素）
      */
-    public static int getCategoryHeight(Text title, String prefix, int indent, TextRenderer textRenderer) {
+    public static int getCategoryHeight(Component title, String prefix, int indent, Font textRenderer) {
         int maxWidth = UIConstants.SIDEBAR_WIDTH - indent - 8;
         if (maxWidth < 20) maxWidth = 20;
         String fullText = prefix + title.getString();
-        List<OrderedText> lines = textRenderer.wrapLines(Text.literal(fullText), maxWidth);
+        List<FormattedCharSequence> lines = textRenderer.split(Component.literal(fullText), maxWidth);
         return Math.max(24, lines.size() * 10 + 10);
     }
 
@@ -56,7 +55,7 @@ public final class LayoutHelper {
      * @param textRenderer 文本渲染器
      * @return 总高度（像素）
      */
-    public static int calculateH3Height(PatternAndFontOverlay.H3Category h3, int indent, TextRenderer textRenderer) {
+    public static int calculateH3Height(PatternAndFontOverlay.H3Category h3, int indent, Font textRenderer) {
         String prefix = h3.subCategories.isEmpty() ? "" : (h3.isExpanded ? "[-] " : "[+] ");
         int height = getCategoryHeight(h3.title, prefix, indent, textRenderer);
         if (h3.isExpanded && !h3.subCategories.isEmpty()) {
@@ -82,7 +81,7 @@ public final class LayoutHelper {
      * @param textRenderer 文本渲染器
      * @return 总高度（像素）
      */
-    public static int calculateH4Height(PatternAndFontOverlay.H4Section section, int indent, TextRenderer textRenderer) {
+    public static int calculateH4Height(PatternAndFontOverlay.H4Section section, int indent, Font textRenderer) {
         String prefix = section.useStyles ? (section.isExpanded ? "[-] " : "[+] ") : "";
         int height = getCategoryHeight(section.title, prefix, indent, textRenderer);
         if (section.isExpanded && section.useStyles && !section.subSections.isEmpty()) {
@@ -106,7 +105,7 @@ public final class LayoutHelper {
      * @param parentH3 父级 H3 分类
      * @return 渲染后的 Y 坐标
      */
-    public static int renderH4SectionDynamic(DrawContext context, TextRenderer textRenderer,
+    public static int renderH4SectionDynamic(GuiGraphicsExtractor context, Font textRenderer,
                                              double mouseX, double mouseY,
                                              PatternAndFontOverlay.H4Section section,
                                              int indent, int y,
@@ -124,12 +123,12 @@ public final class LayoutHelper {
         }
 
         int maxWidth = UIConstants.SIDEBAR_WIDTH - indent - 8;
-        List<OrderedText> lines = textRenderer.wrapLines(Text.literal(prefix + section.title.getString()), maxWidth);
+        List<FormattedCharSequence> lines = textRenderer.split(Component.literal(prefix + section.title.getString()), maxWidth);
         int textY = y + (itemHeight - lines.size() * 10) / 2 + 1;
 
         for (int i = 0; i < lines.size(); i++) {
             int color = isSelected ? UIConstants.COLOR_H3_TEXT_SELECTED : (isHover ? 0xFFFFFFFF : UIConstants.COLOR_H3_TEXT);
-            context.drawText(textRenderer, lines.get(i), indent, textY + i * 10, color, false);
+            context.text(textRenderer, lines.get(i), indent, textY + i * 10, color, false);
         }
 
         int currentY = y + itemHeight;
@@ -170,7 +169,7 @@ public final class LayoutHelper {
      * @param y 起始 Y 坐标
      * @return 渲染后的 Y 坐标
      */
-    public static int renderH3CategoryDynamic(DrawContext context, TextRenderer textRenderer,
+    public static int renderH3CategoryDynamic(GuiGraphicsExtractor context, Font textRenderer,
                                                double mouseX, double mouseY,
                                                PatternAndFontOverlay.H3Category h3,
                                                int indent, int y) {
@@ -193,12 +192,12 @@ public final class LayoutHelper {
         }
 
         int maxWidth = UIConstants.SIDEBAR_WIDTH - indent - 8;
-        List<OrderedText> lines = textRenderer.wrapLines(Text.literal(prefix + h3.title.getString()), maxWidth);
+        List<FormattedCharSequence> lines = textRenderer.split(Component.literal(prefix + h3.title.getString()), maxWidth);
         int textY = y + (itemHeight - lines.size() * 10) / 2 + 1;
 
         for (int i = 0; i < lines.size(); i++) {
             int color = isSelected ? UIConstants.COLOR_H3_TEXT_SELECTED : (isHover ? 0xFFFFFFFF : UIConstants.COLOR_H3_TEXT);
-            context.drawText(textRenderer, lines.get(i), indent, textY + i * 10, color, false);
+            context.text(textRenderer, lines.get(i), indent, textY + i * 10, color, false);
         }
 
         int currentY = y + itemHeight;
@@ -232,7 +231,7 @@ public final class LayoutHelper {
     public static Integer handleH3CategoryClick(double mouseX, double mouseY,
                                                   PatternAndFontOverlay.H2Category h2,
                                                   PatternAndFontOverlay.H3Category h3,
-                                                  int indent, int y, TextRenderer textRenderer) {
+                                                  int indent, int y, Font textRenderer) {
         String prefix = h3.subCategories.isEmpty() ? "" : (h3.isExpanded ? "[-] " : "[+] ");
         int itemHeight = getCategoryHeight(h3.title, prefix, indent, textRenderer);
 
@@ -281,7 +280,7 @@ public final class LayoutHelper {
                                                PatternAndFontOverlay.H2Category h2,
                                                PatternAndFontOverlay.H3Category parentH3,
                                                PatternAndFontOverlay.H4Section section,
-                                               int indent, int y, TextRenderer textRenderer) {
+                                               int indent, int y, Font textRenderer) {
         String prefix = section.useStyles ? (section.isExpanded ? "[-] " : "[+] ") : "";
         int itemHeight = getCategoryHeight(section.title, prefix, indent, textRenderer);
 
@@ -342,7 +341,7 @@ public final class LayoutHelper {
      * @param mouseX 鼠标 X 坐标
      * @param mouseY 鼠标 Y 坐标
      */
-    public static void renderScrollbar(DrawContext context, int x, int y, int width, int height,
+    public static void renderScrollbar(GuiGraphicsExtractor context, int x, int y, int width, int height,
                                        double scrollY, double maxScrollY, int scrollWindowHeight,
                                        double mouseX, double mouseY) {
         if (maxScrollY <= 20) return;
@@ -360,7 +359,7 @@ public final class LayoutHelper {
         boolean isHover = isMouseInRect(mouseX, mouseY, scrollbarX, thumbY, UIConstants.SCROLLBAR_WIDTH, thumbHeight);
         int thumbColor = isHover ? UIConstants.COLOR_SCROLLBAR_THUMB_HOVER : UIConstants.COLOR_SCROLLBAR_THUMB;
         context.fill(scrollbarX, thumbY, scrollbarX + UIConstants.SCROLLBAR_WIDTH, thumbY + thumbHeight, thumbColor);
-        context.drawBorder(scrollbarX, thumbY, UIConstants.SCROLLBAR_WIDTH, thumbHeight, 0xFF999999);
+        context.outline(scrollbarX, thumbY, UIConstants.SCROLLBAR_WIDTH, thumbHeight, 0xFF999999);
     }
 
     /**
@@ -370,7 +369,7 @@ public final class LayoutHelper {
      * @param textRenderer 文本渲染器
      * @return 总内容高度（像素）
      */
-    public static int getTotalMainContentHeight(int mainWidth, TextRenderer textRenderer) {
+    public static int getTotalMainContentHeight(int mainWidth, Font textRenderer) {
         if (PatternAndFontOverlay.isDocumentListSelected) {
             return getDocListContentHeight(mainWidth, textRenderer);
         } else if (PatternAndFontOverlay.isAcknowledgmentSelected) {
@@ -380,7 +379,7 @@ public final class LayoutHelper {
         } else if (PatternAndFontOverlay.isColorPickerSelected) {
             return PatternAndFontOverlay.getColorPickerContentHeight(mainWidth, textRenderer);
         } else if (PatternAndFontOverlay.selectedH3 != null) {
-            String mishangKey = Text.translatable("ocelotsignmod.gui.categories.mishang_builtin").getString();
+            String mishangKey = Component.translatable("ocelotsignmod.gui.categories.mishang_builtin").getString();
             if (PatternAndFontOverlay.selectedH3.title.getString().equals(mishangKey)) {
                 return getMishangContentHeight(mainWidth, textRenderer);
             } else {
@@ -391,7 +390,7 @@ public final class LayoutHelper {
     }
 
     // 计算文档列表内容高度
-    private static int getDocListContentHeight(int mainWidth, TextRenderer textRenderer) {
+    private static int getDocListContentHeight(int mainWidth, Font textRenderer) {
         // 头图高度
         int headerImageHeight = (int) (mainWidth * 0.3);
 
@@ -402,8 +401,8 @@ public final class LayoutHelper {
         height += 28;
 
         // 提示文字块
-        Text hintText = Text.translatable("ocelotsignmod.gui.homepage.hint");
-        List<OrderedText> hintLines = textRenderer.wrapLines(hintText, mainWidth - 64);
+        Component hintText = Component.translatable("ocelotsignmod.gui.homepage.hint");
+        List<FormattedCharSequence> hintLines = textRenderer.split(hintText, mainWidth - 64);
         int hintBgHeight = hintLines.size() * 12 + 10;
         height += hintBgHeight + 12;
 
@@ -415,8 +414,8 @@ public final class LayoutHelper {
         int introParaGap = 20;
         for (String key : new String[]{"ocelotsignmod.gui.homepage.intro.p1",
                 "ocelotsignmod.gui.homepage.intro.p2", "ocelotsignmod.gui.homepage.intro.p3"}) {
-            Text t = Text.translatable(key);
-            List<OrderedText> lines = textRenderer.wrapLines(t, mainWidth - 40);
+            Component t = Component.translatable(key);
+            List<FormattedCharSequence> lines = textRenderer.split(t, mainWidth - 40);
             height += lines.size() * introLineHeight;
             height += introParaGap;
         }
@@ -447,8 +446,8 @@ public final class LayoutHelper {
         int disclaimerParaGap = 20;
         for (String key : new String[]{"ocelotsignmod.gui.homepage.disclaimer.p1",
                 "ocelotsignmod.gui.homepage.disclaimer.p2", "ocelotsignmod.gui.homepage.disclaimer.p3"}) {
-            Text t = Text.translatable(key);
-            List<OrderedText> lines = textRenderer.wrapLines(t, mainWidth - 40);
+            Component t = Component.translatable(key);
+            List<FormattedCharSequence> lines = textRenderer.split(t, mainWidth - 40);
             height += lines.size() * disclaimerLineHeight;
             height += disclaimerParaGap;
         }
@@ -466,15 +465,15 @@ public final class LayoutHelper {
      * @param docUrl 文档链接
      * @return 卡片高度（像素）
      */
-    private static int getCardHeightFromUrls(TextRenderer textRenderer, int columnWidth,
+    private static int getCardHeightFromUrls(Font textRenderer, int columnWidth,
                                             String repoUrl, String docUrl) {
         int padding = 12;
         int titleHeight = 14;
         int btnWidth = columnWidth - padding * 2;
         String repoName = HomepageRenderer.getShortLinkText(repoUrl).getString();
         String docName = HomepageRenderer.getShortLinkText(docUrl).getString();
-        int repoLines = Math.max(1, textRenderer.wrapLines(Text.literal(repoName), btnWidth - 16).size());
-        int docLines = Math.max(1, textRenderer.wrapLines(Text.literal(docName), btnWidth - 16).size());
+        int repoLines = Math.max(1, textRenderer.split(Component.literal(repoName), btnWidth - 16).size());
+        int docLines = Math.max(1, textRenderer.split(Component.literal(docName), btnWidth - 16).size());
         int repoBtnHeight = repoLines * 10 + 8;
         int docBtnHeight = docLines * 10 + 8;
         int linkAreaHeight = repoBtnHeight + docBtnHeight + 12;
@@ -482,7 +481,7 @@ public final class LayoutHelper {
     }
 
     // 计算 Mishang 内置图案内容高度
-    private static int getMishangContentHeight(int mainWidth, TextRenderer textRenderer) {
+    private static int getMishangContentHeight(int mainWidth, Font textRenderer) {
         int height = 20;
         String[] descKeys = {
             "ocelotsignmod.mishang.json.desc", "ocelotsignmod.mishang.nbt.desc",
@@ -496,11 +495,11 @@ public final class LayoutHelper {
         int availableWidth = mainWidth - 30 - rightMargin;
 
         for (int i = 0; i < displayKeys.length; i++) {
-            Text displayText = Text.translatable(displayKeys[i]);
-            Text descText = Text.translatable(descKeys[i]);
-            int displayWidth = textRenderer.getWidth(displayText);
+            Component displayText = Component.translatable(displayKeys[i]);
+            Component descText = Component.translatable(descKeys[i]);
+            int displayWidth = textRenderer.width(displayText);
             int descWidth = Math.max(0, availableWidth - displayWidth - 10);
-            List<OrderedText> lines = textRenderer.wrapLines(descText, descWidth);
+            List<FormattedCharSequence> lines = textRenderer.split(descText, descWidth);
             int rowHeight = Math.max(24, lines.size() * 10 + 14);
             height += rowHeight + 8;
         }
@@ -515,15 +514,15 @@ public final class LayoutHelper {
 
     // 判断 H3 下是否存在任意处于字体模式的有效 section
     private static boolean hasAnyFontSection(PatternAndFontOverlay.H3Category h3) {
-        String defaultFontsKey = Text.translatable("ocelotsignmod.gui.sections.default_fonts").getString();
-        String customFontsKey = Text.translatable("ocelotsignmod.gui.sections.custom_fonts").getString();
+        String defaultFontsKey = Component.translatable("ocelotsignmod.gui.sections.default_fonts").getString();
+        String customFontsKey = Component.translatable("ocelotsignmod.gui.sections.custom_fonts").getString();
         for (PatternAndFontOverlay.H4Section section : h3.sections) {
             PatternAndFontOverlay.H4Section effectiveSection = section;
             if (section.useStyles && !section.subSections.isEmpty()
                     && section.activeStyleIndex >= 0 && section.activeStyleIndex < section.subSections.size()) {
                 effectiveSection = section.subSections.get(section.activeStyleIndex);
             }
-            Text titleToRender = effectiveSection.title.getString().isEmpty() ? section.title : effectiveSection.title;
+            Component titleToRender = effectiveSection.title.getString().isEmpty() ? section.title : effectiveSection.title;
             String titleStr = titleToRender.getString();
             if (titleStr.equals(defaultFontsKey) || titleStr.equals(customFontsKey)) {
                 return true;
@@ -536,12 +535,12 @@ public final class LayoutHelper {
     }
 
     // 计算分区内容高度
-    private static int getSectionContentHeight(int mainWidth, TextRenderer textRenderer) {
+    private static int getSectionContentHeight(int mainWidth, Font textRenderer) {
         int height = 0;
         PatternAndFontOverlay.H3Category selectedH3 = PatternAndFontOverlay.selectedH3;
 
         if (selectedH3.headerText != null) {
-            int lines = textRenderer.wrapLines(selectedH3.headerText, mainWidth - 48).size();
+            int lines = textRenderer.split(selectedH3.headerText, mainWidth - 48).size();
             height += (lines * 12 + 16) + 15;
         }
 
@@ -552,15 +551,15 @@ public final class LayoutHelper {
             int titleHeight = 14;
             int gap = 4;
             int lineHeight = 12;
-            Text warningText = Text.translatable("ocelotsignmod.gui.sections.font_rendering_warning");
-            int warningLines = textRenderer.wrapLines(warningText, boxWidth - 16).size();
+            Component warningText = Component.translatable("ocelotsignmod.gui.sections.font_rendering_warning");
+            int warningLines = textRenderer.split(warningText, boxWidth - 16).size();
             height += 8;                                                                             // 间距（警告框前）
             height += paddingY + titleHeight + gap + warningLines * lineHeight + paddingY;          // 警告框
             height += 8;                                                                             // 警告框后间距（renderWarningBox 返回的尾部 8px）
         }
 
-        String defaultFontsKey = Text.translatable("ocelotsignmod.gui.sections.default_fonts").getString();
-        String customFontsKey = Text.translatable("ocelotsignmod.gui.sections.custom_fonts").getString();
+        String defaultFontsKey = Component.translatable("ocelotsignmod.gui.sections.default_fonts").getString();
+        String customFontsKey = Component.translatable("ocelotsignmod.gui.sections.custom_fonts").getString();
 
         for (PatternAndFontOverlay.H4Section section : selectedH3.sections) {
             PatternAndFontOverlay.H4Section effectiveSection = section;
@@ -568,11 +567,11 @@ public final class LayoutHelper {
                     && section.activeStyleIndex >= 0 && section.activeStyleIndex < section.subSections.size()) {
                 effectiveSection = section.subSections.get(section.activeStyleIndex);
             }
-            Text sectionTitle = effectiveSection.title.getString().isEmpty() ? section.title : effectiveSection.title;
+            Component sectionTitle = effectiveSection.title.getString().isEmpty() ? section.title : effectiveSection.title;
             boolean isDefaultFonts = sectionTitle.getString().equals(defaultFontsKey);
             boolean isCustomFonts = sectionTitle.getString().equals(customFontsKey);
             if (isDefaultFonts) {
-                int lines = textRenderer.wrapLines(section.description, mainWidth - 48).size();
+                int lines = textRenderer.split(section.description, mainWidth - 48).size();
                 height += 8 + lines * 12 + 10;              // 描述框
                 height += 8;                                // 间距（描述框与标题之间）
                 height += 12;                                // 标题
@@ -594,7 +593,7 @@ public final class LayoutHelper {
             } else {
                 // 普通界面：标题 -> 描述
                 height += 12;                                // 标题
-                int lines = textRenderer.wrapLines(section.description, mainWidth - 48).size();
+                int lines = textRenderer.split(section.description, mainWidth - 48).size();
                 height += lines * 12 + 10;                  // 描述（与渲染代码一致）
             }
 
@@ -678,7 +677,7 @@ public final class LayoutHelper {
      * @return 屏幕宽度（像素）
      */
     public static int getScreenWidth() {
-        return net.minecraft.client.MinecraftClient.getInstance().getWindow().getScaledWidth();
+        return net.minecraft.client.Minecraft.getInstance().getWindow().getGuiScaledWidth();
     }
 
     /**
@@ -687,6 +686,6 @@ public final class LayoutHelper {
      * @return 屏幕高度（像素）
      */
     public static int getScreenHeight() {
-        return net.minecraft.client.MinecraftClient.getInstance().getWindow().getScaledHeight();
+        return net.minecraft.client.Minecraft.getInstance().getWindow().getGuiScaledHeight();
     }
 }

@@ -1,6 +1,7 @@
 {
-  "parent": "minecraft:item/generated",
+  "parent": "minecraft:block/cube_all",
+  "render_type": "minecraft:cutout",
   "textures": {
-    "layer0": "ocelotsignmod:item/custom_model_block"
+    "all": "ocelotsignmod:block/custom_model_block"
   }
 }

@@ -1,9 +1,5 @@
 package bklmc.ocelotsign;
 
-import bklmc.ocelotsign.block.ArrowBlocks;
-import bklmc.ocelotsign.block.ArrowBlocksLarge;
-import bklmc.ocelotsign.block.ArrowBlocksStyle2;
-import bklmc.ocelotsign.block.ArrowBlocksStyle3;
 import bklmc.ocelotsign.block.custom.CustomModelBlock;
 import bklmc.ocelotsign.blockentity.ModBlockEntities;
 import bklmc.ocelotsign.client.PatternAndFontBlankScreen;
@@ -19,19 +15,16 @@ import bklmc.ocelotsign.platform.ClientNetworking;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.TypedActionResult;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -51,7 +44,6 @@ public class OcelotSignModClient implements ClientModInitializer {
 
         ModelRegistryManager.registerLoader();
         BlockEntityRendererRegistry.register(OcelotSignMod.CUSTOM_MODEL_BLOCK_ENTITY, CustomModelBER::new);
-        BlockRenderLayerMap.INSTANCE.putBlock(OcelotSignMod.CUSTOM_MODEL_BLOCK, RenderLayer.getCutout());
 
         // 注册资源包刷新监听器
         PatternRegistry.registerReloadListener();
@@ -59,7 +51,6 @@ public class OcelotSignModClient implements ClientModInitializer {
         registerCustomModelNetworking();
         registerCustomModelItemUseHandler();
         registerCustomModelBlockUseHandler();
-        registerBlockLayers();
         registerOverlayScreenEvents();
     }
 
@@ -71,30 +62,30 @@ public class OcelotSignModClient implements ClientModInitializer {
      */
     private void registerOverlayScreenEvents() {
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-            ScreenEvents.afterRender(screen).register((screen1, context, mouseX, mouseY, tickDelta) -> {
+            ScreenEvents.afterExtract(screen).register((screen1, context, mouseX, mouseY, tickDelta) -> {
                 if (PatternAndFontOverlay.isVisible) {
                     screen1.setFocused(null);
                     PatternAndFontOverlay.render(context, mouseX, mouseY);
                 }
             });
 
-            ScreenMouseEvents.allowMouseClick(screen).register((screen1, mouseX, mouseY, button) -> {
+            ScreenMouseEvents.allowMouseClick(screen).register((screen1, event) -> {
                 if (PatternAndFontOverlay.isVisible) {
-                    if (PatternAndFontOverlay.mouseClicked(mouseX, mouseY, button)) {
+                    if (PatternAndFontOverlay.mouseClicked(event.x(), event.y(), event.button())) {
                         screen1.setDragging(true);
                     }
 
                     if (!PatternAndFontOverlay.isVisible && screen1 instanceof PatternAndFontBlankScreen) {
-                        screen1.close();
+                        screen1.onClose();
                     }
                     return false;
                 }
                 return true;
             });
 
-            ScreenMouseEvents.allowMouseRelease(screen).register((screen1, mouseX, mouseY, button) -> {
+            ScreenMouseEvents.allowMouseRelease(screen).register((screen1, event) -> {
                 if (PatternAndFontOverlay.isVisible) {
-                    PatternAndFontOverlay.mouseReleased(mouseX, mouseY, button);
+                    PatternAndFontOverlay.mouseReleased(event.x(), event.y(), event.button());
                     screen1.setDragging(false);
                     return false;
                 }
@@ -109,12 +100,12 @@ public class OcelotSignModClient implements ClientModInitializer {
                 return true;
             });
 
-            ScreenKeyboardEvents.allowKeyPress(screen).register((screen1, key, scancode, modifiers) -> {
+            ScreenKeyboardEvents.allowKeyPress(screen).register((screen1, event) -> {
                 if (PatternAndFontOverlay.isVisible) {
-                    if (key == GLFW.GLFW_KEY_ESCAPE) {
+                    if (event.key() == GLFW.GLFW_KEY_ESCAPE) {
                         PatternAndFontOverlay.isVisible = false;
                         if (screen1 instanceof PatternAndFontBlankScreen) {
-                            screen1.close();
+                            screen1.onClose();
                         }
                     }
                     return false;
@@ -122,217 +113,12 @@ public class OcelotSignModClient implements ClientModInitializer {
                 return true;
             });
 
-            ScreenKeyboardEvents.allowKeyRelease(screen).register((screen1, key, scancode, modifiers) -> {
+            ScreenKeyboardEvents.allowKeyRelease(screen).register((screen1, event) -> {
                 return !PatternAndFontOverlay.isVisible;
             });
         });
     }
 
-    /**
-     * 注册所有箭头方块的渲染层为 Cutout。
-     */
-    private static void registerBlockLayers() {
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ADVANCE_ARROW_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ADVANCE_ARROW_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ADVANCE_ARROW_LEFT_UTURN, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ADVANCE_ARROW_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ADVANCE_ARROW_RIGHT_UTURN, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ADVANCE_ARROW_STRAIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ADVANCE_ARROW_STRAIGHT_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ADVANCE_ARROW_STRAIGHT_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ADVANCE_ARROW_STRAIGHT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ADVANCE_ARROW_STRAIGHT_UTURN_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ADVANCE_ARROW_STRAIGHT_UTURN_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ADVANCE_ARROW_UTURN_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ADVANCE_ARROW_UTURN_RIGHT, RenderLayer.getCutout());
-
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ORANGE_ARROW_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ORANGE_ARROW_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ORANGE_ARROW_LEFT_UTURN, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ORANGE_ARROW_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ORANGE_ARROW_RIGHT_UTURN, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ORANGE_ARROW_STRAIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ORANGE_ARROW_STRAIGHT_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ORANGE_ARROW_STRAIGHT_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ORANGE_ARROW_STRAIGHT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ORANGE_ARROW_STRAIGHT_UTURN_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ORANGE_ARROW_STRAIGHT_UTURN_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ORANGE_ARROW_UTURN_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ORANGE_ARROW_UTURN_RIGHT, RenderLayer.getCutout());
-
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.ARROW_PROHIBITED, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.PROHIBITED_ARROW_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.PROHIBITED_ARROW_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.PROHIBITED_ARROW_LEFT_UTURN, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.PROHIBITED_ARROW_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.PROHIBITED_ARROW_RIGHT_UTURN, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.PROHIBITED_ARROW_STRAIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.PROHIBITED_ARROW_STRAIGHT_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.PROHIBITED_ARROW_STRAIGHT_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.PROHIBITED_ARROW_STRAIGHT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.PROHIBITED_ARROW_STRAIGHT_UTURN_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.PROHIBITED_ARROW_STRAIGHT_UTURN_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.PROHIBITED_ARROW_UTURN_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.PROHIBITED_ARROW_UTURN_RIGHT, RenderLayer.getCutout());
-
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.SPEED_BUMP, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.YIELD, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocks.DISTANCE_CONFIRM, RenderLayer.getCutout());
-
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ADVANCE_ARROW_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ADVANCE_ARROW_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ADVANCE_ARROW_LEFT_UTURN, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ADVANCE_ARROW_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ADVANCE_ARROW_RIGHT_UTURN, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ADVANCE_ARROW_STRAIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ADVANCE_ARROW_STRAIGHT_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ADVANCE_ARROW_STRAIGHT_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ADVANCE_ARROW_STRAIGHT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ADVANCE_ARROW_STRAIGHT_UTURN_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ADVANCE_ARROW_STRAIGHT_UTURN_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ADVANCE_ARROW_UTURN_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ADVANCE_ARROW_UTURN_RIGHT, RenderLayer.getCutout());
-
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ARROW_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ARROW_LEFT_MERGE, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ARROW_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ARROW_LEFT_UTURN, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ARROW_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ARROW_RIGHT_MERGE, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ARROW_RIGHT_UTURN, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ARROW_STRAIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ARROW_STRAIGHT_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ARROW_STRAIGHT_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ARROW_STRAIGHT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ARROW_STRAIGHT_UTURN_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ARROW_STRAIGHT_UTURN_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ARROW_UTURN_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ARROW_UTURN_RIGHT, RenderLayer.getCutout());
-
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ARROW_PROHIBITED, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.PROHIBITED_ARROW_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.PROHIBITED_ARROW_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.PROHIBITED_ARROW_LEFT_UTURN, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.PROHIBITED_ARROW_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.PROHIBITED_ARROW_RIGHT_UTURN, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.PROHIBITED_ARROW_STRAIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.PROHIBITED_ARROW_STRAIGHT_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.PROHIBITED_ARROW_STRAIGHT_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.PROHIBITED_ARROW_STRAIGHT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.PROHIBITED_ARROW_STRAIGHT_UTURN_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.PROHIBITED_ARROW_STRAIGHT_UTURN_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.PROHIBITED_ARROW_UTURN_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.PROHIBITED_ARROW_UTURN_RIGHT, RenderLayer.getCutout());
-
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ORANGE_ARROW_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ORANGE_ARROW_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ORANGE_ARROW_LEFT_UTURN, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ORANGE_ARROW_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ORANGE_ARROW_RIGHT_UTURN, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ORANGE_ARROW_STRAIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ORANGE_ARROW_STRAIGHT_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ORANGE_ARROW_STRAIGHT_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ORANGE_ARROW_STRAIGHT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ORANGE_ARROW_STRAIGHT_UTURN_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ORANGE_ARROW_STRAIGHT_UTURN_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ORANGE_ARROW_UTURN_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.ORANGE_ARROW_UTURN_RIGHT, RenderLayer.getCutout());
-
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.DECELERATION_CROSSROADS, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.SPEED_BUMP, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.YIELD, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksLarge.DISTANCE_CONFIRM, RenderLayer.getCutout());
-
-        // roadmark_style_2
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ADVANCE_ARROW_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ADVANCE_ARROW_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ADVANCE_ARROW_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ADVANCE_ARROW_STRAIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ADVANCE_ARROW_STRAIGHT_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ADVANCE_ARROW_STRAIGHT_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ADVANCE_ARROW_STRAIGHT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ADVANCE_ARROW_UTURN_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ADVANCE_ARROW_UTURN_RIGHT, RenderLayer.getCutout());
-
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ARROW_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ARROW_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ARROW_PROHIBITED, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ARROW_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ARROW_STRAIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ARROW_STRAIGHT_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ARROW_STRAIGHT_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ARROW_STRAIGHT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ARROW_UTURN_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ARROW_UTURN_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ARROW_DOUBLE_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ARROW_DOUBLE_RIGHT, RenderLayer.getCutout());
-
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.PROHIBITED_ARROW_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.PROHIBITED_ARROW_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.PROHIBITED_ARROW_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.PROHIBITED_ARROW_STRAIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.PROHIBITED_ARROW_STRAIGHT_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.PROHIBITED_ARROW_STRAIGHT_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.PROHIBITED_ARROW_STRAIGHT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.PROHIBITED_ARROW_UTURN_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.PROHIBITED_ARROW_UTURN_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.PROHIBITED_ARROW_DOUBLE_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.PROHIBITED_ARROW_DOUBLE_RIGHT, RenderLayer.getCutout());
-
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ORANGE_ARROW_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ORANGE_ARROW_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ORANGE_ARROW_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ORANGE_ARROW_STRAIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ORANGE_ARROW_STRAIGHT_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ORANGE_ARROW_STRAIGHT_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ORANGE_ARROW_STRAIGHT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ORANGE_ARROW_UTURN_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ORANGE_ARROW_UTURN_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ORANGE_ARROW_DOUBLE_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle2.ORANGE_ARROW_DOUBLE_RIGHT, RenderLayer.getCutout());
-
-        // roadmark_style_3
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ARROW_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ARROW_LEFT_MERGE, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ARROW_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ARROW_LEFT_UTURN, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ARROW_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ARROW_RIGHT_MERGE, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ARROW_RIGHT_UTURN, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ARROW_STRAIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ARROW_STRAIGHT_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ARROW_STRAIGHT_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ARROW_STRAIGHT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ARROW_UTURN_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ARROW_UTURN_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ARROW_PROHIBITED, RenderLayer.getCutout());
-
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.PROHIBITED_ARROW_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.PROHIBITED_ARROW_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.PROHIBITED_ARROW_LEFT_UTURN, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.PROHIBITED_ARROW_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.PROHIBITED_ARROW_RIGHT_UTURN, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.PROHIBITED_ARROW_STRAIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.PROHIBITED_ARROW_STRAIGHT_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.PROHIBITED_ARROW_STRAIGHT_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.PROHIBITED_ARROW_STRAIGHT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.PROHIBITED_ARROW_UTURN_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.PROHIBITED_ARROW_UTURN_RIGHT, RenderLayer.getCutout());
-
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ORANGE_ARROW_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ORANGE_ARROW_LEFT_MERGE, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ORANGE_ARROW_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ORANGE_ARROW_LEFT_UTURN, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ORANGE_ARROW_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ORANGE_ARROW_RIGHT_MERGE, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ORANGE_ARROW_RIGHT_UTURN, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ORANGE_ARROW_STRAIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ORANGE_ARROW_STRAIGHT_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ORANGE_ARROW_STRAIGHT_LEFT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ORANGE_ARROW_STRAIGHT_RIGHT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ORANGE_ARROW_UTURN_LEFT, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ArrowBlocksStyle3.ORANGE_ARROW_UTURN_RIGHT, RenderLayer.getCutout());
-    }
 
     /**
      * 注册自定义模型客户端网络通道。
@@ -348,13 +134,7 @@ public class OcelotSignModClient implements ClientModInitializer {
      * Model Wand 右键点击已放置的方块来完成。
      */
     private static void registerCustomModelItemUseHandler() {
-        UseItemCallback.EVENT.register((player, world, hand) -> {
-            ItemStack stack = player.getStackInHand(hand);
-            if (!world.isClient || !CustomModelBlockItem.isCustomModelItem(stack)) {
-                return TypedActionResult.pass(stack);
-            }
-            return TypedActionResult.pass(stack);
-        });
+        UseItemCallback.EVENT.register((player, world, hand) -> InteractionResult.PASS);
     }
 
     /**
@@ -365,23 +145,23 @@ public class OcelotSignModClient implements ClientModInitializer {
      */
     private static void registerCustomModelBlockUseHandler() {
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-            if (!world.isClient) {
-                return ActionResult.PASS;
+            if (!world.isClientSide()) {
+                return InteractionResult.PASS;
             }
 
-            ItemStack stack = player.getStackInHand(hand);
+            ItemStack stack = player.getItemInHand(hand);
             BlockState state = world.getBlockState(hitResult.getBlockPos());
             if (!(state.getBlock() instanceof CustomModelBlock)) {
-                return ActionResult.PASS;
+                return InteractionResult.PASS;
             }
 
             // Model Wand 右键打开选择界面
             if (ModelWandItem.isModelWand(stack)) {
-                MinecraftClient.getInstance().setScreen(new ModelSelectionScreen(TargetType.BLOCK, hitResult.getBlockPos()));
-                return ActionResult.SUCCESS;
+                Minecraft.getInstance().setScreen(new ModelSelectionScreen(TargetType.BLOCK, hitResult.getBlockPos()));
+                return InteractionResult.SUCCESS;
             }
 
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
     }
 }

@@ -1,16 +1,17 @@
 package bklmc.ocelotsign.client;
 
 import bklmc.ocelotsign.mixin_interfaces.ISignEditorExtension;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -34,9 +35,9 @@ public final class PatternAndFontOverlay {
 
     public static class SubFolderDef {
         public final String dirName;
-        public final Text displayName;
+        public final Component displayName;
 
-        public SubFolderDef(String dirName, Text displayName) {
+        public SubFolderDef(String dirName, Component displayName) {
             this.dirName = dirName;
             this.displayName = displayName;
         }
@@ -45,9 +46,9 @@ public final class PatternAndFontOverlay {
     public static class WhitelistPatternItem {
         public final Identifier textureId;
         public final String insertContent;
-        public final Text displayName;
+        public final Component displayName;
 
-        public WhitelistPatternItem(Identifier textureId, String insertContent, Text displayName) {
+        public WhitelistPatternItem(Identifier textureId, String insertContent, Component displayName) {
             this.textureId = textureId;
             this.insertContent = insertContent;
             this.displayName = displayName;
@@ -59,9 +60,9 @@ public final class PatternAndFontOverlay {
      */
     public static class FontItem {
         public final String fontId;
-        public final Text displayName;
+        public final Component displayName;
 
-        public FontItem(String fontId, Text displayName) {
+        public FontItem(String fontId, Component displayName) {
             this.fontId = fontId;
             this.displayName = displayName;
         }
@@ -71,8 +72,8 @@ public final class PatternAndFontOverlay {
      * H4 级分区，承载一组图案/字体的展示配置。
      */
     public static class H4Section {
-        public final Text title;
-        public final Text description;
+        public final Component title;
+        public final Component description;
         public final Identifier basePath;
 
         public boolean useSubfolders = false;
@@ -98,7 +99,7 @@ public final class PatternAndFontOverlay {
 
         public String customJsonPath = "";
 
-        public H4Section(Text title, Text description, Identifier basePath) {
+        public H4Section(Component title, Component description, Identifier basePath) {
             this.title = title;
             this.description = description;
             this.basePath = basePath;
@@ -109,7 +110,7 @@ public final class PatternAndFontOverlay {
             return this;
         }
 
-        public H4Section addSubFolder(String dirName, Text displayName) {
+        public H4Section addSubFolder(String dirName, Component displayName) {
             this.subFolders.add(new SubFolderDef(dirName, displayName));
             return this;
         }
@@ -127,7 +128,7 @@ public final class PatternAndFontOverlay {
         public H4Section setExtensionFilter(FilterMode mode, String... exts) {
             this.extFilterMode = mode;
             this.extFilterList.clear();
-            for (String ext : exts) this.extFilterList.add(ext);
+            this.extFilterList.addAll(Arrays.asList(exts));
             return this;
         }
 
@@ -136,7 +137,7 @@ public final class PatternAndFontOverlay {
             return this;
         }
 
-        public H4Section addWhitelistItem(Identifier textureId, String insertContent, Text displayName) {
+        public H4Section addWhitelistItem(Identifier textureId, String insertContent, Component displayName) {
             this.whitelistItems.add(new WhitelistPatternItem(textureId, insertContent, displayName));
             return this;
         }
@@ -146,7 +147,7 @@ public final class PatternAndFontOverlay {
             return this;
         }
 
-        public H4Section addFontItem(String fontId, Text displayName) {
+        public H4Section addFontItem(String fontId, Component displayName) {
             this.fontItems.add(new FontItem(fontId, displayName));
             return this;
         }
@@ -166,13 +167,13 @@ public final class PatternAndFontOverlay {
      * H3 级分类。
      */
     public static class H3Category {
-        public final Text title;
-        public Text headerText = null;
+        public final Component title;
+        public Component headerText = null;
         public final List<H3Category> subCategories = new ArrayList<>();
         public final List<H4Section> sections = new ArrayList<>();
         public boolean isExpanded = true;
 
-        public H3Category(Text title) {
+        public H3Category(Component title) {
             this.title = title;
         }
 
@@ -191,11 +192,11 @@ public final class PatternAndFontOverlay {
      * H2 级分类。
      */
     public static class H2Category {
-        public final Text title;
+        public final Component title;
         public final List<H3Category> subCategories = new ArrayList<>();
         public boolean isExpanded = true;
 
-        public H2Category(Text title) {
+        public H2Category(Component title) {
             this.title = title;
         }
 
@@ -336,7 +337,7 @@ public final class PatternAndFontOverlay {
     // 添加 Mishang 图案到列表
     private static void addMishangPattern(String name, String patternName) {
         String insertCode = "-pattern " + patternName;
-        Identifier textureId = Identifier.of("ocelotsignmod", "textures/mishanguc_patterns/" + patternName + ".png");
+        Identifier textureId = Identifier.fromNamespaceAndPath("ocelotsignmod", "textures/mishanguc_patterns/" + patternName + ".png");
         MISHANG_PATTERNS.add(new MishangPatternItem(name, insertCode, textureId));
     }
 
@@ -379,7 +380,7 @@ public final class PatternAndFontOverlay {
      * @param mouseX 鼠标 X 坐标
      * @param mouseY 鼠标 Y 坐标
      */
-    public static void render(DrawContext context, int mouseX, int mouseY) {
+    public static void render(GuiGraphicsExtractor context, int mouseX, int mouseY) {
         if (!isVisible) return;
 
         MishangIntegration.clearHovered();
@@ -388,7 +389,7 @@ public final class PatternAndFontOverlay {
 
         int width = LayoutHelper.getScreenWidth();
         int height = LayoutHelper.getScreenHeight();
-        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+        Font textRenderer = Minecraft.getInstance().font;
         int mainWidth = width - UIConstants.SIDEBAR_WIDTH;
 
         int scrollWindowStartY = UIConstants.HEADER_HEIGHT + 1;
@@ -409,25 +410,25 @@ public final class PatternAndFontOverlay {
         updateScrollValues(textRenderer, mainWidth, sidebarScrollWindowHeight, scrollWindowHeight);
         handleScrollbarDragging(mouseX, mouseY, scrollWindowHeight, sidebarScrollWindowHeight);
 
-        context.getMatrices().push();
-        context.getMatrices().translate(0.0f, 0.0f, UIConstants.LAYER_Z_OFFSET);
+        context.pose().pushMatrix();
+        context.pose().translate(0.0f, 0.0f);
 
         renderSidebar(context, textRenderer, mouseX, mouseY, sidebarScrollWindowHeight);
         renderMainArea(context, textRenderer, mouseX, mouseY, width, height, mainWidth, scrollWindowStartY, scrollWindowEndY);
 
         renderReturnButton(context, textRenderer, mouseX, mouseY, width, mainWidth, height);
 
-        context.getMatrices().pop();
+        context.pose().popMatrix();
     }
 
     // 更新滚动位置最大值与钳位
-    private static void updateScrollValues(TextRenderer textRenderer, int mainWidth, int sidebarScrollWindowHeight, int scrollWindowHeight) {
+    private static void updateScrollValues(Font textRenderer, int mainWidth, int sidebarScrollWindowHeight, int scrollWindowHeight) {
         // 侧边栏顶层固定 4 项
         int totalSidebarHeight = UIConstants.HEADER_HEIGHT + 12
-                + LayoutHelper.getSidebarTopItemHeight(Text.translatable("ocelotsignmod.gui.sidebar.docs"), textRenderer)
-                + LayoutHelper.getSidebarTopItemHeight(Text.translatable("ocelotsignmod.gui.sidebar.ack"), textRenderer)
-                + LayoutHelper.getSidebarTopItemHeight(Text.translatable("ocelotsignmod.gui.sidebar.color_palette"), textRenderer)
-                + LayoutHelper.getSidebarTopItemHeight(Text.translatable("ocelotsignmod.gui.sidebar.color_picker"), textRenderer);
+                + LayoutHelper.getSidebarTopItemHeight(Component.translatable("ocelotsignmod.gui.sidebar.docs"), textRenderer)
+                + LayoutHelper.getSidebarTopItemHeight(Component.translatable("ocelotsignmod.gui.sidebar.ack"), textRenderer)
+                + LayoutHelper.getSidebarTopItemHeight(Component.translatable("ocelotsignmod.gui.sidebar.color_palette"), textRenderer)
+                + LayoutHelper.getSidebarTopItemHeight(Component.translatable("ocelotsignmod.gui.sidebar.color_picker"), textRenderer);
         for (H2Category h2 : REGISTRY) {
             String h2Prefix = h2.isExpanded ? "[-] " : "[+] ";
             totalSidebarHeight += LayoutHelper.getCategoryHeight(h2.title, h2Prefix, 12, textRenderer);
@@ -438,11 +439,11 @@ public final class PatternAndFontOverlay {
             }
         }
         maxSidebarScrollY = Math.max(0, totalSidebarHeight - sidebarScrollWindowHeight);
-        sidebarScrollY = MathHelper.clamp(sidebarScrollY, 0, maxSidebarScrollY);
+        sidebarScrollY = Mth.clamp(sidebarScrollY, 0, maxSidebarScrollY);
 
         int totalMainHeight = LayoutHelper.getTotalMainContentHeight(mainWidth, textRenderer);
         maxScrollY = Math.max(0, totalMainHeight - scrollWindowHeight);
-        scrollY = MathHelper.clamp(scrollY, 0, maxScrollY);
+        scrollY = Mth.clamp(scrollY, 0, maxScrollY);
     }
 
     // 处理滚动条拖动
@@ -453,7 +454,7 @@ public final class PatternAndFontOverlay {
             int trackRange = scrollWindowHeight - thumbHeight;
             if (trackRange > 0) {
                 double scrollDelta = ((mouseY - dragStartMouseY) / trackRange) * maxScrollY;
-                scrollY = MathHelper.clamp(dragStartScrollY + scrollDelta, 0, maxScrollY);
+                scrollY = Mth.clamp(dragStartScrollY + scrollDelta, 0, maxScrollY);
             }
         }
 
@@ -463,39 +464,39 @@ public final class PatternAndFontOverlay {
             int trackRange = sidebarScrollWindowHeight - thumbHeight;
             if (trackRange > 0) {
                 double scrollDelta = ((mouseY - dragStartMouseY) / trackRange) * maxSidebarScrollY;
-                sidebarScrollY = MathHelper.clamp(dragStartSidebarScrollY + scrollDelta, 0, maxSidebarScrollY);
+                sidebarScrollY = Mth.clamp(dragStartSidebarScrollY + scrollDelta, 0, maxSidebarScrollY);
             }
         }
     }
 
     // 渲染侧边栏
-    private static void renderSidebar(DrawContext context, TextRenderer textRenderer, int mouseX, int mouseY, int sidebarScrollWindowHeight) {
+    private static void renderSidebar(GuiGraphicsExtractor context, Font textRenderer, int mouseX, int mouseY, int sidebarScrollWindowHeight) {
         context.fill(0, 0, UIConstants.SIDEBAR_WIDTH, LayoutHelper.getScreenHeight(), UIConstants.COLOR_SIDEBAR_BG);
         context.fill(0, 0, UIConstants.SIDEBAR_WIDTH, UIConstants.HEADER_HEIGHT, UIConstants.COLOR_SIDEBAR_HEADER);
         context.fill(0, UIConstants.HEADER_HEIGHT - 1, UIConstants.SIDEBAR_WIDTH, UIConstants.HEADER_HEIGHT, UIConstants.COLOR_SIDEBAR_BORDER);
 
-        Text sidebarTitle = Text.translatable("ocelotsignmod.gui.sidebar.title");
-        int titleWidth = textRenderer.getWidth(sidebarTitle);
-        context.drawText(textRenderer, sidebarTitle, (UIConstants.SIDEBAR_WIDTH - titleWidth) / 2, (UIConstants.HEADER_HEIGHT - 8) / 2, 0xFFFFFFFF, false);
+        Component sidebarTitle = Component.translatable("ocelotsignmod.gui.sidebar.title");
+        int titleWidth = textRenderer.width(sidebarTitle);
+        context.text(textRenderer, sidebarTitle, (UIConstants.SIDEBAR_WIDTH - titleWidth) / 2, (UIConstants.HEADER_HEIGHT - 8) / 2, 0xFFFFFFFF, false);
 
         context.enableScissor(0, UIConstants.HEADER_HEIGHT, UIConstants.SIDEBAR_WIDTH, LayoutHelper.getScreenHeight() - UIConstants.HEADER_HEIGHT);
 
         int currentY = UIConstants.HEADER_HEIGHT + 12 - (int) sidebarScrollY;
 
         // 文档列表
-        Text docListText = Text.translatable("ocelotsignmod.gui.sidebar.docs");
+        Component docListText = Component.translatable("ocelotsignmod.gui.sidebar.docs");
         currentY = renderSidebarTopItem(context, textRenderer, mouseX, mouseY, docListText, currentY,
                 isDocumentListSelected && !isColorPaletteSelected && !isColorPickerSelected && !isAcknowledgmentSelected);
         // 鸣谢与模组声明
-        Text ackText = Text.translatable("ocelotsignmod.gui.sidebar.ack");
+        Component ackText = Component.translatable("ocelotsignmod.gui.sidebar.ack");
         currentY = renderSidebarTopItem(context, textRenderer, mouseX, mouseY, ackText, currentY,
                 isAcknowledgmentSelected && !isDocumentListSelected && !isColorPaletteSelected && !isColorPickerSelected);
         // 道路交通颜色色表
-        Text colorPaletteText = Text.translatable("ocelotsignmod.gui.sidebar.color_palette");
+        Component colorPaletteText = Component.translatable("ocelotsignmod.gui.sidebar.color_palette");
         currentY = renderSidebarTopItem(context, textRenderer, mouseX, mouseY, colorPaletteText, currentY,
                 isColorPaletteSelected && !isDocumentListSelected && !isColorPickerSelected && !isAcknowledgmentSelected);
         // 颜色选择器
-        Text colorPickerText = Text.translatable("ocelotsignmod.gui.sidebar.color_picker");
+        Component colorPickerText = Component.translatable("ocelotsignmod.gui.sidebar.color_picker");
         currentY = renderSidebarTopItem(context, textRenderer, mouseX, mouseY, colorPickerText, currentY,
                 isColorPickerSelected && !isDocumentListSelected && !isColorPaletteSelected && !isAcknowledgmentSelected);
 
@@ -505,11 +506,11 @@ public final class PatternAndFontOverlay {
             int itemHeight = LayoutHelper.getCategoryHeight(h2.title, prefix, 12, textRenderer);
             boolean hoverH2 = LayoutHelper.isMouseInRect(mouseX, mouseY, 0, currentY, UIConstants.SIDEBAR_WIDTH, itemHeight);
 
-            List<OrderedText> lines = textRenderer.wrapLines(Text.literal(prefix + h2.title.getString()), UIConstants.SIDEBAR_WIDTH - 20);
+            List<FormattedCharSequence> lines = textRenderer.split(Component.literal(prefix + h2.title.getString()), UIConstants.SIDEBAR_WIDTH - 20);
             int textY = currentY + (itemHeight - lines.size() * 10) / 2 + 1;
 
             for (int i = 0; i < lines.size(); i++) {
-                context.drawText(textRenderer, lines.get(i), 12, textY + i * 10, hoverH2 ? 0xFFFFFFFF : UIConstants.COLOR_H2_TEXT, true);
+                context.text(textRenderer, lines.get(i), 12, textY + i * 10, hoverH2 ? 0xFFFFFFFF : UIConstants.COLOR_H2_TEXT, true);
             }
             currentY += itemHeight;
 
@@ -527,12 +528,12 @@ public final class PatternAndFontOverlay {
     }
 
     // 渲染侧边栏顶层项
-    private static int renderSidebarTopItem(DrawContext context, TextRenderer textRenderer,
+    private static int renderSidebarTopItem(GuiGraphicsExtractor context, Font textRenderer,
                                            double mouseX, double mouseY,
-                                           Text text, int currentY, boolean isSelected) {
+                                           Component text, int currentY, boolean isSelected) {
         int maxWidth = UIConstants.SIDEBAR_WIDTH - 24;
         if (maxWidth < 20) maxWidth = 20;
-        List<OrderedText> lines = textRenderer.wrapLines(text, maxWidth);
+        List<FormattedCharSequence> lines = textRenderer.split(text, maxWidth);
         int itemHeight = Math.max(UIConstants.DOC_LIST_ITEM_HEIGHT, lines.size() * 10 + 6);
 
         boolean isHover = LayoutHelper.isMouseInRect(mouseX, mouseY, 0, currentY, UIConstants.SIDEBAR_WIDTH, itemHeight);
@@ -542,29 +543,29 @@ public final class PatternAndFontOverlay {
         int textColor = isSelected ? 0xFFFFFFFF : (isHover ? 0xFFFFFFFF : UIConstants.COLOR_H3_TEXT);
         int textY = currentY + (itemHeight - lines.size() * 10) / 2 + 1;
         for (int i = 0; i < lines.size(); i++) {
-            context.drawText(textRenderer, lines.get(i), 12, textY + i * 10, textColor, false);
+            context.text(textRenderer, lines.get(i), 12, textY + i * 10, textColor, false);
         }
         return currentY + itemHeight;
     }
 
     // 渲染主区域
-    private static void renderMainArea(DrawContext context, TextRenderer textRenderer, int mouseX, int mouseY,
+    private static void renderMainArea(GuiGraphicsExtractor context, Font textRenderer, int mouseX, int mouseY,
                                        int width, int height, int mainWidth, int scrollWindowStartY, int scrollWindowEndY) {
         context.fill(UIConstants.SIDEBAR_WIDTH, 0, width, height, UIConstants.COLOR_MAIN_BG);
         context.fill(UIConstants.SIDEBAR_WIDTH, 0, width, UIConstants.HEADER_HEIGHT, UIConstants.COLOR_MAIN_HEADER);
         context.fill(UIConstants.SIDEBAR_WIDTH, UIConstants.HEADER_HEIGHT, width, UIConstants.HEADER_HEIGHT + 1, UIConstants.COLOR_MAIN_BORDER);
 
-        Text currentH2Title = isDocumentListSelected
-                ? Text.translatable("ocelotsignmod.gui.sidebar.docs")
+        Component currentH2Title = isDocumentListSelected
+                ? Component.translatable("ocelotsignmod.gui.sidebar.docs")
                 : isColorPaletteSelected
-                ? Text.translatable("ocelotsignmod.gui.sidebar.color_palette")
+                ? Component.translatable("ocelotsignmod.gui.sidebar.color_palette")
                 : isColorPickerSelected
-                ? Text.translatable("ocelotsignmod.gui.sidebar.color_picker")
+                ? Component.translatable("ocelotsignmod.gui.sidebar.color_picker")
                 : isAcknowledgmentSelected
-                ? Text.translatable("ocelotsignmod.gui.sidebar.ack")
-                : (selectedH3 != null ? selectedH3.title : Text.literal(""));
-        int h2Width = textRenderer.getWidth(currentH2Title);
-        context.drawTextWithShadow(textRenderer, currentH2Title, UIConstants.SIDEBAR_WIDTH + (mainWidth - h2Width) / 2, (UIConstants.HEADER_HEIGHT - 8) / 2, 0xFFFFFFFF);
+                ? Component.translatable("ocelotsignmod.gui.sidebar.ack")
+                : (selectedH3 != null ? selectedH3.title : Component.literal(""));
+        int h2Width = textRenderer.width(currentH2Title);
+        context.text(textRenderer, currentH2Title, UIConstants.SIDEBAR_WIDTH + (mainWidth - h2Width) / 2, (UIConstants.HEADER_HEIGHT - 8) / 2, 0xFFFFFFFF);
 
         context.enableScissor(UIConstants.SIDEBAR_WIDTH, scrollWindowStartY, width, scrollWindowEndY);
 
@@ -579,7 +580,7 @@ public final class PatternAndFontOverlay {
         } else if (isAcknowledgmentSelected) {
             AcknowledgmentRenderer.render(context, textRenderer, mouseX, mouseY, mainWidth, contentStartY, scrollWindowStartY, scrollWindowEndY);
         } else if (selectedH3 != null) {
-            String mishangKey = Text.translatable("ocelotsignmod.gui.categories.mishang_builtin").getString();
+            String mishangKey = Component.translatable("ocelotsignmod.gui.categories.mishang_builtin").getString();
             if (selectedH3.title.getString().equals(mishangKey)) {
                 MishangIntegration.render(context, textRenderer, width, height, mouseX, mouseY, UIConstants.SIDEBAR_WIDTH);
                 context.disableScissor();
@@ -602,15 +603,15 @@ public final class PatternAndFontOverlay {
      * @return 是否存在字体相关 section
      */
     public static boolean hasAnyFontSection(H3Category h3) {
-        String defaultFontsKey = Text.translatable("ocelotsignmod.gui.sections.default_fonts").getString();
-        String customFontsKey = Text.translatable("ocelotsignmod.gui.sections.custom_fonts").getString();
+        String defaultFontsKey = Component.translatable("ocelotsignmod.gui.sections.default_fonts").getString();
+        String customFontsKey = Component.translatable("ocelotsignmod.gui.sections.custom_fonts").getString();
         for (H4Section section : h3.sections) {
             H4Section effectiveSection = section;
             if (section.useStyles && !section.subSections.isEmpty()
                     && section.activeStyleIndex >= 0 && section.activeStyleIndex < section.subSections.size()) {
                 effectiveSection = section.subSections.get(section.activeStyleIndex);
             }
-            Text titleToRender = effectiveSection.title.getString().isEmpty() ? section.title : effectiveSection.title;
+            Component titleToRender = effectiveSection.title.getString().isEmpty() ? section.title : effectiveSection.title;
             String titleStr = titleToRender.getString();
             if (titleStr.equals(defaultFontsKey) || titleStr.equals(customFontsKey)) {
                 return true;
@@ -623,14 +624,14 @@ public final class PatternAndFontOverlay {
     }
 
     // 渲染分区内容
-    private static void renderSectionContent(DrawContext context, TextRenderer textRenderer, int mouseX, int mouseY,
+    private static void renderSectionContent(GuiGraphicsExtractor context, Font textRenderer, int mouseX, int mouseY,
                                              int width, int mainWidth, int contentStartY, int scrollWindowStartY, int scrollWindowEndY) {
         int currentContentY = contentStartY;
         H3Category h3 = selectedH3;
 
         if (h3.headerText != null) {
             renderHeaderText(context, textRenderer, h3.headerText, mainWidth, currentContentY);
-            int lines = textRenderer.wrapLines(h3.headerText, mainWidth - 48).size();
+            int lines = textRenderer.split(h3.headerText, mainWidth - 48).size();
             currentContentY += lines * 12 + 16 + 15;
         }
 
@@ -641,8 +642,8 @@ public final class PatternAndFontOverlay {
                     scrollWindowStartY, scrollWindowEndY);
         }
 
-        String defaultFontsKey = Text.translatable("ocelotsignmod.gui.sections.default_fonts").getString();
-        String customFontsKey = Text.translatable("ocelotsignmod.gui.sections.custom_fonts").getString();
+        String defaultFontsKey = Component.translatable("ocelotsignmod.gui.sections.default_fonts").getString();
+        String customFontsKey = Component.translatable("ocelotsignmod.gui.sections.custom_fonts").getString();
 
         for (H4Section section : h3.sections) {
             H4Section effectiveSection = section;
@@ -651,7 +652,7 @@ public final class PatternAndFontOverlay {
                 effectiveSection = section.subSections.get(section.activeStyleIndex);
             }
 
-            Text titleToRender = effectiveSection.title.getString().isEmpty() ? section.title : effectiveSection.title;
+            Component titleToRender = effectiveSection.title.getString().isEmpty() ? section.title : effectiveSection.title;
             boolean isDefaultFonts = titleToRender.getString().equals(defaultFontsKey);
             boolean isCustomFonts = titleToRender.getString().equals(customFontsKey);
 
@@ -664,18 +665,18 @@ public final class PatternAndFontOverlay {
                 currentContentY = descBottomY + 8;
 
                 // 3. 渲染标题（在描述框下方）
-                context.drawText(textRenderer, titleToRender, UIConstants.SIDEBAR_WIDTH + 24, currentContentY, UIConstants.COLOR_SECTION_TITLE, false);
+                context.text(textRenderer, titleToRender, UIConstants.SIDEBAR_WIDTH + 24, currentContentY, UIConstants.COLOR_SECTION_TITLE, false);
                 currentContentY += 12;
             } else if (isCustomFonts) {
                 // 自定义字体特殊布局：标题 -> 字体列表
-                context.drawText(textRenderer, titleToRender, UIConstants.SIDEBAR_WIDTH + 24, currentContentY, UIConstants.COLOR_SECTION_TITLE, false);
+                context.text(textRenderer, titleToRender, UIConstants.SIDEBAR_WIDTH + 24, currentContentY, UIConstants.COLOR_SECTION_TITLE, false);
                 currentContentY += 12;
             } else {
-                context.drawText(textRenderer, titleToRender, UIConstants.SIDEBAR_WIDTH + 24, currentContentY, UIConstants.COLOR_SECTION_TITLE, false);
+                context.text(textRenderer, titleToRender, UIConstants.SIDEBAR_WIDTH + 24, currentContentY, UIConstants.COLOR_SECTION_TITLE, false);
                 currentContentY += 12;
 
-                context.drawText(textRenderer, effectiveSection.description, UIConstants.SIDEBAR_WIDTH + 24, currentContentY, UIConstants.COLOR_DESC_TEXT, false);
-                List<OrderedText> descLines = textRenderer.wrapLines(effectiveSection.description, mainWidth - 48);
+                context.text(textRenderer, effectiveSection.description, UIConstants.SIDEBAR_WIDTH + 24, currentContentY, UIConstants.COLOR_DESC_TEXT, false);
+                List<FormattedCharSequence> descLines = textRenderer.split(effectiveSection.description, mainWidth - 48);
                 currentContentY += descLines.size() * 12 + 10;
             }
 
@@ -705,29 +706,29 @@ public final class PatternAndFontOverlay {
     }
 
     // 渲染头部说明文本
-    private static void renderHeaderText(DrawContext context, TextRenderer textRenderer, Text headerText, int mainWidth, int currentY) {
+    private static void renderHeaderText(GuiGraphicsExtractor context, Font textRenderer, Component headerText, int mainWidth, int currentY) {
         int descWidth = mainWidth - 48;
-        List<OrderedText> wrappedLines = textRenderer.wrapLines(headerText, descWidth);
+        List<FormattedCharSequence> wrappedLines = textRenderer.split(headerText, descWidth);
         int totalDescHeight = wrappedLines.size() * 12 + 16;
 
         context.fill(UIConstants.SIDEBAR_WIDTH + 20, currentY + 2, UIConstants.SIDEBAR_WIDTH + 28 + descWidth, currentY + 2 + totalDescHeight, UIConstants.COLOR_HEADER_BG_HELP);
 
         for (int i = 0; i < wrappedLines.size(); i++) {
-            context.drawText(textRenderer, wrappedLines.get(i), UIConstants.SIDEBAR_WIDTH + 24, currentY + 10 + i * 12, UIConstants.COLOR_HEADER_TEXT, false);
+            context.text(textRenderer, wrappedLines.get(i), UIConstants.SIDEBAR_WIDTH + 24, currentY + 10 + i * 12, UIConstants.COLOR_HEADER_TEXT, false);
         }
     }
 
     // 渲染默认字体描述
-    private static int renderDefaultFontsDescription(DrawContext context, TextRenderer textRenderer, H4Section section, int mainWidth, int currentY) {
+    private static int renderDefaultFontsDescription(GuiGraphicsExtractor context, Font textRenderer, H4Section section, int mainWidth, int currentY) {
         int descWidth = mainWidth - 48;
-        List<OrderedText> wrappedLines = textRenderer.wrapLines(section.description, descWidth);
+        List<FormattedCharSequence> wrappedLines = textRenderer.split(section.description, descWidth);
         int totalDescHeight = wrappedLines.size() * 12 + 10;
 
         context.fill(UIConstants.SIDEBAR_WIDTH + 20, currentY + 8, UIConstants.SIDEBAR_WIDTH + 32 + descWidth, currentY + 8 + totalDescHeight, UIConstants.COLOR_HEADER_BG_FONT);
         context.fill(UIConstants.SIDEBAR_WIDTH + 20, currentY + 8, UIConstants.SIDEBAR_WIDTH + 23, currentY + 8 + totalDescHeight, UIConstants.COLOR_WARNING_BAR);
 
         for (int i = 0; i < wrappedLines.size(); i++) {
-            context.drawText(textRenderer, wrappedLines.get(i), UIConstants.SIDEBAR_WIDTH + 24, currentY + 12 + i * 12, UIConstants.COLOR_HEADER_TEXT, false);
+            context.text(textRenderer, wrappedLines.get(i), UIConstants.SIDEBAR_WIDTH + 24, currentY + 12 + i * 12, UIConstants.COLOR_HEADER_TEXT, false);
         }
         return currentY + 8 + totalDescHeight;
     }
@@ -743,10 +744,10 @@ public final class PatternAndFontOverlay {
      * @param scrollWindowEndY 滚动窗口结束 Y
      * @return 警告框总高度
      */
-    private static int renderWarningBox(DrawContext context, TextRenderer textRenderer, int mainWidth, int currentY,
+    private static int renderWarningBox(GuiGraphicsExtractor context, Font textRenderer, int mainWidth, int currentY,
                                        int scrollWindowStartY, int scrollWindowEndY) {
-        Text warningTitle = Text.translatable("ocelotsignmod.gui.sections.font_rendering_warning.title");
-        Text warningText = Text.translatable("ocelotsignmod.gui.sections.font_rendering_warning");
+        Component warningTitle = Component.translatable("ocelotsignmod.gui.sections.font_rendering_warning.title");
+        Component warningText = Component.translatable("ocelotsignmod.gui.sections.font_rendering_warning");
 
         int boxX = UIConstants.SIDEBAR_WIDTH + 20;
         int boxWidth = mainWidth - 40;
@@ -756,7 +757,7 @@ public final class PatternAndFontOverlay {
         int lineHeight = 12;
         int gap = 4;
 
-        List<OrderedText> textLines = textRenderer.wrapLines(warningText, boxWidth - paddingX * 2);
+        List<FormattedCharSequence> textLines = textRenderer.split(warningText, boxWidth - paddingX * 2);
         int textHeight = textLines.size() * lineHeight;
         int totalBoxHeight = paddingY + titleHeight + gap + textHeight + paddingY;
 
@@ -773,12 +774,12 @@ public final class PatternAndFontOverlay {
             context.fill(boxX, currentY, boxX + 3, currentY + totalBoxHeight, UIConstants.COLOR_WARNING_BAR);
 
             // 标题
-            context.drawText(textRenderer, warningTitle, boxX + paddingX + 8, currentY + paddingY, UIConstants.COLOR_WARNING_TEXT, false);
+            context.text(textRenderer, warningTitle, boxX + paddingX + 8, currentY + paddingY, UIConstants.COLOR_WARNING_TEXT, false);
 
             // 内容
             int textY = currentY + paddingY + titleHeight + gap;
             for (int i = 0; i < textLines.size(); i++) {
-                context.drawText(textRenderer, textLines.get(i), boxX + paddingX + 8, textY + i * lineHeight, UIConstants.COLOR_HEADER_TEXT, false);
+                context.text(textRenderer, textLines.get(i), boxX + paddingX + 8, textY + i * lineHeight, UIConstants.COLOR_HEADER_TEXT, false);
             }
         }
 
@@ -786,7 +787,7 @@ public final class PatternAndFontOverlay {
     }
 
     // 渲染筛选按钮
-    private static void renderFilterButtons(DrawContext context, TextRenderer textRenderer, int mouseX, int mouseY,
+    private static void renderFilterButtons(GuiGraphicsExtractor context, Font textRenderer, int mouseX, int mouseY,
                                            int width, List<SubFolderDef> items, int activeIndex, int currentY) {
         int filterAreaWidth = items.size() * UIConstants.FILTER_BUTTON_WIDTH
                 + (items.size() - 1) * UIConstants.FILTER_BUTTON_GAP;
@@ -805,7 +806,7 @@ public final class PatternAndFontOverlay {
             int borderColor = isActive ? 0xFF000000 : UIConstants.COLOR_BTN_BORDER;
 
             context.fill(bx, currentY, bx + UIConstants.FILTER_BUTTON_WIDTH, currentY + UIConstants.FILTER_BUTTON_HEIGHT, bgColor);
-            context.drawBorder(bx, currentY, UIConstants.FILTER_BUTTON_WIDTH, UIConstants.FILTER_BUTTON_HEIGHT, borderColor);
+            context.outline(bx, currentY, UIConstants.FILTER_BUTTON_WIDTH, UIConstants.FILTER_BUTTON_HEIGHT, borderColor);
 
             if (isActive) {
                 context.fill(bx, currentY + UIConstants.FILTER_BUTTON_HEIGHT - 2,
@@ -815,21 +816,21 @@ public final class PatternAndFontOverlay {
 
             String tabName = subDef.displayName.getString();
             int textColor = isActive ? 0xFF000000 : UIConstants.COLOR_BTN_TEXT;
-            List<OrderedText> lines = textRenderer.wrapLines(Text.literal(tabName), UIConstants.FILTER_BUTTON_WIDTH - 4);
-            int totalTextHeight = lines.size() * textRenderer.fontHeight;
+            List<FormattedCharSequence> lines = textRenderer.split(Component.literal(tabName), UIConstants.FILTER_BUTTON_WIDTH - 4);
+            int totalTextHeight = lines.size() * textRenderer.lineHeight;
             int textStartY = currentY + (UIConstants.FILTER_BUTTON_HEIGHT - totalTextHeight) / 2;
 
             for (int lineIdx = 0; lineIdx < lines.size(); lineIdx++) {
-                OrderedText line = lines.get(lineIdx);
-                int lineWidth = textRenderer.getWidth(line);
+                FormattedCharSequence line = lines.get(lineIdx);
+                int lineWidth = textRenderer.width(line);
                 int textX = bx + (UIConstants.FILTER_BUTTON_WIDTH - lineWidth) / 2;
-                context.drawText(textRenderer, line, textX, textStartY + lineIdx * textRenderer.fontHeight, textColor, false);
+                context.text(textRenderer, line, textX, textStartY + lineIdx * textRenderer.lineHeight, textColor, false);
             }
         }
     }
 
     // 渲染分区条目
-    private static int renderSectionItems(DrawContext context, TextRenderer textRenderer, int mouseX, int mouseY,
+    private static int renderSectionItems(GuiGraphicsExtractor context, Font textRenderer, int mouseX, int mouseY,
                                          int mainWidth, int scrollWindowStartY, int scrollWindowEndY,
                                          H4Section section, int currentY) {
         H4Section effectiveSection = section;
@@ -854,7 +855,7 @@ public final class PatternAndFontOverlay {
     }
 
     // 渲染返回按钮
-    private static void renderReturnButton(DrawContext context, TextRenderer textRenderer, int mouseX, int mouseY,
+    private static void renderReturnButton(GuiGraphicsExtractor context, Font textRenderer, int mouseX, int mouseY,
                                           int width, int mainWidth, int height) {
         int returnBtnX = UIConstants.SIDEBAR_WIDTH + (mainWidth - UIConstants.RETURN_BUTTON_WIDTH) / 2;
         int returnBtnY = height - 35;
@@ -862,11 +863,11 @@ public final class PatternAndFontOverlay {
 
         int bgColor = hoverRet ? UIConstants.COLOR_BTN_BG_HOVER : UIConstants.COLOR_BTN_BG;
         context.fill(returnBtnX, returnBtnY, returnBtnX + UIConstants.RETURN_BUTTON_WIDTH, returnBtnY + UIConstants.RETURN_BUTTON_HEIGHT, bgColor);
-        context.drawBorder(returnBtnX, returnBtnY, UIConstants.RETURN_BUTTON_WIDTH, UIConstants.RETURN_BUTTON_HEIGHT, UIConstants.COLOR_BTN_BORDER);
+        context.outline(returnBtnX, returnBtnY, UIConstants.RETURN_BUTTON_WIDTH, UIConstants.RETURN_BUTTON_HEIGHT, UIConstants.COLOR_BTN_BORDER);
 
-        Text returnText = Text.translatable("ocelotsignmod.gui.button.back");
-        int rtw = textRenderer.getWidth(returnText);
-        context.drawText(textRenderer, returnText, returnBtnX + (UIConstants.RETURN_BUTTON_WIDTH - rtw) / 2, returnBtnY + 7, UIConstants.COLOR_BTN_TEXT, false);
+        Component returnText = Component.translatable("ocelotsignmod.gui.button.back");
+        int rtw = textRenderer.width(returnText);
+        context.text(textRenderer, returnText, returnBtnX + (UIConstants.RETURN_BUTTON_WIDTH - rtw) / 2, returnBtnY + 7, UIConstants.COLOR_BTN_TEXT, false);
     }
 
     // ==================== 颜色选择器代理 ====================
@@ -908,7 +909,7 @@ public final class PatternAndFontOverlay {
      * @param textRenderer 文本渲染器
      * @return 内容高度
      */
-    public static int getColorPickerContentHeight(int mainWidth, TextRenderer textRenderer) {
+    public static int getColorPickerContentHeight(int mainWidth, Font textRenderer) {
         return ColorPickerState.getColorPickerContentHeight(mainWidth, textRenderer);
     }
 
@@ -919,7 +920,7 @@ public final class PatternAndFontOverlay {
      * @param textRenderer 文本渲染器
      * @return 内容高度
      */
-    public static int getColorPaletteContentHeight(int mainWidth, TextRenderer textRenderer) {
+    public static int getColorPaletteContentHeight(int mainWidth, Font textRenderer) {
         return ColorPaletteRenderer.getContentHeight(mainWidth, textRenderer);
     }
 
@@ -946,7 +947,7 @@ public final class PatternAndFontOverlay {
      * @param textRenderer 文本渲染器
      * @return 内容高度
      */
-    public static int getAcknowledgmentContentHeight(int mainWidth, TextRenderer textRenderer) {
+    public static int getAcknowledgmentContentHeight(int mainWidth, Font textRenderer) {
         return AcknowledgmentRenderer.getContentHeight(mainWidth, textRenderer);
     }
 
@@ -969,8 +970,8 @@ public final class PatternAndFontOverlay {
 
     // 插入纹理到告示牌
     private static void insertTextureToScreen(Identifier identifier) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.currentScreen instanceof ISignEditorExtension extension) {
+        Minecraft client = Minecraft.getInstance();
+        if (client.screen instanceof ISignEditorExtension extension) {
             extension.ocelotsign$insertTexture(identifier);
             isVisible = false;
         }
@@ -978,8 +979,8 @@ public final class PatternAndFontOverlay {
 
     // 插入文本到告示牌
     private static void insertTextToScreen(String text) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.currentScreen instanceof ISignEditorExtension extension) {
+        Minecraft client = Minecraft.getInstance();
+        if (client.screen instanceof ISignEditorExtension extension) {
             extension.ocelotsign$insertText(text);
             isVisible = false;
         }
@@ -1060,7 +1061,7 @@ public final class PatternAndFontOverlay {
      */
     public static boolean openHomepageLink(String url) {
         if (url != null && !url.isEmpty()) {
-            Util.getOperatingSystem().open(url);
+            Util.getPlatform().openUri(url);
             return true;
         }
         return false;

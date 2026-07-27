@@ -7,19 +7,21 @@ import bklmc.ocelotsign.block.custom.CustomModelBlock;
 import bklmc.ocelotsign.blockentity.CustomModelBlockEntity;
 import bklmc.ocelotsign.blockentity.ModBlockEntities;
 import bklmc.ocelotsign.item.CustomModelBlockItem;
-import bklmc.ocelotsign.item.ModelWandItem;
 import bklmc.ocelotsign.item.ModItemGroups;
 import bklmc.ocelotsign.item.ModItems;
+import bklmc.ocelotsign.item.ModelWandItem;
 import bklmc.ocelotsign.platform.ServerNetworking;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +45,27 @@ public class OcelotSignMod implements ModInitializer {
      * @return 命名空间为 {@link #MOD_ID} 的标识符
      */
     public static Identifier id(String path) {
-        return Identifier.of(MOD_ID, path);
+        return Identifier.fromNamespaceAndPath(MOD_ID, path);
+    }
+
+    /**
+     * 自 1.21.2 起，{@link BlockBehaviour.Properties} 必须在方块构造前设置注册键，
+     * 否则注册时会抛出异常。
+     *
+     * @param path 资源路径
+     * @return 方块注册键
+     */
+    public static ResourceKey<Block> blockKey(String path) {
+        return ResourceKey.create(Registries.BLOCK, id(path));
+    }
+
+    /**
+     * @param path 资源路径
+     * @return 物品注册键
+     * @see #blockKey(String)
+     */
+    public static ResourceKey<Item> itemKey(String path) {
+        return ResourceKey.create(Registries.ITEM, id(path));
     }
 
     @Override
@@ -61,19 +83,26 @@ public class OcelotSignMod implements ModInitializer {
     }
 
     private static void registerCustomModelBlock() {
-        CUSTOM_MODEL_BLOCK = new CustomModelBlock(AbstractBlock.Settings.create().strength(1.0f).nonOpaque());
+        CUSTOM_MODEL_BLOCK = new CustomModelBlock(BlockBehaviour.Properties.of()
+                .setId(blockKey("custom_model_block"))
+                .strength(1.0f)
+                .noOcclusion());
         CUSTOM_MODEL_BLOCK_ENTITY = Registry.register(
-                Registries.BLOCK_ENTITY_TYPE,
+                BuiltInRegistries.BLOCK_ENTITY_TYPE,
                 id("custom_model_block_entity"),
                 FabricBlockEntityTypeBuilder.create(CustomModelBlockEntity::new, CUSTOM_MODEL_BLOCK).build()
         );
-        Registry.register(Registries.BLOCK, id("custom_model_block"), CUSTOM_MODEL_BLOCK);
-        Registry.register(Registries.ITEM, id("custom_model_block"),
-                new CustomModelBlockItem(CUSTOM_MODEL_BLOCK, new Item.Settings()));
+        Registry.register(BuiltInRegistries.BLOCK, id("custom_model_block"), CUSTOM_MODEL_BLOCK);
+        Registry.register(BuiltInRegistries.ITEM, id("custom_model_block"),
+                new CustomModelBlockItem(CUSTOM_MODEL_BLOCK, new Item.Properties()
+                        .setId(itemKey("custom_model_block"))
+                        .useBlockDescriptionPrefix()));
     }
 
     private static void registerModelWand() {
-        MODEL_WAND = new ModelWandItem(new Item.Settings().maxCount(1));
-        Registry.register(Registries.ITEM, id("model_wand"), MODEL_WAND);
+        MODEL_WAND = new ModelWandItem(new Item.Properties()
+                .setId(itemKey("model_wand"))
+                .stacksTo(1));
+        Registry.register(BuiltInRegistries.ITEM, id("model_wand"), MODEL_WAND);
     }
 }

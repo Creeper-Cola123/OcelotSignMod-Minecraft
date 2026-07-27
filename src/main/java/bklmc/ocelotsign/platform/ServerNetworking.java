@@ -4,12 +4,12 @@ import bklmc.ocelotsign.blockentity.CustomModelBlockEntity;
 import bklmc.ocelotsign.item.CustomModelBlockItem;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,15 +22,15 @@ public final class ServerNetworking {
     /**
      * 自定义模型选择数据包的 ID。
      */
-    public static final CustomPayload.Id<SelectModelPayload> SELECT_MODEL_ID = new CustomPayload.Id<>(ModIdentifiers.SELECT_MODEL);
+    public static final CustomPacketPayload.Type<SelectModelPayload> SELECT_MODEL_ID = new CustomPacketPayload.Type<>(ModIdentifiers.SELECT_MODEL);
 
     /**
      * 自定义模型选择数据包的编解码器。
      */
-    public static final PacketCodec<RegistryByteBuf, SelectModelPayload> CODEC = new PacketCodec<>() {
+    public static final StreamCodec<RegistryFriendlyByteBuf, SelectModelPayload> CODEC = new StreamCodec<>() {
         @Override
-        public void encode(RegistryByteBuf buf, SelectModelPayload value) {
-            buf.writeString(value.modelId);
+        public void encode(RegistryFriendlyByteBuf buf, SelectModelPayload value) {
+            buf.writeUtf(value.modelId);
             buf.writeBoolean(value.hasBlockPos);
             if (value.hasBlockPos && value.blockPos != null) {
                 buf.writeBlockPos(value.blockPos);
@@ -39,7 +39,7 @@ public final class ServerNetworking {
         }
 
         @Override
-        public SelectModelPayload decode(RegistryByteBuf buf) {
+        public SelectModelPayload decode(RegistryFriendlyByteBuf buf) {
             return new SelectModelPayload(buf);
         }
     };
@@ -47,14 +47,14 @@ public final class ServerNetworking {
     /**
      * 自定义模型选择数据包。
      */
-    public static final class SelectModelPayload implements CustomPayload {
+    public static final class SelectModelPayload implements CustomPacketPayload {
         public String modelId;
         public boolean hasBlockPos;
         public BlockPos blockPos;
         public boolean isMainHand;
 
-        public SelectModelPayload(RegistryByteBuf buf) {
-            this.modelId = buf.readString();
+        public SelectModelPayload(RegistryFriendlyByteBuf buf) {
+            this.modelId = buf.readUtf();
             this.hasBlockPos = buf.readBoolean();
             if (this.hasBlockPos) {
                 this.blockPos = buf.readBlockPos();
@@ -72,7 +72,7 @@ public final class ServerNetworking {
         }
 
         @Override
-        public Id<? extends CustomPayload> getId() {
+        public Type<? extends CustomPacketPayload> type() {
             return SELECT_MODEL_ID;
         }
     }
@@ -93,7 +93,7 @@ public final class ServerNetworking {
      */
     private static void registerPayloadTypes() {
         // 注册 C2S (客户端到服务端) payload 类型
-        PayloadTypeRegistry.playC2S().register(SELECT_MODEL_ID, CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(SELECT_MODEL_ID, CODEC);
     }
 
     /**
@@ -102,7 +102,7 @@ public final class ServerNetworking {
     private static void registerModelSelectionHandler() {
         ServerPlayNetworking.registerGlobalReceiver(SELECT_MODEL_ID, (payload, context) -> {
             String selectedId = payload.modelId;
-            Hand hand = payload.isMainHand ? Hand.MAIN_HAND : Hand.OFF_HAND;
+            InteractionHand hand = payload.isMainHand ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
             BlockPos blockPos = payload.hasBlockPos ? payload.blockPos : null;
             var player = context.player();
             var server = context.server();
@@ -113,17 +113,17 @@ public final class ServerNetworking {
             }
 
             if (!payload.hasBlockPos) {
-                CustomModelBlockItem.rememberPendingSelection(player.getUuid(), hand, selectedId);
+                CustomModelBlockItem.rememberPendingSelection(player.getUUID(), hand, selectedId);
             }
 
             // 服务端主线程执行的任务
             Runnable task = () -> {
                 if (blockPos != null) {
-                    var blockEntity = player.getWorld().getBlockEntity(blockPos);
+                    var blockEntity = player.level().getBlockEntity(blockPos);
                     if (blockEntity instanceof CustomModelBlockEntity customBE) {
                         customBE.setModelId(selectedId);
-                        if (player.getWorld() instanceof ServerWorld serverWorld) {
-                            serverWorld.getChunkManager().markForUpdate(blockPos);
+                        if (player.level() instanceof ServerLevel serverWorld) {
+                            serverWorld.getChunkSource().blockChanged(blockPos);
                         }
                     }
                     return;
@@ -133,7 +133,7 @@ public final class ServerNetworking {
             };
 
             // 确保在服务端主线程执行
-            if (server.isOnThread()) {
+            if (server.isSameThread()) {
                 task.run();
             } else {
                 server.execute(task);

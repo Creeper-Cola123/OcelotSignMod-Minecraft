@@ -1,12 +1,12 @@
 package bklmc.ocelotsign.item;
 
 import bklmc.ocelotsign.OcelotSignMod;
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 
 /**
  * 模组物品注册中心
@@ -17,12 +17,15 @@ import net.minecraft.util.Identifier;
 public class ModItems {
 
     private static Item registerItem(String name, Item item) {
-        return Registry.register(Registries.ITEM, Identifier.of(OcelotSignMod.MOD_ID, name), item);
+        return Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(OcelotSignMod.MOD_ID, name), item);
     }
 
-    public static final ItemGroupTabItem ROAD_SIGNS_ICON = new ItemGroupTabItem(new Item.Settings());
-    public static final ItemGroupTabItem WALL_ROAD_SIGNS_ICON = new ItemGroupTabItem(new Item.Settings());
-    public static final ItemGroupTabItem PILLARS_ICON = new ItemGroupTabItem(new Item.Settings());
+    public static final ItemGroupTabItem ROAD_SIGNS_ICON =
+            new ItemGroupTabItem(new Item.Properties().setId(OcelotSignMod.itemKey("item_group/road_signs")));
+    public static final ItemGroupTabItem WALL_ROAD_SIGNS_ICON =
+            new ItemGroupTabItem(new Item.Properties().setId(OcelotSignMod.itemKey("item_group/wall_road_signs")));
+    public static final ItemGroupTabItem PILLARS_ICON =
+            new ItemGroupTabItem(new Item.Properties().setId(OcelotSignMod.itemKey("item_group/pillars")));
 
     public static void registerModItems() {
         OcelotSignMod.LOGGER.info("Registering Mod Items for " + OcelotSignMod.MOD_ID);
@@ -32,12 +35,14 @@ public class ModItems {
     }
 
     private static void registerBlockItems(String id, Block block) {
-        Registry.register(Registries.ITEM, Identifier.of(OcelotSignMod.MOD_ID, id),
-                new BlockItem(block, new Item.Settings()));
+        Registry.register(BuiltInRegistries.ITEM, OcelotSignMod.id(id),
+                new BlockItem(block, new Item.Properties()
+                        .setId(OcelotSignMod.itemKey(id))
+                        .useBlockDescriptionPrefix()));
     }
 
     private static Block registerWithItem(String id, Block block) {
-        Block registeredBlock = Registry.register(Registries.BLOCK, Identifier.of(OcelotSignMod.MOD_ID, id), block);
+        Block registeredBlock = Registry.register(BuiltInRegistries.BLOCK, Identifier.fromNamespaceAndPath(OcelotSignMod.MOD_ID, id), block);
         registerBlockItems(id, registeredBlock);
         return registeredBlock;
     }

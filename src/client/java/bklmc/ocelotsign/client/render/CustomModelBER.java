@@ -2,114 +2,156 @@ package bklmc.ocelotsign.client.render;
 
 import bklmc.ocelotsign.blockentity.CustomModelBlockEntity;
 import bklmc.ocelotsign.client.model.ModelRegistryManager;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.RotationAxis;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 自定义模型方块实体渲染器
  *
  * @see ModelRegistryManager
  */
-public class CustomModelBER implements BlockEntityRenderer<CustomModelBlockEntity> {
+public class CustomModelBER
+        implements BlockEntityRenderer<CustomModelBlockEntity, CustomModelBER.State> {
+
+    /** 无染色层，自定义模型不使用方块染色 */
+    private static final int[] NO_TINTS = BlockModelRenderState.EMPTY_TINTS;
+
+    /**
+     * 自定义模型方块的渲染状态。
+     */
+    public static class State extends BlockEntityRenderState {
+        /** 方块实体中记录的模型 ID */
+        public String modelId = "";
+        /** 方块朝向 */
+        public Direction facing = Direction.NORTH;
+        /** 用于 fallback 模型旋转动画的时间（tick，含帧插值） */
+        public float animationTime;
+    }
+
+    private final RandomSource random = RandomSource.create();
 
     /**
      * 构造渲染器。
      *
      * @param ctx 渲染器工厂上下文
      */
-    public CustomModelBER(BlockEntityRendererFactory.Context ctx) {}
+    public CustomModelBER(BlockEntityRendererProvider.Context ctx) {}
+
+    @Override
+    public State createRenderState() {
+        return new State();
+    }
 
     /**
-     * 渲染方块实体。
+     * 从方块实体提取渲染状态。
      *
-     * @param entity 方块实体
-     * @param tickDelta 帧间时间差
-     * @param matrices 矩阵栈
-     * @param vertexConsumers 顶点消费者提供者
-     * @param light 光照
-     * @param overlay 覆盖层
+     * @param entity        方块实体
+     * @param state         待填充的渲染状态
+     * @param tickDelta     帧间时间差
+     * @param cameraPos     摄像机位置
+     * @param breakProgress 破坏进度覆盖层
      */
     @Override
-    public void render(CustomModelBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        matrices.push();
+    public void extractRenderState(CustomModelBlockEntity entity, State state, float tickDelta,
+                                   Vec3 cameraPos, ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+        BlockEntityRenderState.extractBase(entity, state, breakProgress);
 
-        String modelId = entity.getModelId();
-        BlockState state = entity.getCachedState();
-        Direction facing = state.contains(Properties.HORIZONTAL_FACING) ? state.get(Properties.HORIZONTAL_FACING) : Direction.NORTH;
-        MinecraftClient client = MinecraftClient.getInstance();
+        state.modelId = entity.getModelId();
+        state.facing = entity.getBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING)
+                ? entity.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)
+                : Direction.NORTH;
 
-        boolean hasModelId = modelId != null && !modelId.isEmpty();
-        boolean hasValidModel = false;
+        Minecraft client = Minecraft.getInstance();
+        state.animationTime = client.level == null ? 0f : client.level.getGameTime() + tickDelta;
+    }
 
-        if (hasModelId) {
-            Identifier modelIdentifier = ModelRegistryManager.getModelIdentifier(modelId);
-            BakedModel bakedModel = client.getBakedModelManager().getModel(modelIdentifier);
+    /**
+     * 提交渲染指令。
+     *
+     * @param state     渲染状态
+     * @param matrices  矩阵栈
+     * @param collector 渲染指令收集器
+     * @param camera    摄像机状态
+     */
+    @Override
+    public void submit(State state, PoseStack matrices, SubmitNodeCollector collector, CameraRenderState camera) {
+        matrices.pushPose();
 
-            if (bakedModel != null && bakedModel != client.getBakedModelManager().getMissingModel()) {
+        boolean rendered = false;
+        if (state.modelId != null && !state.modelId.isEmpty()) {
+            Identifier modelIdentifier = ModelRegistryManager.getModelIdentifier(state.modelId);
+            BlockStateModel model = ModelRegistryManager.getBakedModel(modelIdentifier);
+
+            if (model != null) {
                 matrices.translate(0.5, 0.5, 0.5);
-                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-facing.asRotation()));
+                matrices.mulPose(Axis.YP.rotationDegrees(-state.facing.toYRot()));
                 matrices.translate(-0.5, -0.5, -0.5);
-                renderModel(entity, state, matrices, vertexConsumers, bakedModel, light, overlay);
-                hasValidModel = true;
+                submitModel(matrices, collector, model, state.lightCoords);
+                rendered = true;
             }
         }
 
-        if (!hasValidModel) {
-            renderRotatingFallback(entity, state, matrices, vertexConsumers, tickDelta, light, overlay);
+        if (!rendered) {
+            submitRotatingFallback(state, matrices, collector);
         }
 
-        matrices.pop();
+        matrices.popPose();
     }
 
-    /** 渲染烘焙模型。 */
-    private void renderModel(CustomModelBlockEntity entity, BlockState state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, BakedModel model, int light, int overlay) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        VertexConsumer buffer = vertexConsumers.getBuffer(RenderLayer.getCutout());
-        client.getBlockRenderManager().getModelRenderer().render(
-                entity.getWorld(),
-                model,
-                state,
-                entity.getPos(),
+    /** 提交烘焙模型。 */
+    private void submitModel(PoseStack matrices, SubmitNodeCollector collector, BlockStateModel model, int light) {
+        List<BlockStateModelPart> parts = new ArrayList<>();
+        model.collectParts(random, parts);
+        if (parts.isEmpty()) {
+            return;
+        }
+        collector.submitBlockModel(
                 matrices,
-                buffer,
-                false,
-                entity.getWorld().random,
-                state.getRenderingSeed(entity.getPos()),
-                overlay
+                RenderTypes.cutoutMovingBlock(),
+                parts,
+                NO_TINTS,
+                light,
+                OverlayTexture.NO_OVERLAY,
+                0
         );
     }
 
-    /** 渲染旋转的 fallback 模型。 */
-    private void renderRotatingFallback(CustomModelBlockEntity entity, BlockState state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, float tickDelta, int light, int overlay) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.world == null) return;
-
-        matrices.push();
-
-        float time = client.world.getTime() + tickDelta;
-        matrices.translate(0.5, 0.5, 0.5);
-        // 绕Y轴旋转
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(time * 5.0f));
-        matrices.translate(-0.5, -0.5, -0.5);
-
-        Identifier fallbackId = ModelRegistryManager.getFallbackModelIdentifier();
-        BakedModel fallbackModel = client.getBakedModelManager().getModel(fallbackId);
-
-        if (fallbackModel != null && fallbackModel != client.getBakedModelManager().getMissingModel()) {
-            renderModel(entity, state, matrices, vertexConsumers, fallbackModel, light, overlay);
+    /** 提交旋转的 fallback 模型。 */
+    private void submitRotatingFallback(State state, PoseStack matrices, SubmitNodeCollector collector) {
+        BlockStateModel fallbackModel =
+                ModelRegistryManager.getBakedModel(ModelRegistryManager.getFallbackModelIdentifier());
+        if (fallbackModel == null) {
+            return;
         }
 
-        matrices.pop();
+        matrices.pushPose();
+        matrices.translate(0.5, 0.5, 0.5);
+        // 绕Y轴旋转
+        matrices.mulPose(Axis.YP.rotationDegrees(state.animationTime * 5.0f));
+        matrices.translate(-0.5, -0.5, -0.5);
+
+        submitModel(matrices, collector, fallbackModel, state.lightCoords);
+
+        matrices.popPose();
     }
 }

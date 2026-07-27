@@ -1,6 +1,6 @@
 package bklmc.ocelotsign.integration.mishanguc;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 /**
  * mishanguc 模组标识符的集中引用
@@ -19,6 +19,6 @@ public final class MishangIdentifiers {
      * @return 对应的标识符
      */
     public static Identifier of(String path) {
-        return Identifier.of(NAMESPACE, path);
+        return Identifier.fromNamespaceAndPath(NAMESPACE, path);
     }
 }

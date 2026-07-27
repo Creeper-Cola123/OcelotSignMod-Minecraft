@@ -1,7 +1,7 @@
 package bklmc.ocelotsign.item;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * 模型切换魔杖
@@ -13,7 +13,7 @@ public class ModelWandItem extends Item {
     /** 模型魔杖的工具 ID */
     public static final String TOOL_ID = "model_wand";
 
-    public ModelWandItem(Settings settings) {
+    public ModelWandItem(Properties settings) {
         super(settings);
     }
 

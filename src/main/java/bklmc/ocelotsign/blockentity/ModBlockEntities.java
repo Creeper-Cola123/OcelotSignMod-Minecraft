@@ -4,9 +4,9 @@ import bklmc.ocelotsign.OcelotSignMod;
 import bklmc.ocelotsign.block.custom.RoadSignBlock;
 import bklmc.ocelotsign.block.custom.WallRoadSignBlock;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 /**
  * 方块实体类型注册中心
@@ -21,14 +21,14 @@ public class ModBlockEntities {
 
     public static void registerModBlockEntities() {
         ROAD_SIGN_BLOCK_ENTITY = Registry.register(
-            Registries.BLOCK_ENTITY_TYPE,
+            BuiltInRegistries.BLOCK_ENTITY_TYPE,
             OcelotSignMod.id("road_sign_block_entity"),
             FabricBlockEntityTypeBuilder.create(RoadSignBlockEntity::new,
                     RoadSignBlock.ROAD_SIGNS.toArray(new RoadSignBlock[0])).build()
         );
 
         WALL_ROAD_SIGN_BLOCK_ENTITY = Registry.register(
-            Registries.BLOCK_ENTITY_TYPE,
+            BuiltInRegistries.BLOCK_ENTITY_TYPE,
             OcelotSignMod.id("wall_road_sign_block_entity"),
             FabricBlockEntityTypeBuilder.create(WallRoadSignBlockEntity::new,
                     WallRoadSignBlock.WALL_ROAD_SIGNS.toArray(new WallRoadSignBlock[0])).build()

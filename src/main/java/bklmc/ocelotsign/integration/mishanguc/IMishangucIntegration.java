@@ -1,8 +1,8 @@
 package bklmc.ocelotsign.integration.mishanguc;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.MutableText;
-import net.minecraft.util.Identifier;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,23 +25,23 @@ public interface IMishangucIntegration {
 
     /** 从方块实体 NBT 中读取文本上下文列表 */
     @NotNull
-    List<?> readTextContextsFromNbt(@NotNull NbtCompound nbt);
+    List<?> readTextContextsFromNbt(@NotNull CompoundTag nbt);
 
     /** 将文本上下文转换为用于显示的样式化文本 */
     @NotNull
-    MutableText textContextToStyledText(@NotNull Object context);
+    MutableComponent textContextToStyledText(@NotNull Object context);
 
     /** 通过 mishanguc 的桥接器创建可翻译文本 */
     @NotNull
-    MutableText translatable(@NotNull String key);
+    MutableComponent translatable(@NotNull String key);
 
     /** 通过 mishanguc 的桥接器创建字面文本 */
     @NotNull
-    MutableText literal(@NotNull String text);
+    MutableComponent literal(@NotNull String text);
 
     /** 通过 mishanguc 的桥接器创建空文本 */
     @NotNull
-    MutableText empty();
+    MutableComponent empty();
 
     /** 获取用于告示牌编辑同步的数据包 ID（1.21.1 中用于 {@code PlayPayloadHandler} 注册） */
     @Nullable

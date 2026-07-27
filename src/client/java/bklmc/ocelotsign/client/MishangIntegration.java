@@ -1,12 +1,12 @@
 package bklmc.ocelotsign.client;
 
 import bklmc.ocelotsign.mixin_interfaces.ISignEditorExtension;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.FormattedCharSequence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +60,7 @@ public final class MishangIntegration {
      * @param mouseY 鼠标 Y 坐标
      * @param sidebarWidth 侧边栏宽度
      */
-    public static void render(DrawContext context, TextRenderer textRenderer, int width, int height,
+    public static void render(GuiGraphicsExtractor context, Font textRenderer, int width, int height,
                              int mouseX, int mouseY, int sidebarWidth) {
         double scrollY = PatternAndFontOverlay.scrollY;
         int scrollWindowStartY = UIConstants.HEADER_HEIGHT + 1;
@@ -69,7 +69,7 @@ public final class MishangIntegration {
         int mainWidth = width - sidebarWidth;
         int currentY = contentStartY;
 
-        context.drawText(textRenderer, Text.translatable("ocelotsignmod.mishang.title"),
+        context.text(textRenderer, Component.translatable("ocelotsignmod.mishang.title"),
                 sidebarWidth + 24, currentY, UIConstants.COLOR_SECTION_TITLE, false);
         currentY += 20;
 
@@ -77,11 +77,11 @@ public final class MishangIntegration {
 
         currentY += 15;
 
-        context.drawText(textRenderer, Text.translatable("ocelotsignmod.gui.sections.mishang_patterns"),
+        context.text(textRenderer, Component.translatable("ocelotsignmod.gui.sections.mishang_patterns"),
                 sidebarWidth + 24, currentY, UIConstants.COLOR_SECTION_TITLE, false);
-        context.drawText(textRenderer, Text.translatable("ocelotsignmod.gui.sections.mishang_patterns.desc"),
+        context.text(textRenderer, Component.translatable("ocelotsignmod.gui.sections.mishang_patterns.desc"),
                 sidebarWidth + 24, currentY + 16, UIConstants.COLOR_DESC_TEXT, false);
-        context.drawText(textRenderer, Text.translatable("ocelotsignmod.mishang.old_version_note"),
+        context.text(textRenderer, Component.translatable("ocelotsignmod.mishang.old_version_note"),
                 sidebarWidth + 24, currentY + 30, UIConstants.COLOR_H3_TEXT, false);
 
         currentY += 48;
@@ -116,34 +116,34 @@ public final class MishangIntegration {
     /**
      * 渲染 4 种插入方式的按钮列表。
      */
-    private static int renderMethodButtons(DrawContext context, TextRenderer textRenderer, int mouseX, int mouseY,
+    private static int renderMethodButtons(GuiGraphicsExtractor context, Font textRenderer, int mouseX, int mouseY,
                                           int width, int mainWidth, int currentY,
                                           int scrollWindowStartY, int scrollWindowEndY) {
         int btnW = 50;
         int btnH = 16;
         int rightMargin = 24 + btnW + 15;
         int availableWidth = mainWidth - 30 - rightMargin;
-        Text insertBtnText = Text.translatable("ocelotsignmod.gui.button.insert");
+        Component insertBtnText = Component.translatable("ocelotsignmod.gui.button.insert");
 
         for (int i = 0; i < DISPLAY_KEYS.length; i++) {
-            Text displayText = Text.translatable(DISPLAY_KEYS[i]);
-            Text descText = Text.translatable(DESC_KEYS[i]);
+            Component displayText = Component.translatable(DISPLAY_KEYS[i]);
+            Component descText = Component.translatable(DESC_KEYS[i]);
 
-            int displayWidth = textRenderer.getWidth(displayText);
+            int displayWidth = textRenderer.width(displayText);
             int descWidth = Math.max(0, availableWidth - displayWidth - 10);
 
-            List<OrderedText> wrappedLines = textRenderer.wrapLines(descText, descWidth);
+            List<FormattedCharSequence> wrappedLines = textRenderer.split(descText, descWidth);
             int rowHeight = Math.max(24, wrappedLines.size() * 10 + 14);
 
             if (currentY + rowHeight >= scrollWindowStartY && currentY <= scrollWindowEndY) {
                 int textStartY = currentY + (rowHeight - wrappedLines.size() * 10) / 2;
 
-                context.drawText(textRenderer, displayText, UIConstants.SIDEBAR_WIDTH + 30, textStartY,
+                context.text(textRenderer, displayText, UIConstants.SIDEBAR_WIDTH + 30, textStartY,
                         UIConstants.COLOR_BTN_TEXT, false);
 
                 int descStartX = UIConstants.SIDEBAR_WIDTH + 30 + displayWidth + 10;
                 for (int j = 0; j < wrappedLines.size(); j++) {
-                    context.drawText(textRenderer, wrappedLines.get(j), descStartX, textStartY + j * 10,
+                    context.text(textRenderer, wrappedLines.get(j), descStartX, textStartY + j * 10,
                             UIConstants.COLOR_DESC_TEXT, false);
                 }
 
@@ -158,8 +158,8 @@ public final class MishangIntegration {
 
                 context.fill(btnX, btnY, btnX + btnW, btnY + btnH,
                         hov ? UIConstants.COLOR_INSERT_BTN_BG_HOVER : UIConstants.COLOR_INSERT_BTN_BG);
-                context.drawBorder(btnX, btnY, btnW, btnH, UIConstants.COLOR_INSERT_BTN_BORDER);
-                context.drawText(textRenderer, insertBtnText, btnX + (btnW - textRenderer.getWidth(insertBtnText)) / 2,
+                context.outline(btnX, btnY, btnW, btnH, UIConstants.COLOR_INSERT_BTN_BORDER);
+                context.text(textRenderer, insertBtnText, btnX + (btnW - textRenderer.width(insertBtnText)) / 2,
                         btnY + 3, UIConstants.COLOR_BTN_TEXT, false);
             }
 
@@ -171,14 +171,14 @@ public final class MishangIntegration {
     /**
      * 渲染 MishangUC 图案网格。
      */
-    private static void renderPatternGrid(DrawContext context, TextRenderer textRenderer, int mouseX, int mouseY,
+    private static void renderPatternGrid(GuiGraphicsExtractor context, Font textRenderer, int mouseX, int mouseY,
                                          int width, int mainWidth, int sidebarWidth, int startY,
                                          int scrollWindowStartY, int scrollWindowEndY) {
         int cols = Math.max(1, (mainWidth - 48) / (UIConstants.ITEM_SIZE + UIConstants.ITEM_PADDING_X));
         int gridWidth = cols * UIConstants.ITEM_SIZE + (cols - 1) * UIConstants.ITEM_PADDING_X;
         int gridStartX = sidebarWidth + (mainWidth - gridWidth) / 2;
 
-        Text insertBtnText = Text.translatable("ocelotsignmod.gui.button.insert");
+        Component insertBtnText = Component.translatable("ocelotsignmod.gui.button.insert");
 
         for (int i = 0; i < PatternAndFontOverlay.MISHANG_PATTERNS.size(); i++) {
             int row = i / cols;
@@ -190,8 +190,8 @@ public final class MishangIntegration {
 
             PatternAndFontOverlay.MishangPatternItem item = PatternAndFontOverlay.MISHANG_PATTERNS.get(i);
             context.fill(px, py, px + UIConstants.ITEM_SIZE, py + UIConstants.ITEM_SIZE, UIConstants.COLOR_ITEM_BG);
-            context.drawBorder(px, py, UIConstants.ITEM_SIZE, UIConstants.ITEM_SIZE, UIConstants.COLOR_ITEM_BORDER);
-            context.drawTexture(item.textureId, px + 2, py + 2, 0.0F, 0.0F,
+            context.outline(px, py, UIConstants.ITEM_SIZE, UIConstants.ITEM_SIZE, UIConstants.COLOR_ITEM_BORDER);
+            context.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, item.textureId, px + 2, py + 2, 0.0F, 0.0F,
                     UIConstants.ITEM_SIZE - 4, UIConstants.ITEM_SIZE - 4,
                     UIConstants.ITEM_SIZE - 4, UIConstants.ITEM_SIZE - 4);
 
@@ -206,9 +206,9 @@ public final class MishangIntegration {
 
             context.fill(px, pInsertBtnY, px + UIConstants.ITEM_SIZE, pInsertBtnY + 12,
                     pIsHover ? UIConstants.COLOR_INSERT_BTN_BG_HOVER : UIConstants.COLOR_INSERT_BTN_BG);
-            context.drawBorder(px, pInsertBtnY, UIConstants.ITEM_SIZE, 12, UIConstants.COLOR_INSERT_BTN_BORDER);
-            context.drawText(textRenderer, insertBtnText,
-                    px + (UIConstants.ITEM_SIZE - textRenderer.getWidth(insertBtnText)) / 2,
+            context.outline(px, pInsertBtnY, UIConstants.ITEM_SIZE, 12, UIConstants.COLOR_INSERT_BTN_BORDER);
+            context.text(textRenderer, insertBtnText,
+                    px + (UIConstants.ITEM_SIZE - textRenderer.width(insertBtnText)) / 2,
                     pInsertBtnY + 2, UIConstants.COLOR_BTN_TEXT, false);
         }
     }
@@ -217,8 +217,8 @@ public final class MishangIntegration {
      * 向当前告示牌编辑界面插入纹理。
      */
     private static void insertTextureToScreen(Identifier identifier) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.currentScreen instanceof ISignEditorExtension extension) {
+        Minecraft client = Minecraft.getInstance();
+        if (client.screen instanceof ISignEditorExtension extension) {
             extension.ocelotsign$insertTexture(identifier);
             PatternAndFontOverlay.isVisible = false;
         }
@@ -228,8 +228,8 @@ public final class MishangIntegration {
      * 向当前告示牌编辑界面插入文本。
      */
     private static void insertTextToScreen(String text) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.currentScreen instanceof ISignEditorExtension extension) {
+        Minecraft client = Minecraft.getInstance();
+        if (client.screen instanceof ISignEditorExtension extension) {
             extension.ocelotsign$insertText(text);
             PatternAndFontOverlay.isVisible = false;
         }
