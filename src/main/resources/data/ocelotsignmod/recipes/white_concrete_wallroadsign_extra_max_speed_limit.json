@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "minecraft:white_concrete"
+  },
+  "result": "ocelotsignmod:wallroadsign/extra/max_speed_limit",
+  "count": 4
+}

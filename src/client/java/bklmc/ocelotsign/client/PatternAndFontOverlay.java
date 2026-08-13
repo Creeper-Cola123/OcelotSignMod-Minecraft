@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 图案与字体选择界面的 UI 渲染与交互组合入口 (1.19.2 兼容版)
+ * 图案与字体选择界面的 UI 渲染与交互组合入口
  */
 public final class PatternAndFontOverlay {
 

@@ -449,155 +449,63 @@ public class PillarBlock extends Block {
     }
 
     private VoxelShape getShapeForFacing(Direction facing) {
-        return switch (type) {
-            case UPRIGHT_A -> switch (facing) {
-                case NORTH -> UPRIGHT_A_N;
-                case SOUTH -> UPRIGHT_A_S;
-                case EAST -> UPRIGHT_A_E;
-                case WEST -> UPRIGHT_A_W;
-                default -> UPRIGHT_A_N;
-            };
-            case UPRIGHT_B_LEFT -> switch (facing) {
-                case NORTH -> UPRIGHT_B_LEFT_N;
-                case SOUTH -> UPRIGHT_B_LEFT_S;
-                case EAST -> UPRIGHT_B_LEFT_E;
-                case WEST -> UPRIGHT_B_LEFT_W;
-                default -> UPRIGHT_B_LEFT_N;
-            };
-            case UPRIGHT_B_RIGHT -> switch (facing) {
-                case NORTH -> UPRIGHT_B_RIGHT_N;
-                case SOUTH -> UPRIGHT_B_RIGHT_S;
-                case EAST -> UPRIGHT_B_RIGHT_E;
-                case WEST -> UPRIGHT_B_RIGHT_W;
-                default -> UPRIGHT_B_RIGHT_N;
-            };
-            case UPRIGHT_B_DOUBLE -> switch (facing) {
-                case NORTH -> UPRIGHT_B_DOUBLE_N;
-                case SOUTH -> UPRIGHT_B_DOUBLE_S;
-                case EAST -> UPRIGHT_B_DOUBLE_E;
-                case WEST -> UPRIGHT_B_DOUBLE_W;
-                default -> UPRIGHT_B_DOUBLE_N;
-            };
-            case UPRIGHT_C -> switch (facing) {
-                case NORTH -> UPRIGHT_C_N;
-                case SOUTH -> UPRIGHT_C_S;
-                case EAST -> UPRIGHT_C_E;
-                case WEST -> UPRIGHT_C_W;
-                default -> UPRIGHT_C_N;
-            };
-            case UPRIGHT_C_HALF -> switch (facing) {
-                case NORTH -> UPRIGHT_C_HALF_N;
-                case SOUTH -> UPRIGHT_C_HALF_S;
-                case EAST -> UPRIGHT_C_HALF_E;
-                case WEST -> UPRIGHT_C_HALF_W;
-                default -> UPRIGHT_C_HALF_N;
-            };
-            case UPRIGHT_C_INCLINED_LEFT -> switch (facing) {
-                case NORTH -> UPRIGHT_C_INCLINED_LEFT_N;
-                case SOUTH -> UPRIGHT_C_INCLINED_LEFT_S;
-                case EAST -> UPRIGHT_C_INCLINED_LEFT_E;
-                case WEST -> UPRIGHT_C_INCLINED_LEFT_W;
-                default -> UPRIGHT_C_INCLINED_LEFT_N;
-            };
-            case UPRIGHT_C_INCLINED_RIGHT -> switch (facing) {
-                case NORTH -> UPRIGHT_C_INCLINED_RIGHT_N;
-                case SOUTH -> UPRIGHT_C_INCLINED_RIGHT_S;
-                case EAST -> UPRIGHT_C_INCLINED_RIGHT_E;
-                case WEST -> UPRIGHT_C_INCLINED_RIGHT_W;
-                default -> UPRIGHT_C_INCLINED_RIGHT_N;
-            };
-            case HORIZONTAL_A -> switch (facing) {
-                case NORTH -> HORIZONTAL_A_N;
-                case SOUTH -> HORIZONTAL_A_S;
-                case EAST -> HORIZONTAL_A_E;
-                case WEST -> HORIZONTAL_A_W;
-                default -> HORIZONTAL_A_N;
-            };
-            case HORIZONTAL_D -> switch (facing) {
-                case NORTH -> HORIZONTAL_D_N;
-                case SOUTH -> HORIZONTAL_D_S;
-                case EAST -> HORIZONTAL_D_E;
-                case WEST -> HORIZONTAL_D_W;
-                default -> HORIZONTAL_D_N;
-            };
-            case HORIZONTAL_D_UP -> switch (facing) {
-                case NORTH -> HORIZONTAL_D_UP_N;
-                case SOUTH -> HORIZONTAL_D_UP_S;
-                case EAST -> HORIZONTAL_D_UP_E;
-                case WEST -> HORIZONTAL_D_UP_W;
-                default -> HORIZONTAL_D_UP_N;
-            };
-            case HORIZONTAL_D_DOWN -> switch (facing) {
-                case NORTH -> HORIZONTAL_D_DOWN_N;
-                case SOUTH -> HORIZONTAL_D_DOWN_S;
-                case EAST -> HORIZONTAL_D_DOWN_E;
-                case WEST -> HORIZONTAL_D_DOWN_W;
-                default -> HORIZONTAL_D_DOWN_N;
-            };
-            case THREE_SIDES_A_LEFT -> switch (facing) {
-                case NORTH -> THREE_SIDES_A_LEFT_N;
-                case SOUTH -> THREE_SIDES_A_LEFT_S;
-                case EAST -> THREE_SIDES_A_LEFT_E;
-                case WEST -> THREE_SIDES_A_LEFT_W;
-                default -> THREE_SIDES_A_LEFT_N;
-            };
-            case THREE_SIDES_A_RIGHT -> switch (facing) {
-                case NORTH -> THREE_SIDES_A_RIGHT_N;
-                case SOUTH -> THREE_SIDES_A_RIGHT_S;
-                case EAST -> THREE_SIDES_A_RIGHT_E;
-                case WEST -> THREE_SIDES_A_RIGHT_W;
-                default -> THREE_SIDES_A_RIGHT_N;
-            };
-            case THREE_SIDES_A_TOP_LEFT -> switch (facing) {
-                case NORTH -> THREE_SIDES_A_TOP_LEFT_N;
-                case SOUTH -> THREE_SIDES_A_TOP_LEFT_S;
-                case EAST -> THREE_SIDES_A_TOP_LEFT_E;
-                case WEST -> THREE_SIDES_A_TOP_LEFT_W;
-                default -> THREE_SIDES_A_TOP_LEFT_N;
-            };
-            case THREE_SIDES_A_TOP_RIGHT -> switch (facing) {
-                case NORTH -> THREE_SIDES_A_TOP_RIGHT_N;
-                case SOUTH -> THREE_SIDES_A_TOP_RIGHT_S;
-                case EAST -> THREE_SIDES_A_TOP_RIGHT_E;
-                case WEST -> THREE_SIDES_A_TOP_RIGHT_W;
-                default -> THREE_SIDES_A_TOP_RIGHT_N;
-            };
-            case FOUR_SIDES_A -> switch (facing) {
-                case NORTH -> FOUR_SIDES_A_N;
-                case SOUTH -> FOUR_SIDES_A_S;
-                case EAST -> FOUR_SIDES_A_E;
-                case WEST -> FOUR_SIDES_A_W;
-                default -> FOUR_SIDES_A_N;
-            };
-            case FOUR_SIDES_A_TOP -> switch (facing) {
-                case NORTH -> FOUR_SIDES_A_TOP_N;
-                case SOUTH -> FOUR_SIDES_A_TOP_S;
-                case EAST -> FOUR_SIDES_A_TOP_E;
-                case WEST -> FOUR_SIDES_A_TOP_W;
-                default -> FOUR_SIDES_A_TOP_N;
-            };
-            case FOUR_SIDES_D -> switch (facing) {
-                case NORTH -> FOUR_SIDES_D_N;
-                case SOUTH -> FOUR_SIDES_D_S;
-                case EAST -> FOUR_SIDES_D_E;
-                case WEST -> FOUR_SIDES_D_W;
-                default -> FOUR_SIDES_D_N;
-            };
-            case FOUR_SIDES_D_LEFT -> switch (facing) {
-                case NORTH -> FOUR_SIDES_D_LEFT_N;
-                case SOUTH -> FOUR_SIDES_D_LEFT_S;
-                case EAST -> FOUR_SIDES_D_LEFT_E;
-                case WEST -> FOUR_SIDES_D_LEFT_W;
-                default -> FOUR_SIDES_D_LEFT_N;
-            };
-            case FOUR_SIDES_D_RIGHT -> switch (facing) {
-                case NORTH -> FOUR_SIDES_D_RIGHT_N;
-                case SOUTH -> FOUR_SIDES_D_RIGHT_S;
-                case EAST -> FOUR_SIDES_D_RIGHT_E;
-                case WEST -> FOUR_SIDES_D_RIGHT_W;
-                default -> FOUR_SIDES_D_RIGHT_N;
-            };
-        };
+        // 使用 if-else 避免 javac 生成依赖枚举 ordinal 的合成 SwitchMap
+        // （在 mixin/混合 classloader 场景下可能找不到字段）
+        if (type == PillarType.UPRIGHT_A) {
+            return pickShape(facing, UPRIGHT_A_N, UPRIGHT_A_S, UPRIGHT_A_E, UPRIGHT_A_W);
+        } else if (type == PillarType.UPRIGHT_B_LEFT) {
+            return pickShape(facing, UPRIGHT_B_LEFT_N, UPRIGHT_B_LEFT_S, UPRIGHT_B_LEFT_E, UPRIGHT_B_LEFT_W);
+        } else if (type == PillarType.UPRIGHT_B_RIGHT) {
+            return pickShape(facing, UPRIGHT_B_RIGHT_N, UPRIGHT_B_RIGHT_S, UPRIGHT_B_RIGHT_E, UPRIGHT_B_RIGHT_W);
+        } else if (type == PillarType.UPRIGHT_B_DOUBLE) {
+            return pickShape(facing, UPRIGHT_B_DOUBLE_N, UPRIGHT_B_DOUBLE_S, UPRIGHT_B_DOUBLE_E, UPRIGHT_B_DOUBLE_W);
+        } else if (type == PillarType.UPRIGHT_C) {
+            return pickShape(facing, UPRIGHT_C_N, UPRIGHT_C_S, UPRIGHT_C_E, UPRIGHT_C_W);
+        } else if (type == PillarType.UPRIGHT_C_HALF) {
+            return pickShape(facing, UPRIGHT_C_HALF_N, UPRIGHT_C_HALF_S, UPRIGHT_C_HALF_E, UPRIGHT_C_HALF_W);
+        } else if (type == PillarType.UPRIGHT_C_INCLINED_LEFT) {
+            return pickShape(facing, UPRIGHT_C_INCLINED_LEFT_N, UPRIGHT_C_INCLINED_LEFT_S, UPRIGHT_C_INCLINED_LEFT_E, UPRIGHT_C_INCLINED_LEFT_W);
+        } else if (type == PillarType.UPRIGHT_C_INCLINED_RIGHT) {
+            return pickShape(facing, UPRIGHT_C_INCLINED_RIGHT_N, UPRIGHT_C_INCLINED_RIGHT_S, UPRIGHT_C_INCLINED_RIGHT_E, UPRIGHT_C_INCLINED_RIGHT_W);
+        } else if (type == PillarType.HORIZONTAL_A) {
+            return pickShape(facing, HORIZONTAL_A_N, HORIZONTAL_A_S, HORIZONTAL_A_E, HORIZONTAL_A_W);
+        } else if (type == PillarType.HORIZONTAL_D) {
+            return pickShape(facing, HORIZONTAL_D_N, HORIZONTAL_D_S, HORIZONTAL_D_E, HORIZONTAL_D_W);
+        } else if (type == PillarType.HORIZONTAL_D_UP) {
+            return pickShape(facing, HORIZONTAL_D_UP_N, HORIZONTAL_D_UP_S, HORIZONTAL_D_UP_E, HORIZONTAL_D_UP_W);
+        } else if (type == PillarType.HORIZONTAL_D_DOWN) {
+            return pickShape(facing, HORIZONTAL_D_DOWN_N, HORIZONTAL_D_DOWN_S, HORIZONTAL_D_DOWN_E, HORIZONTAL_D_DOWN_W);
+        } else if (type == PillarType.THREE_SIDES_A_LEFT) {
+            return pickShape(facing, THREE_SIDES_A_LEFT_N, THREE_SIDES_A_LEFT_S, THREE_SIDES_A_LEFT_E, THREE_SIDES_A_LEFT_W);
+        } else if (type == PillarType.THREE_SIDES_A_RIGHT) {
+            return pickShape(facing, THREE_SIDES_A_RIGHT_N, THREE_SIDES_A_RIGHT_S, THREE_SIDES_A_RIGHT_E, THREE_SIDES_A_RIGHT_W);
+        } else if (type == PillarType.THREE_SIDES_A_TOP_LEFT) {
+            return pickShape(facing, THREE_SIDES_A_TOP_LEFT_N, THREE_SIDES_A_TOP_LEFT_S, THREE_SIDES_A_TOP_LEFT_E, THREE_SIDES_A_TOP_LEFT_W);
+        } else if (type == PillarType.THREE_SIDES_A_TOP_RIGHT) {
+            return pickShape(facing, THREE_SIDES_A_TOP_RIGHT_N, THREE_SIDES_A_TOP_RIGHT_S, THREE_SIDES_A_TOP_RIGHT_E, THREE_SIDES_A_TOP_RIGHT_W);
+        } else if (type == PillarType.FOUR_SIDES_A) {
+            return pickShape(facing, FOUR_SIDES_A_N, FOUR_SIDES_A_S, FOUR_SIDES_A_E, FOUR_SIDES_A_W);
+        } else if (type == PillarType.FOUR_SIDES_A_TOP) {
+            return pickShape(facing, FOUR_SIDES_A_TOP_N, FOUR_SIDES_A_TOP_S, FOUR_SIDES_A_TOP_E, FOUR_SIDES_A_TOP_W);
+        } else if (type == PillarType.FOUR_SIDES_D) {
+            return pickShape(facing, FOUR_SIDES_D_N, FOUR_SIDES_D_S, FOUR_SIDES_D_E, FOUR_SIDES_D_W);
+        } else if (type == PillarType.FOUR_SIDES_D_LEFT) {
+            return pickShape(facing, FOUR_SIDES_D_LEFT_N, FOUR_SIDES_D_LEFT_S, FOUR_SIDES_D_LEFT_E, FOUR_SIDES_D_LEFT_W);
+        } else if (type == PillarType.FOUR_SIDES_D_RIGHT) {
+            return pickShape(facing, FOUR_SIDES_D_RIGHT_N, FOUR_SIDES_D_RIGHT_S, FOUR_SIDES_D_RIGHT_E, FOUR_SIDES_D_RIGHT_W);
+        }
+        // 兜底：返回该 type 的 NORTH 朝向形状
+        return pickShape(facing, UPRIGHT_A_N, UPRIGHT_A_S, UPRIGHT_A_E, UPRIGHT_A_W);
+    }
+
+    private static VoxelShape pickShape(Direction facing,
+                                        VoxelShape n, VoxelShape s,
+                                        VoxelShape e, VoxelShape w) {
+        if (facing == Direction.NORTH) return n;
+        if (facing == Direction.SOUTH) return s;
+        if (facing == Direction.EAST) return e;
+        if (facing == Direction.WEST) return w;
+        return n;
     }
 
     @Override

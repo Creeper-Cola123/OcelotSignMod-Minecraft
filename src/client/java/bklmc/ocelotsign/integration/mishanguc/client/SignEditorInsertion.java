@@ -37,6 +37,10 @@ public final class SignEditorInsertion {
         SignTextCommandApplier.apply(newEntry, screen, textContext);
         syncSignPreview(screen);
         focusOnNewEntry(screen, textFieldListWidget, index);
+
+        // 在 focusOnNewEntry 之后重新设置文本，确保输入框显示正确内容
+        newEntry.textFieldWidget.setText("-texture " + identifier.toString());
+        newEntry.textFieldWidget.setCursorToEnd();
     }
 
     public static void insertText(AbstractSignBlockEditScreen<?> screen, String text) {
@@ -47,13 +51,32 @@ public final class SignEditorInsertion {
         // 1.19.2: 使用 screen.addTextField
         screen.addTextField(index);
         TextFieldListWidget.Entry newEntry = textFieldListWidget.children().get(index);
+
+        // 先获取 TextContext
+        TextContext textContext = getTextContextForWidget(screen, newEntry.textFieldWidget);
+        if (textContext == null) {
+            // 如果无法获取 TextContext，直接设置文本并返回
+            newEntry.textFieldWidget.setText(text);
+            newEntry.textFieldWidget.setCursorToEnd();
+            syncSignPreview(screen);
+            focusOnNewEntry(screen, textFieldListWidget, index);
+            return;
+        }
+
+        // 解析命令语法，设置 textContext.text
         newEntry.textFieldWidget.setText(text);
         newEntry.textFieldWidget.setCursorToEnd();
-
-        TextContext textContext = getTextContextForWidget(screen, newEntry.textFieldWidget);
         SignTextCommandApplier.apply(newEntry, screen, textContext);
+
         syncSignPreview(screen);
         focusOnNewEntry(screen, textFieldListWidget, index);
+
+        // 关键：在 focusOnNewEntry 之后，再次确保 TextFieldWidget 显示正确的文本
+        // 因为 mishanguc 的 setSelected 可能触发内部监听器，从 textContext 同步文本
+        // 如果 textContext.text 是特殊格式（如空字符串），会导致显示异常
+        // 重新设置文本以确保 TextFieldWidget 和 textContext 保持一致
+        newEntry.textFieldWidget.setText(text);
+        newEntry.textFieldWidget.setCursorToEnd();
     }
 
     private static void syncSignPreview(AbstractSignBlockEditScreen<?> screen) {

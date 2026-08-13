@@ -72,6 +72,7 @@ public final class ColorPickerState {
     // 动态纹理缓存
     private static Identifier svTextureId = null;
     private static NativeImage svTextureImage = null;
+    private static net.minecraft.client.texture.NativeImageBackedTexture svTextureInstance = null;
     private static float svTextureHueCached = -1f;
 
     private ColorPickerState() {
@@ -160,8 +161,13 @@ public final class ColorPickerState {
         if (svTextureId != null) {
             tm.destroyTexture(svTextureId);
         }
+        if (svTextureInstance != null) {
+            svTextureInstance.close();
+            svTextureInstance = null;
+        }
         svTextureId = new Identifier("ocelotsignmod", "dynamic/color_picker_sv");
-        tm.registerTexture(svTextureId, new net.minecraft.client.texture.NativeImageBackedTexture(image));
+        svTextureInstance = new net.minecraft.client.texture.NativeImageBackedTexture(image);
+        tm.registerTexture(svTextureId, svTextureInstance);
         svTextureImage = image;
         svTextureHueCached = hue;
     }

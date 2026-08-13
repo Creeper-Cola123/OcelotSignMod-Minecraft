@@ -60,7 +60,8 @@ public final class SignTextCommandApplier {
                         textContext.text = TextBridge.literal(text);
                     } else if (specialDrawable != SpecialDrawable.INVALID) {
                         textContext.extra = specialDrawable;
-                        textContext.text = TextBridge.literal("");
+                        // 保留原始命令文本（如 -pattern xxx），这样输入框会显示命令而不是空字符串
+                        textContext.text = TextBridge.literal(text);
                     } else {
                         entry.textFieldWidget.setEditableColor(0xffff5555);
                     }

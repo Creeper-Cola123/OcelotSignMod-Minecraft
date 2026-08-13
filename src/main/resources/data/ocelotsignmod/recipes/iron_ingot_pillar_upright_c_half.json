@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "minecraft:iron_ingot"
+  },
+  "result": "ocelotsignmod:pillar/upright_c_half",
+  "count": 1
+}
