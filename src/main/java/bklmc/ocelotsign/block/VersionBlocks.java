@@ -15,7 +15,7 @@ import net.minecraft.util.Identifier;
  * <p>用于强制客户端更新至特定版本，缺少对应方块时无法进入服务器。
  */
 public class VersionBlocks {
-    public static final Block VERSION_BLOCK_1_0_0_BETA_1 = registerWithItem("version_block_1_0_0_beta_1", new Block(AbstractBlock.Settings.create()));
+    public static final Block VERSION_BLOCK_1_0_0 = registerWithItem("version_block_1_0_0_beta_1", new Block(AbstractBlock.Settings.create()));
 
     /**
      * 注册并创建方块对应的物品。

@@ -7,6 +7,8 @@ import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
@@ -185,5 +187,24 @@ public class ModelRegistryManager {
      */
     public static Identifier getFallbackModelIdentifier() {
         return OcelotSignMod.id("block/custom_model_fallback");
+    }
+
+    /**
+     * 获取与指定模型标识符关联的烘焙后的模型。
+     *
+     * <p>通过 BakedModelManager 获取模型，包含所有 Fabric 额外模型。
+     *
+     * @param modelIdentifier 模型资源标识符
+     * @return 烘焙后的模型；若未找到则返回 {@code null}
+     */
+    @org.jetbrains.annotations.Nullable
+    public static BakedModel getModel(Identifier modelIdentifier) {
+        BakedModelManager modelManager = MinecraftClient.getInstance().getBakedModelManager();
+        BakedModel model = modelManager.getModel(modelIdentifier);
+        // 如果获取到的是默认的缺失模型，也返回 null
+        if (model == modelManager.getMissingModel()) {
+            return null;
+        }
+        return model;
     }
 }

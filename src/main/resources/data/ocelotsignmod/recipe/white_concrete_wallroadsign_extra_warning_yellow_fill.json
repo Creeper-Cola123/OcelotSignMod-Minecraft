@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "minecraft:white_concrete"
+  },
+  "result": {
+    "id": "ocelotsignmod:wallroadsign/extra/warning_yellow_fill",
+    "count": 4
+  }
+}

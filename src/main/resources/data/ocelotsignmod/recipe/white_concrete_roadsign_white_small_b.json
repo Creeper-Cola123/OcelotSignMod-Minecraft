@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "minecraft:white_concrete"
+  },
+  "result": {
+    "id": "ocelotsignmod:roadsign/white/small_b",
+    "count": 4
+  }
+}

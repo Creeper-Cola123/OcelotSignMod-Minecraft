@@ -6,11 +6,12 @@ import bklmc.ocelotsign.block.ArrowBlocksStyle2;
 import bklmc.ocelotsign.block.ArrowBlocksStyle3;
 import bklmc.ocelotsign.block.custom.CustomModelBlock;
 import bklmc.ocelotsign.blockentity.ModBlockEntities;
+import bklmc.ocelotsign.client.ModelSelectionBlankScreen;
+import bklmc.ocelotsign.client.ModelSelectionOverlay;
 import bklmc.ocelotsign.client.PatternAndFontBlankScreen;
 import bklmc.ocelotsign.client.PatternAndFontOverlay;
 import bklmc.ocelotsign.client.PatternRegistry;
-import bklmc.ocelotsign.client.gui.ModelSelectionScreen;
-import bklmc.ocelotsign.client.gui.ModelSelectionScreen.TargetType;
+import bklmc.ocelotsign.client.ModelSelectionOverlay.TargetType;
 import bklmc.ocelotsign.client.model.ModelRegistryManager;
 import bklmc.ocelotsign.client.render.CustomModelBER;
 import bklmc.ocelotsign.item.CustomModelBlockItem;
@@ -71,6 +72,7 @@ public class OcelotSignModClient implements ClientModInitializer {
      */
     private void registerOverlayScreenEvents() {
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+            // ========== PatternAndFontOverlay ==========
             ScreenEvents.afterRender(screen).register((screen1, context, mouseX, mouseY, tickDelta) -> {
                 if (PatternAndFontOverlay.isVisible) {
                     screen1.setFocused(null);
@@ -124,6 +126,60 @@ public class OcelotSignModClient implements ClientModInitializer {
 
             ScreenKeyboardEvents.allowKeyRelease(screen).register((screen1, key, scancode, modifiers) -> {
                 return !PatternAndFontOverlay.isVisible;
+            });
+
+            // ========== ModelSelectionOverlay ==========
+            ScreenEvents.afterRender(screen).register((screen1, context, mouseX, mouseY, tickDelta) -> {
+                if (ModelSelectionOverlay.isVisible) {
+                    ModelSelectionOverlay.render(context, mouseX, mouseY, tickDelta);
+                }
+            });
+
+            ScreenMouseEvents.allowMouseClick(screen).register((screen1, mouseX, mouseY, button) -> {
+                if (ModelSelectionOverlay.isVisible) {
+                    if (ModelSelectionOverlay.mouseClicked(mouseX, mouseY, button)) {
+                        screen1.setDragging(true);
+                    }
+                    if (!ModelSelectionOverlay.isVisible && screen1 instanceof ModelSelectionBlankScreen) {
+                        screen1.close();
+                    }
+                    return false;
+                }
+                return true;
+            });
+
+            ScreenMouseEvents.allowMouseRelease(screen).register((screen1, mouseX, mouseY, button) -> {
+                if (ModelSelectionOverlay.isVisible) {
+                    ModelSelectionOverlay.mouseReleased(mouseX, mouseY, button);
+                    screen1.setDragging(false);
+                    return false;
+                }
+                return true;
+            });
+
+            ScreenMouseEvents.allowMouseScroll(screen).register((screen1, mouseX, mouseY, horizontalAmount, verticalAmount) -> {
+                if (ModelSelectionOverlay.isVisible) {
+                    if (ModelSelectionOverlay.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+
+            ScreenKeyboardEvents.allowKeyPress(screen).register((screen1, key, scancode, modifiers) -> {
+                if (ModelSelectionOverlay.isVisible) {
+                    if (ModelSelectionOverlay.keyPressed(key, scancode, modifiers)) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+
+            ScreenKeyboardEvents.allowKeyRelease(screen).register((screen1, key, scancode, modifiers) -> {
+                if (ModelSelectionOverlay.isVisible) {
+                    return ModelSelectionOverlay.keyReleased(key, scancode, modifiers);
+                }
+                return true;
             });
         });
     }
@@ -375,9 +431,15 @@ public class OcelotSignModClient implements ClientModInitializer {
                 return ActionResult.PASS;
             }
 
-            // Model Wand 右键打开选择界面
+            // Model Wand 右键打开选择叠加层
             if (ModelWandItem.isModelWand(stack)) {
-                MinecraftClient.getInstance().setScreen(new ModelSelectionScreen(TargetType.BLOCK, hitResult.getBlockPos()));
+                MinecraftClient mc = MinecraftClient.getInstance();
+                // 打开空白屏幕（不暂停游戏），叠加层通过 ScreenEvents 派发渲染/输入
+                mc.setScreen(new ModelSelectionBlankScreen());
+                // 打开模型选择叠加层
+                ModelSelectionOverlay.open(ModelSelectionOverlay.TargetType.BLOCK, hitResult.getBlockPos());
+                // 解锁鼠标，使光标显示出来
+                mc.mouse.unlockCursor();
                 return ActionResult.SUCCESS;
             }
 

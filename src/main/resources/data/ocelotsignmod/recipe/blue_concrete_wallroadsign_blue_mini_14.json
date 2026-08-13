@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "minecraft:blue_concrete"
+  },
+  "result": {
+    "id": "ocelotsignmod:wallroadsign/blue/mini_14",
+    "count": 4
+  }
+}

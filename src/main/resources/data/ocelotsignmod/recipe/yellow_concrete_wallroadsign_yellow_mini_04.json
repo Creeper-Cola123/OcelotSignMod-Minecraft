@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "minecraft:yellow_concrete"
+  },
+  "result": {
+    "id": "ocelotsignmod:wallroadsign/yellow/mini_04",
+    "count": 4
+  }
+}
