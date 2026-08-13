@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " G ",
+    "GDR",
+    " RS"
+  ],
+  "key": {
+    "G": "minecraft:glass",
+    "D": "minecraft:diamond",
+    "R": "minecraft:redstone",
+    "S": "minecraft:stick"
+  },
+  "result": {
+    "item": "ocelotsignmod:model_wand",
+    "count": 1
+  }
+}

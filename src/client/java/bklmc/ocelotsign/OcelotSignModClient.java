@@ -377,7 +377,10 @@ public class OcelotSignModClient implements ClientModInitializer {
 
             // Model Wand 右键打开选择界面
             if (ModelWandItem.isModelWand(stack)) {
-                MinecraftClient.getInstance().setScreen(new ModelSelectionScreen(TargetType.BLOCK, hitResult.getBlockPos()));
+                MinecraftClient mc = MinecraftClient.getInstance();
+                mc.setScreen(new ModelSelectionScreen(TargetType.BLOCK, hitResult.getBlockPos()));
+                // 解锁鼠标，使光标显示出来
+                mc.mouse.unlockCursor();
                 return ActionResult.SUCCESS;
             }
 
