@@ -10,7 +10,9 @@
 	"contact": {
 		"homepage": "https://creeper-cola123.github.io/OcelotSignMod_Docs/",
 		"sources": "https://github.com/Creeper-Cola123/ocelotsignmod-minecraft",
-		"issues": "https://github.com/Creeper-Cola123/ocelotsignmod-minecraft/issues"
+		"issues": "https://github.com/Creeper-Cola123/ocelotsignmod-minecraft/issues",
+		"curseforge": "https://www.curseforge.com/minecraft/mc-mods/ocelotsignmod",
+		"modrinth": "https://modrinth.com/mod/ocelotsignmod"
 	},
 	"license": "LGPL-3.0",
 	"icon": "assets/ocelotsignmod/icon.png",
@@ -38,6 +40,6 @@
 		"minecraft": "~1.20.1",
 		"java": ">=17",
 		"fabric-api": "*",
-		"mishanguc": ">=1.1.0"
+		"mishanguc": ">=1.6.0"
 	}
 }

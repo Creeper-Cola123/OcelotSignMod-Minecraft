@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "minecraft:iron_ingot"
+  },
+  "result": "ocelotsignmod:pillar/three_sides_a_left",
+  "count": 1
+}
