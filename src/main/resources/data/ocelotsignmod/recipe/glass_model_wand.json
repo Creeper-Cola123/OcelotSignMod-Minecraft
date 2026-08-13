@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "minecraft:glass",
+  "result": {
+    "id": "ocelotsignmod:model_wand",
+    "count": 1
+  }
+}

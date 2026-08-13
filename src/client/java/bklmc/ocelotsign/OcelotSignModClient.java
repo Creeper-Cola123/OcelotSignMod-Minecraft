@@ -5,8 +5,8 @@ import bklmc.ocelotsign.blockentity.ModBlockEntities;
 import bklmc.ocelotsign.client.PatternAndFontBlankScreen;
 import bklmc.ocelotsign.client.PatternAndFontOverlay;
 import bklmc.ocelotsign.client.PatternRegistry;
-import bklmc.ocelotsign.client.gui.ModelSelectionScreen;
-import bklmc.ocelotsign.client.gui.ModelSelectionScreen.TargetType;
+import bklmc.ocelotsign.client.gui.ModelSelectionOverlay;
+import bklmc.ocelotsign.client.gui.ModelSelectionOverlay.TargetType;
 import bklmc.ocelotsign.client.model.ModelRegistryManager;
 import bklmc.ocelotsign.client.render.CustomModelBER;
 import bklmc.ocelotsign.item.CustomModelBlockItem;
@@ -15,6 +15,7 @@ import bklmc.ocelotsign.platform.ClientNetworking;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
@@ -52,6 +53,19 @@ public class OcelotSignModClient implements ClientModInitializer {
         registerCustomModelItemUseHandler();
         registerCustomModelBlockUseHandler();
         registerOverlayScreenEvents();
+        registerOverlayInputTick();
+    }
+
+    /**
+     * 注册叠加层输入轮询：每客户端 tick 检查 {@code client.getOverlay()}，
+     * 如果是 {@link ModelSelectionOverlay} 就调用其 {@code tickInput()} 进行鼠标/键盘派发。
+     */
+    private void registerOverlayInputTick() {
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (client != null && client.getOverlay() instanceof ModelSelectionOverlay overlay) {
+                overlay.tickInput();
+            }
+        });
     }
 
     /**
@@ -155,9 +169,12 @@ public class OcelotSignModClient implements ClientModInitializer {
                 return InteractionResult.PASS;
             }
 
-            // Model Wand 右键打开选择界面
+            // Model Wand 右键打开选择叠加层
             if (ModelWandItem.isModelWand(stack)) {
-                Minecraft.getInstance().setScreen(new ModelSelectionScreen(TargetType.BLOCK, hitResult.getBlockPos()));
+                Minecraft mc = Minecraft.getInstance();
+                mc.setOverlay(new ModelSelectionOverlay(TargetType.BLOCK, hitResult.getBlockPos()));
+                // 解锁鼠标，使光标显示出来
+                mc.mouseHandler.releaseMouse();
                 return InteractionResult.SUCCESS;
             }
 

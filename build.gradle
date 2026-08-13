@@ -15,11 +15,12 @@ repositories {
 	flatDir{
 		dirs 'libs'
 	}
-	// Add repositories to retrieve artifacts from in here.
-	// You should only use this when depending on other mods because
-	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
-	// for more information about repositories.
+	// Fabric 官方镜像（优先，避免阿里云 502 时构建失败）
+	maven { url 'https://maven.fabricmc.net/' }
+	// 阿里云镜像（作为 fallback，覆盖 Minecraft、Fabric API 等依赖）
+	maven { url 'https://maven.aliyun.com/repository/public' }
+	maven { url 'https://maven.aliyun.com/repository/central' }
+	mavenCentral()
 }
 
 loom {
@@ -60,7 +61,7 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 25
+	it.options.release = 21
 }
 
 java {
@@ -69,8 +70,8 @@ java {
 	// If you remove this line, sources will not be generated.
 	withSourcesJar()
 
-	sourceCompatibility = JavaVersion.VERSION_25
-	targetCompatibility = JavaVersion.VERSION_25
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
 }
 
 jar {

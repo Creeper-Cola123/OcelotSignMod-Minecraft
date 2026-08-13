@@ -9,6 +9,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -419,6 +420,31 @@ public final class PatternAndFontOverlay {
         renderReturnButton(context, textRenderer, mouseX, mouseY, width, mainWidth, height);
 
         context.pose().popMatrix();
+
+        // 覆盖下层按钮在自身渲染阶段设置的 GLFW_HAND_CURSOR，避免光标在浮层上变成"手型"。
+        resetCursorToArrow();
+    }
+
+    /**
+     * 将鼠标光标强制还原为标准箭头光标。
+     * <p>父 Screen 在 render 阶段会基于 widget 悬停状态调用
+     * {@code AbstractWidget.renderButton}，它会通过
+     * {@code GLFW.glfwSetCursor(window, GLFW.GLFW_HAND_CURSOR)} 切换光标。
+     * 即便我们的浮层阻止了下层按钮被点击，被切走的光标样式也不会自动恢复，
+     * 因此在浮层自身渲染完成后显式重置一次即可。
+     */
+    private static void resetCursorToArrow() {
+        try {
+            Minecraft client = Minecraft.getInstance();
+            if (client == null) return;
+            long handle = client.getWindow().handle();
+            if (handle == 0L) return;
+            long arrowCursor = GLFW.glfwCreateStandardCursor(GLFW.GLFW_ARROW_CURSOR);
+            if (arrowCursor != 0L) {
+                GLFW.glfwSetCursor(handle, arrowCursor);
+            }
+        } catch (Throwable ignored) {
+        }
     }
 
     // 更新滚动位置最大值与钳位

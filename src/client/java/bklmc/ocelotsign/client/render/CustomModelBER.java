@@ -3,6 +3,7 @@ package bklmc.ocelotsign.client.render;
 import bklmc.ocelotsign.blockentity.CustomModelBlockEntity;
 import bklmc.ocelotsign.client.model.ModelRegistryManager;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -28,6 +29,15 @@ import java.util.List;
 /**
  * 自定义模型方块实体渲染器
  *
+ * <p>设计思路：</p>
+ * <ul>
+ *   <li>当方块已设置有效模型 ID 时，按方块朝向渲染该模型。</li>
+ *   <li>当方块未设置模型（或模型无效）时（fallback 状态），
+ *       <strong>不渲染任何 3D 几何体</strong>；改为在方块位置常态画一个 1px 描边方框，
+ *       <strong>每条边用不同颜色</strong>（东南西北上下 6 种颜色），
+ *       提示玩家方块存在但模型尚未加载/缺失。</li>
+ * </ul>
+ *
  * @see ModelRegistryManager
  */
 public class CustomModelBER
@@ -35,6 +45,14 @@ public class CustomModelBER
 
     /** 无染色层，自定义模型不使用方块染色 */
     private static final int[] NO_TINTS = BlockModelRenderState.EMPTY_TINTS;
+
+    // 6 个方向边对应的颜色（ARGB）
+    private static final int EDGE_COLOR_DOWN  = 0xFFFF4040; // -Y 红
+    private static final int EDGE_COLOR_UP    = 0xFF40FF40; // +Y 绿
+    private static final int EDGE_COLOR_NORTH = 0xFF4040FF; // -Z 蓝
+    private static final int EDGE_COLOR_SOUTH = 0xFFFFFF40; // +Z 黄
+    private static final int EDGE_COLOR_WEST  = 0xFF40FFFF; // -X 青
+    private static final int EDGE_COLOR_EAST  = 0xFFFF40FF; // +X 紫
 
     /**
      * 自定义模型方块的渲染状态。
@@ -44,8 +62,6 @@ public class CustomModelBER
         public String modelId = "";
         /** 方块朝向 */
         public Direction facing = Direction.NORTH;
-        /** 用于 fallback 模型旋转动画的时间（tick，含帧插值） */
-        public float animationTime;
     }
 
     private final RandomSource random = RandomSource.create();
@@ -80,9 +96,6 @@ public class CustomModelBER
         state.facing = entity.getBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING)
                 ? entity.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)
                 : Direction.NORTH;
-
-        Minecraft client = Minecraft.getInstance();
-        state.animationTime = client.level == null ? 0f : client.level.getGameTime() + tickDelta;
     }
 
     /**
@@ -102,7 +115,7 @@ public class CustomModelBER
             Identifier modelIdentifier = ModelRegistryManager.getModelIdentifier(state.modelId);
             BlockStateModel model = ModelRegistryManager.getBakedModel(modelIdentifier);
 
-            if (model != null) {
+            if (model != null && !isMissingModel(model)) {
                 matrices.translate(0.5, 0.5, 0.5);
                 matrices.mulPose(Axis.YP.rotationDegrees(-state.facing.toYRot()));
                 matrices.translate(-0.5, -0.5, -0.5);
@@ -111,8 +124,9 @@ public class CustomModelBER
             }
         }
 
+        // fallback 状态：常态显示 6 条不同颜色的 1px 描边方框
         if (!rendered) {
-            submitRotatingFallback(state, matrices, collector);
+            submitFallbackOutline(matrices, collector);
         }
 
         matrices.popPose();
@@ -136,22 +150,90 @@ public class CustomModelBER
         );
     }
 
-    /** 提交旋转的 fallback 模型。 */
-    private void submitRotatingFallback(State state, PoseStack matrices, SubmitNodeCollector collector) {
-        BlockStateModel fallbackModel =
-                ModelRegistryManager.getBakedModel(ModelRegistryManager.getFallbackModelIdentifier());
-        if (fallbackModel == null) {
-            return;
+    /**
+     * 提交 fallback 描边方框。
+     *
+     * <p>画 12 条棱（方块 8 角点 + 12 棱），每条棱用一个对应方向的颜色：</p>
+     * <ul>
+     *   <li>4 条底面棱（Y=0）→ 下 红</li>
+     *   <li>4 条顶面棱（Y=1）→ 上 绿</li>
+     *   <li>2 条南北向棱（Z=0 / Z=1）→ 南 黄 / 北 蓝</li>
+     *   <li>2 条东西向棱（X=0 / X=1）→ 西 青 / 东 紫</li>
+     * </ul>
+     */
+    private void submitFallbackOutline(PoseStack matrices, SubmitNodeCollector collector) {
+        // 8 个角点：底面 0~3，顶面 4~7
+        float[][] corners = new float[][] {
+                {0f, 0f, 0f}, {1f, 0f, 0f}, {1f, 0f, 1f}, {0f, 0f, 1f}, // 0~3 底面
+                {0f, 1f, 0f}, {1f, 1f, 0f}, {1f, 1f, 1f}, {0f, 1f, 1f}, // 4~7 顶面
+        };
+
+        // 12 条棱 + 颜色 (按方向分组)
+        // 每条：{ 角点A, 角点B, ARGB }
+        int[][] edges = new int[][] {
+                // 底面 4 条 (Y=0) → 下 红
+                {0, 1, EDGE_COLOR_DOWN},
+                {1, 2, EDGE_COLOR_DOWN},
+                {2, 3, EDGE_COLOR_DOWN},
+                {3, 0, EDGE_COLOR_DOWN},
+                // 顶面 4 条 (Y=1) → 上 绿
+                {4, 5, EDGE_COLOR_UP},
+                {5, 6, EDGE_COLOR_UP},
+                {6, 7, EDGE_COLOR_UP},
+                {7, 4, EDGE_COLOR_UP},
+                // 南北向立柱
+                {0, 3, EDGE_COLOR_NORTH}, // Z=0 立柱 → 北 蓝
+                {1, 2, EDGE_COLOR_SOUTH}, // Z=1 立柱 → 南 黄
+                // 东西向立柱
+                {0, 4, EDGE_COLOR_WEST},  // X=0 立柱 → 西 青
+                {1, 5, EDGE_COLOR_EAST},  // X=1 立柱 → 东 紫
+        };
+
+        for (int[] edge : edges) {
+            float[] ca = corners[edge[0]];
+            float[] cb = corners[edge[1]];
+            int argb = edge[2];
+            final int r = (argb >> 16) & 0xFF;
+            final int g = (argb >> 8) & 0xFF;
+            final int b = argb & 0xFF;
+            final int a = (argb >>> 24) & 0xFF;
+            // 法线方向：从 ca 指向 cb
+            final float nx = cb[0] - ca[0];
+            final float ny = cb[1] - ca[1];
+            final float nz = cb[2] - ca[2];
+            collector.submitCustomGeometry(matrices, RenderTypes.LINES, (PoseStack.Pose entry, VertexConsumer consumer) -> {
+                // 起点
+                consumer.addVertex(entry, ca[0], ca[1], ca[2])
+                        .setColor(r, g, b, a)
+                        .setNormal(entry, nx, ny, nz)
+                        .setLineWidth(1.0f);
+                // 终点
+                consumer.addVertex(entry, cb[0], cb[1], cb[2])
+                        .setColor(r, g, b, a)
+                        .setNormal(entry, nx, ny, nz)
+                        .setLineWidth(1.0f);
+            });
         }
+    }
 
-        matrices.pushPose();
-        matrices.translate(0.5, 0.5, 0.5);
-        // 绕Y轴旋转
-        matrices.mulPose(Axis.YP.rotationDegrees(state.animationTime * 5.0f));
-        matrices.translate(-0.5, -0.5, -0.5);
-
-        submitModel(matrices, collector, fallbackModel, state.lightCoords);
-
-        matrices.popPose();
+    /**
+     * 判定模型是否为缺失模型（vanilla 提供的占位模型）。
+     *
+     * <p>在 26.1.x 中 ModelManager 没有公开的"获取缺失模型"接口，
+     * 但如果给定的 modelId 解析到的 BlockStateModel 为 null，我们就视其为缺失模型，
+     * 并直接走 fallback 描边逻辑。这里保留方法签名以保持与未来 Mojang 接口的兼容性。
+     */
+    private boolean isMissingModel(BlockStateModel model) {
+        if (model == null) {
+            return true;
+        }
+        try {
+            Minecraft client = Minecraft.getInstance();
+            // 26.1.x 中 ModelManager 没有公开的 getMissingBlockStateModel()，
+            // 退而通过 BlockStateModelSet 探测：当解析到任何 BlockStateModelSet 都认为非缺失。
+            return client.getModelManager().getBlockStateModelSet() == null;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

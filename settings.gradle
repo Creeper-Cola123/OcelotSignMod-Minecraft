@@ -1,9 +1,11 @@
 pluginManagement {
 	repositories {
-		// 阿里云插件镜像
-		maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
-		// Fabric 官方镜像
+		// Fabric 官方镜像（放第一位，避免阿里云镜像 502 导致整个构建失败）
 		maven { url 'https://maven.fabricmc.net/' }
+		// 阿里云插件镜像（作为 fallback）
+		maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+		maven { url 'https://maven.aliyun.com/repository/public' }
+		maven { url 'https://maven.aliyun.com/repository/central' }
 		mavenCentral()
 		gradlePluginPortal()
 	}
