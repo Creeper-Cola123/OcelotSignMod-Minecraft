@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "ocelotsignmod:block/roadmark/distance_confirm"
+    "layer0": "ocelotsignmod:item/roadmark/distance_confirm"
   }
 }

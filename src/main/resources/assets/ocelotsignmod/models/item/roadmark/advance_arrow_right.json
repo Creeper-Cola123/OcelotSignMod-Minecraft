@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "ocelotsignmod:block/roadmark/advance_arrow_right"
+    "layer0": "ocelotsignmod:item/roadmark/advance_arrow_right"
   }
 }

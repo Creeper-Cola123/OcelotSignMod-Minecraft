@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "ocelotsignmod:block/roadmark_large/speed_bump"
+    "layer0": "ocelotsignmod:item/roadmark_large/speed_bump"
   }
 }

@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "ocelotsignmod:block/roadmark/arrow_prohibited"
+    "layer0": "ocelotsignmod:item/roadmark/arrow_prohibited"
   }
 }

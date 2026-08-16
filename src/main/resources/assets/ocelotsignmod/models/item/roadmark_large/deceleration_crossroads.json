@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "ocelotsignmod:block/roadmark_large/deceleration_crossroads"
+    "layer0": "ocelotsignmod:item/roadmark_large/deceleration_crossroads"
   }
 }
