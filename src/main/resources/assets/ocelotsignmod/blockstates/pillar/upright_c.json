@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "ocelotsignmod:block/pillar/upright_c",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "ocelotsignmod:block/pillar/upright_c",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "ocelotsignmod:block/pillar/upright_c",
+      "y": 270
+    },
+    "facing=west": {
+      "model": "ocelotsignmod:block/pillar/upright_c",
+      "y": 90
+    }
+  }
+}

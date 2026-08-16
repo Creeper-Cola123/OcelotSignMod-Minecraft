@@ -1,0 +1,60 @@
+package bklmc.ocelotsign.block;
+
+import bklmc.ocelotsign.OcelotSignMod;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.util.Identifier;
+
+/**
+ * 版本校验方块注册中心
+ *
+ * <p>用于强制客户端更新至特定版本，缺少对应方块时无法进入服务器。
+ */
+public class VersionBlocks {
+
+    private static RegistryKey<Block> getBlockKey(String id) {
+        return RegistryKey.of(Registries.BLOCK.getKey(), Identifier.of(OcelotSignMod.MOD_ID, id));
+    }
+
+    private static RegistryKey<Item> getItemKey(String id) {
+        return RegistryKey.of(Registries.ITEM.getKey(), Identifier.of(OcelotSignMod.MOD_ID, id));
+    }
+
+    public static final Block VERSION_BLOCK_1_0_0 = registerWithItem("version_block_1_0_0", new Block(AbstractBlock.Settings.create().registryKey(getBlockKey("version_block_1_0_0"))));
+
+    /**
+     * 注册并创建方块对应的物品。
+     *
+     * @param id    方块 ID
+     * @param block 方块实例
+     * @return 已注册的方块
+     */
+    private static Block registerWithItem(String id, Block block) {
+        Block registeredBlock = Registry.register(Registries.BLOCK, getBlockKey(id), block);
+        registerBlockItem(id, registeredBlock);
+        return registeredBlock;
+    }
+
+    /**
+     * 注册方块对应的物品。
+     *
+     * @param id    物品 ID
+     * @param block 对应的方块
+     */
+    private static void registerBlockItem(String id, Block block) {
+        Registry.register(Registries.ITEM, getItemKey(id),
+                new BlockItem(block, new Item.Settings().registryKey(getItemKey(id))));
+    }
+
+    /**
+     * 初始化版本方块注册。
+     */
+    public static void registerVersionBlocks() {
+        OcelotSignMod.LOGGER.info("Registering Version Blocks for " + OcelotSignMod.MOD_ID);
+    }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "minecraft:glowstone",
+    "*": "minecraft:orange_dye",
+    "C": "minecraft:orange_concrete"
+  },
+  "pattern": [
+    "*#*",
+    "#C#",
+    "*#*"
+  ],
+  "result": {
+    "count": 8,
+    "id": "mishanguc:orange_light"
+  }
+}

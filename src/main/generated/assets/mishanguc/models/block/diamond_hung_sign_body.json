@@ -1,0 +1,8 @@
+{
+  "parent": "mishanguc:block/hung_sign_body",
+  "textures": {
+    "bar": "minecraft:block/diamond_block",
+    "texture": "minecraft:block/diamond_block",
+    "texture_top": "minecraft:block/diamond_block"
+  }
+}

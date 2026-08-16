@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mishanguc:green_light",
+  "result": {
+    "count": 15,
+    "id": "mishanguc:green_wall_light_simple_decoration"
+  }
+}

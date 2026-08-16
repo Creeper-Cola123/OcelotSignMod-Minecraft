@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "minecraft:lapis_block",
+    "-": "mishanguc:invisible_wall_sign"
+  },
+  "pattern": [
+    "---",
+    "###",
+    "---"
+  ],
+  "result": {
+    "count": 6,
+    "id": "mishanguc:lapis_wall_sign"
+  }
+}

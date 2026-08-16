@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "minecraft:blue_concrete",
+  "result": {
+    "id": "ocelotsignmod:roadsign/blue/top",
+    "count": 4
+  }
+}

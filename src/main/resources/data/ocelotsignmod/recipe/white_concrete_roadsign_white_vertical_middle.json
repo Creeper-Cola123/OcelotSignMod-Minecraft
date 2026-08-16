@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "minecraft:white_concrete",
+  "result": {
+    "id": "ocelotsignmod:roadsign/white/vertical_middle",
+    "count": 4
+  }
+}

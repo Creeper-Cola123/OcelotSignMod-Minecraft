@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mishanguc:white_light",
+  "result": {
+    "count": 18,
+    "id": "mishanguc:white_wall_light_point_decoration"
+  }
+}

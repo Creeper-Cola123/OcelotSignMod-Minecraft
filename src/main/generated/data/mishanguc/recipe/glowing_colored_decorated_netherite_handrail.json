@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "M": "mishanguc:colored_light",
+    "X": "#c:ingots/netherite",
+    "o": "minecraft:glass_pane"
+  },
+  "pattern": [
+    "XXX",
+    "oMo",
+    "XXX"
+  ],
+  "result": {
+    "count": 4,
+    "id": "mishanguc:glowing_colored_decorated_netherite_handrail"
+  }
+}

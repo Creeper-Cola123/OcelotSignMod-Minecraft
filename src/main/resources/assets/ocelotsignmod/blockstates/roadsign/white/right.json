@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "ocelotsignmod:block/roadsign/white/right",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "ocelotsignmod:block/roadsign/white/right",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "ocelotsignmod:block/roadsign/white/right",
+      "y": 270
+    },
+    "facing=west": {
+      "model": "ocelotsignmod:block/roadsign/white/right",
+      "y": 90
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "mishanguc:road_slab_with_bi_ba_line",
+  "key": {
+    "*": "#c:dyes/white",
+    "X": "mishanguc:road_slab"
+  },
+  "pattern": [
+    " **",
+    "** ",
+    "XXX"
+  ],
+  "result": {
+    "count": 3,
+    "id": "mishanguc:road_slab_with_white_bi_ba_line"
+  }
+}

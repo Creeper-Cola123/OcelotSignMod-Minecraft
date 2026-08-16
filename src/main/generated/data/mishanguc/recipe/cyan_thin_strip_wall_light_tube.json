@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mishanguc:cyan_light",
+  "result": {
+    "count": 36,
+    "id": "mishanguc:cyan_thin_strip_wall_light_tube"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mishanguc:pink_light",
+  "result": {
+    "count": 32,
+    "id": "mishanguc:pink_medium_wall_light_tube"
+  }
+}

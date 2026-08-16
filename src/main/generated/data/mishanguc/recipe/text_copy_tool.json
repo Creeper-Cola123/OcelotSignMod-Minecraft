@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "/": "minecraft:stick",
+    "P": "minecraft:paper",
+    "S": "minecraft:slime_ball"
+  },
+  "pattern": [
+    "SPS",
+    " / ",
+    " / "
+  ],
+  "result": {
+    "count": 1,
+    "id": "mishanguc:text_copy_tool"
+  }
+}

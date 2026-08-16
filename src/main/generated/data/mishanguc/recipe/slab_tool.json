@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": "#c:stones",
+    "S": "minecraft:shears",
+    "|": "minecraft:stick"
+  },
+  "pattern": [
+    "SCS",
+    " | ",
+    " | "
+  ],
+  "result": {
+    "count": 1,
+    "id": "mishanguc:slab_tool"
+  }
+}

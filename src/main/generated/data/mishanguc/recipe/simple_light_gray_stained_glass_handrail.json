@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:stonecutting",
+  "group": "mishanguc:simple_stained_glass_handrail",
+  "ingredient": "minecraft:light_gray_stained_glass",
+  "result": {
+    "count": 5,
+    "id": "mishanguc:simple_light_gray_stained_glass_handrail"
+  }
+}

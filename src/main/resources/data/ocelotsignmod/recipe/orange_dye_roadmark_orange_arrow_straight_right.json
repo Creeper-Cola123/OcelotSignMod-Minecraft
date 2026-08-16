@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "minecraft:orange_dye",
+  "result": {
+    "id": "ocelotsignmod:roadmark/orange_arrow_straight_right",
+    "count": 1
+  }
+}

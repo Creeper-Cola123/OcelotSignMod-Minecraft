@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:stonecutting",
+  "group": "mishanguc:simple_concrete_handrail",
+  "ingredient": "minecraft:magenta_concrete",
+  "result": {
+    "count": 5,
+    "id": "mishanguc:simple_magenta_concrete_handrail"
+  }
+}
