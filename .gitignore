@@ -14,7 +14,7 @@ classes/
 .idea/
 *.iml
 *.ipr
-*.iws
+*.iws''
 
 # vscode
 
