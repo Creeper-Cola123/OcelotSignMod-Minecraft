@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "minecraft:yellow_concrete",
+  "result": {
+    "id": "ocelotsignmod:wallroadsign/chevron_alignment/yellow/a_right",
+    "count": 4
+  }
+}

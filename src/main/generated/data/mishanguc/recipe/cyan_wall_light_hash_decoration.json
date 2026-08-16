@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mishanguc:cyan_light",
+  "result": {
+    "count": 12,
+    "id": "mishanguc:cyan_wall_light_hash_decoration"
+  }
+}

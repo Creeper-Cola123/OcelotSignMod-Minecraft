@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "mishanguc:road_with_auto_ba_line",
+  "key": {
+    "X": "mishanguc:road_block",
+    "a": "#c:dyes/yellow",
+    "b": "#c:dyes/white"
+  },
+  "pattern": [
+    "aba",
+    "bXb",
+    "aba"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mishanguc:road_with_white_auto_ba_line"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "mishanguc:glowing_concrete_wall_sign",
+  "key": {
+    "#": "minecraft:green_concrete",
+    "-": "mishanguc:invisible_glowing_wall_sign"
+  },
+  "pattern": [
+    "---",
+    "###",
+    "---"
+  ],
+  "result": {
+    "count": 6,
+    "id": "mishanguc:glowing_green_concrete_wall_sign"
+  }
+}

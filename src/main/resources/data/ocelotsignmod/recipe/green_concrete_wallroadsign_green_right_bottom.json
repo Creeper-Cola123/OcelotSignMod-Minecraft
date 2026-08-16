@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "minecraft:green_concrete",
+  "result": {
+    "id": "ocelotsignmod:wallroadsign/green/right_bottom",
+    "count": 4
+  }
+}

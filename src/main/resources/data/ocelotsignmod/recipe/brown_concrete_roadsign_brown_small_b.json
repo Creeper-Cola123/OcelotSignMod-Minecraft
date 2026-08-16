@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "minecraft:brown_concrete",
+  "result": {
+    "id": "ocelotsignmod:roadsign/brown/small_b",
+    "count": 4
+  }
+}

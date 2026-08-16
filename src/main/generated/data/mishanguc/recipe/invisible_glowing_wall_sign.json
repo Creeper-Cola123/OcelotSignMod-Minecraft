@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "mishanguc:invisible_wall_sign",
+    "-": "minecraft:glowstone_dust"
+  },
+  "pattern": [
+    "---",
+    "###"
+  ],
+  "result": {
+    "count": 3,
+    "id": "mishanguc:invisible_glowing_wall_sign"
+  }
+}

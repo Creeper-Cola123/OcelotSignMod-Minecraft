@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "minecraft:brown_concrete",
+  "result": {
+    "id": "ocelotsignmod:wallroadsign/brown/vertical_top",
+    "count": 4
+  }
+}

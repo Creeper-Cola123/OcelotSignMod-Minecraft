@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mishanguc:pink_light",
+  "result": {
+    "count": 8,
+    "id": "mishanguc:pink_light_cover"
+  }
+}

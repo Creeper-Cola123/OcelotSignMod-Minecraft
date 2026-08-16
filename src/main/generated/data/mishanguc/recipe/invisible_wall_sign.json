@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "minecraft:feather",
+    ".": "minecraft:iron_nugget",
+    "o": "minecraft:gold_ingot"
+  },
+  "pattern": [
+    ".#.",
+    "#o#",
+    ".#."
+  ],
+  "result": {
+    "count": 9,
+    "id": "mishanguc:invisible_wall_sign"
+  }
+}
