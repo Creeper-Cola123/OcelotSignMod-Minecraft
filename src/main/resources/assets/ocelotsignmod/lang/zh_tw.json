@@ -2,6 +2,7 @@
   "itemGroup.ocelotsignmod.road_signs": "豹貓指示牌模組 - 帶柱完整路牌",
   "itemGroup.ocelotsignmod.wall_road_signs": "豹貓指示牌模組 - 牆面指示牌",
   "itemGroup.ocelotsignmod.pillars": "豹貓指示牌模組 - 支柱與附加",
+  "itemGroup.ocelotsignmod.road_marks": "道路箭頭方塊",
   "block.ocelotsignmod.custom_model_block": "自訂模型方塊",
   "block.ocelotsignmod.roadsign.blue.left_top": "道路指示牌藍色-左上",
   "block.ocelotsignmod.roadsign.blue.top": "道路指示牌藍色-上",

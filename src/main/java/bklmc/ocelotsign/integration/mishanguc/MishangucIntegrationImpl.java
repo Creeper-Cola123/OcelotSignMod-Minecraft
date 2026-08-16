@@ -1,6 +1,7 @@
 package bklmc.ocelotsign.integration.mishanguc;
 
 import com.google.common.collect.ImmutableList;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
@@ -38,6 +39,8 @@ public final class MishangucIntegrationImpl implements IMishangucIntegration {
     private final boolean hasPacketHandler;
     private final Object textCopyTool;
     private final boolean hasTextCopyTool;
+    private final ItemGroup roadsItemGroup;
+    private final boolean hasRoadsItemGroup;
 
     private MishangucIntegrationImpl() {
         boolean initAvailable = true;
@@ -52,6 +55,8 @@ public final class MishangucIntegrationImpl implements IMishangucIntegration {
         boolean hasPh = false;
         Object tct = null;
         boolean hasTct = false;
+        ItemGroup rig = null;
+        boolean hasRig = false;
 
         try {
             tc = Class.forName("pers.solid.mishang.uc.text.TextContext");
@@ -85,6 +90,15 @@ public final class MishangucIntegrationImpl implements IMishangucIntegration {
             textCopyToolField.setAccessible(true);
             tct = textCopyToolField.get(null);
             hasTct = tct != null;
+
+            Class<?> itemGroupsClass = Class.forName("pers.solid.mishang.uc.MishangucItemGroups");
+            java.lang.reflect.Field roadsField = itemGroupsClass.getField("ROADS");
+            roadsField.setAccessible(true);
+            Object roadsObj = roadsField.get(null);
+            if (roadsObj instanceof ItemGroup) {
+                rig = (ItemGroup) roadsObj;
+                hasRig = true;
+            }
         } catch (ClassNotFoundException e) {
             LOGGER.warn("未找到 Mishanguc；运行在独立模式");
             initAvailable = false;
@@ -111,6 +125,8 @@ public final class MishangucIntegrationImpl implements IMishangucIntegration {
         this.hasPacketHandler = hasPh;
         this.textCopyTool = tct;
         this.hasTextCopyTool = hasTct;
+        this.roadsItemGroup = rig;
+        this.hasRoadsItemGroup = hasRig;
     }
 
     /** 返回单例实例，首次访问时初始化 */
@@ -223,5 +239,10 @@ public final class MishangucIntegrationImpl implements IMishangucIntegration {
     @Override
     public Object getTextCopyTool() {
         return hasTextCopyTool ? textCopyTool : null;
+    }
+
+    @Override
+    public ItemGroup getRoadsItemGroup() {
+        return hasRoadsItemGroup ? roadsItemGroup : null;
     }
 }

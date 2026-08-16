@@ -1,5 +1,6 @@
 package bklmc.ocelotsign.integration.mishanguc;
 
+import net.minecraft.item.ItemGroup;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.Identifier;
@@ -50,4 +51,8 @@ public interface IMishangucIntegration {
     /** 从 mishanguc 获取文本复制工具物品 */
     @Nullable
     Object getTextCopyTool();
+
+    /** 获取 mishanguc 的「roads」物品栏 */
+    @Nullable
+    ItemGroup getRoadsItemGroup();
 }

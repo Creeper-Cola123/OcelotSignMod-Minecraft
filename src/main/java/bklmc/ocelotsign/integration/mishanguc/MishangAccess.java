@@ -1,6 +1,7 @@
 package bklmc.ocelotsign.integration.mishanguc;
 
 import com.google.common.collect.ImmutableList;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -75,5 +76,10 @@ public final class MishangAccess {
     /** 从 mishanguc 获取文本复制工具物品 */
     public static Object getTextCopyTool() {
         return IMPL.getTextCopyTool();
+    }
+
+    /** 获取 mishanguc 的「roads」物品栏 */
+    public static ItemGroup getRoadsItemGroup() {
+        return IMPL.getRoadsItemGroup();
     }
 }

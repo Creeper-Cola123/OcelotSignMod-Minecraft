@@ -1,14 +1,20 @@
 package bklmc.ocelotsign.item;
 
 import bklmc.ocelotsign.OcelotSignMod;
+import bklmc.ocelotsign.block.ArrowBlocks;
+import bklmc.ocelotsign.block.ArrowBlocksLarge;
+import bklmc.ocelotsign.block.ArrowBlocksStyle2;
+import bklmc.ocelotsign.block.ArrowBlocksStyle3;
 import bklmc.ocelotsign.block.RoadSignBlocks;
 import bklmc.ocelotsign.block.WallRoadSignBlocks;
 import bklmc.ocelotsign.block.PillarBlocks;
 import bklmc.ocelotsign.integration.mishanguc.MishangAccess;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -324,7 +330,7 @@ public class ModItemGroups {
                 stacks.add(new ItemStack(WARNING_GREEN_FILL));
                 stacks.add(new ItemStack(WARNING_2));
 
-                // 蓝色箭头
+                // 蓝色线形诱导标志
                 stacks.add(new ItemStack(BLUE_CHEVRON_ALIGNMENT_A_LEFT));
                 stacks.add(new ItemStack(BLUE_CHEVRON_ALIGNMENT_A_RIGHT));
                 stacks.add(new ItemStack(BLUE_CHEVRON_ALIGNMENT_B_LEFT));
@@ -333,7 +339,7 @@ public class ModItemGroups {
                 stacks.add(new ItemStack(BLUE_CHEVRON_ALIGNMENT_C_RIGHT));
                 stacks.add(new ItemStack(BLUE_CHEVRON_ALIGNMENT_C_UP));
 
-                // 绿色箭头
+                // 绿色线形诱导标志
                 stacks.add(new ItemStack(GREEN_CHEVRON_ALIGNMENT_A_LEFT));
                 stacks.add(new ItemStack(GREEN_CHEVRON_ALIGNMENT_A_RIGHT));
                 stacks.add(new ItemStack(GREEN_CHEVRON_ALIGNMENT_B_LEFT));
@@ -342,7 +348,7 @@ public class ModItemGroups {
                 stacks.add(new ItemStack(GREEN_CHEVRON_ALIGNMENT_C_RIGHT));
                 stacks.add(new ItemStack(GREEN_CHEVRON_ALIGNMENT_C_UP));
 
-                // 红色箭头
+                // 红色线形诱导标志
                 stacks.add(new ItemStack(RED_CHEVRON_ALIGNMENT_A_LEFT));
                 stacks.add(new ItemStack(RED_CHEVRON_ALIGNMENT_A_RIGHT));
                 stacks.add(new ItemStack(RED_CHEVRON_ALIGNMENT_B_LEFT));
@@ -351,7 +357,7 @@ public class ModItemGroups {
                 stacks.add(new ItemStack(RED_CHEVRON_ALIGNMENT_C_RIGHT));
                 stacks.add(new ItemStack(RED_CHEVRON_ALIGNMENT_C_UP));
 
-                // 黄色箭头
+                // 黄色线形诱导标志
                 stacks.add(new ItemStack(YELLOW_CHEVRON_ALIGNMENT_A_LEFT));
                 stacks.add(new ItemStack(YELLOW_CHEVRON_ALIGNMENT_A_RIGHT));
                 stacks.add(new ItemStack(YELLOW_CHEVRON_ALIGNMENT_B_LEFT));
@@ -531,6 +537,260 @@ public class ModItemGroups {
             .build();
 
     /**
+     * 道路标线分类（地面箭头类方块）
+     */
+    public static ItemGroup getRoadMarks() {
+        return ROAD_MARKS;
+    }
+
+    private static final ItemGroup ROAD_MARKS = FabricItemGroupBuilder.create(
+                    new Identifier(OcelotSignMod.MOD_ID, "road_marks"))
+            .icon(() -> new ItemStack(ArrowBlocks.ADVANCE_ARROW_STRAIGHT))
+            .appendItems(stacks -> {
+                // mishanguc 自带的箭头标记方块
+                addItem(stacks, "mishanguc", "arrow_left_mark");
+                addItem(stacks, "mishanguc", "arrow_left_merge_mark");
+                addItem(stacks, "mishanguc", "arrow_left_right_mark");
+                addItem(stacks, "mishanguc", "arrow_left_uturn_mark");
+                addItem(stacks, "mishanguc", "arrow_right_mark");
+                addItem(stacks, "mishanguc", "arrow_right_merge_mark");
+                addItem(stacks, "mishanguc", "arrow_right_uturn_mark");
+                addItem(stacks, "mishanguc", "arrow_straight_mark");
+                addItem(stacks, "mishanguc", "arrow_straight_left_mark");
+                addItem(stacks, "mishanguc", "arrow_straight_left_right_mark");
+                addItem(stacks, "mishanguc", "arrow_straight_right_mark");
+                addItem(stacks, "mishanguc", "arrow_straight_uturn_left_mark");
+                addItem(stacks, "mishanguc", "arrow_straight_uturn_right_mark");
+                addItem(stacks, "mishanguc", "arrow_uturn_left_mark");
+                addItem(stacks, "mishanguc", "arrow_uturn_right_mark");
+                addItem(stacks, "mishanguc", "deceleration_double_line_mark");
+                addItem(stacks, "mishanguc", "deceleration_triple_line_mark");
+                addItem(stacks, "mishanguc", "deceleration_crossroads_mark");
+                addItem(stacks, "mishanguc", "lane_disabled_mark");
+                addItem(stacks, "mishanguc", "lane_non_vehicle_mark");
+
+                // 普通箭头（ArrowBlocks）
+                // 预告箭头
+                stacks.add(new ItemStack(ArrowBlocks.ADVANCE_ARROW_LEFT));
+                stacks.add(new ItemStack(ArrowBlocks.ADVANCE_ARROW_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocks.ADVANCE_ARROW_LEFT_UTURN));
+                stacks.add(new ItemStack(ArrowBlocks.ADVANCE_ARROW_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocks.ADVANCE_ARROW_RIGHT_UTURN));
+                stacks.add(new ItemStack(ArrowBlocks.ADVANCE_ARROW_STRAIGHT));
+                stacks.add(new ItemStack(ArrowBlocks.ADVANCE_ARROW_STRAIGHT_LEFT));
+                stacks.add(new ItemStack(ArrowBlocks.ADVANCE_ARROW_STRAIGHT_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocks.ADVANCE_ARROW_STRAIGHT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocks.ADVANCE_ARROW_STRAIGHT_UTURN_LEFT));
+                stacks.add(new ItemStack(ArrowBlocks.ADVANCE_ARROW_STRAIGHT_UTURN_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocks.ADVANCE_ARROW_UTURN_LEFT));
+                stacks.add(new ItemStack(ArrowBlocks.ADVANCE_ARROW_UTURN_RIGHT));
+
+                // 橙色箭头
+                stacks.add(new ItemStack(ArrowBlocks.ORANGE_ARROW_LEFT));
+                stacks.add(new ItemStack(ArrowBlocks.ORANGE_ARROW_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocks.ORANGE_ARROW_LEFT_UTURN));
+                stacks.add(new ItemStack(ArrowBlocks.ORANGE_ARROW_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocks.ORANGE_ARROW_RIGHT_UTURN));
+                stacks.add(new ItemStack(ArrowBlocks.ORANGE_ARROW_STRAIGHT));
+                stacks.add(new ItemStack(ArrowBlocks.ORANGE_ARROW_STRAIGHT_LEFT));
+                stacks.add(new ItemStack(ArrowBlocks.ORANGE_ARROW_STRAIGHT_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocks.ORANGE_ARROW_STRAIGHT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocks.ORANGE_ARROW_STRAIGHT_UTURN_LEFT));
+                stacks.add(new ItemStack(ArrowBlocks.ORANGE_ARROW_STRAIGHT_UTURN_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocks.ORANGE_ARROW_UTURN_LEFT));
+                stacks.add(new ItemStack(ArrowBlocks.ORANGE_ARROW_UTURN_RIGHT));
+
+                // 禁止箭头
+                stacks.add(new ItemStack(ArrowBlocks.ARROW_PROHIBITED));
+                stacks.add(new ItemStack(ArrowBlocks.PROHIBITED_ARROW_LEFT));
+                stacks.add(new ItemStack(ArrowBlocks.PROHIBITED_ARROW_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocks.PROHIBITED_ARROW_LEFT_UTURN));
+                stacks.add(new ItemStack(ArrowBlocks.PROHIBITED_ARROW_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocks.PROHIBITED_ARROW_RIGHT_UTURN));
+                stacks.add(new ItemStack(ArrowBlocks.PROHIBITED_ARROW_STRAIGHT));
+                stacks.add(new ItemStack(ArrowBlocks.PROHIBITED_ARROW_STRAIGHT_LEFT));
+                stacks.add(new ItemStack(ArrowBlocks.PROHIBITED_ARROW_STRAIGHT_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocks.PROHIBITED_ARROW_STRAIGHT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocks.PROHIBITED_ARROW_STRAIGHT_UTURN_LEFT));
+                stacks.add(new ItemStack(ArrowBlocks.PROHIBITED_ARROW_STRAIGHT_UTURN_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocks.PROHIBITED_ARROW_UTURN_LEFT));
+                stacks.add(new ItemStack(ArrowBlocks.PROHIBITED_ARROW_UTURN_RIGHT));
+
+                // 其他标线
+                stacks.add(new ItemStack(ArrowBlocks.SPEED_BUMP));
+                stacks.add(new ItemStack(ArrowBlocks.YIELD));
+                stacks.add(new ItemStack(ArrowBlocks.DISTANCE_CONFIRM));
+
+                // 大型箭头（ArrowBlocksLarge）
+                // 预告箭头
+                stacks.add(new ItemStack(ArrowBlocksLarge.ADVANCE_ARROW_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ADVANCE_ARROW_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ADVANCE_ARROW_LEFT_UTURN));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ADVANCE_ARROW_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ADVANCE_ARROW_RIGHT_UTURN));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ADVANCE_ARROW_STRAIGHT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ADVANCE_ARROW_STRAIGHT_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ADVANCE_ARROW_STRAIGHT_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ADVANCE_ARROW_STRAIGHT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ADVANCE_ARROW_STRAIGHT_UTURN_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ADVANCE_ARROW_STRAIGHT_UTURN_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ADVANCE_ARROW_UTURN_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ADVANCE_ARROW_UTURN_RIGHT));
+
+                // 普通箭头
+                stacks.add(new ItemStack(ArrowBlocksLarge.ARROW_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ARROW_LEFT_MERGE));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ARROW_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ARROW_LEFT_UTURN));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ARROW_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ARROW_RIGHT_MERGE));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ARROW_RIGHT_UTURN));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ARROW_STRAIGHT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ARROW_STRAIGHT_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ARROW_STRAIGHT_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ARROW_STRAIGHT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ARROW_STRAIGHT_UTURN_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ARROW_STRAIGHT_UTURN_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ARROW_UTURN_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ARROW_UTURN_RIGHT));
+
+                // 禁止箭头
+                stacks.add(new ItemStack(ArrowBlocksLarge.ARROW_PROHIBITED));
+                stacks.add(new ItemStack(ArrowBlocksLarge.PROHIBITED_ARROW_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.PROHIBITED_ARROW_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.PROHIBITED_ARROW_LEFT_UTURN));
+                stacks.add(new ItemStack(ArrowBlocksLarge.PROHIBITED_ARROW_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.PROHIBITED_ARROW_RIGHT_UTURN));
+                stacks.add(new ItemStack(ArrowBlocksLarge.PROHIBITED_ARROW_STRAIGHT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.PROHIBITED_ARROW_STRAIGHT_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.PROHIBITED_ARROW_STRAIGHT_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.PROHIBITED_ARROW_STRAIGHT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.PROHIBITED_ARROW_STRAIGHT_UTURN_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.PROHIBITED_ARROW_STRAIGHT_UTURN_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.PROHIBITED_ARROW_UTURN_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.PROHIBITED_ARROW_UTURN_RIGHT));
+
+                // 橙色箭头
+                stacks.add(new ItemStack(ArrowBlocksLarge.ORANGE_ARROW_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ORANGE_ARROW_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ORANGE_ARROW_LEFT_UTURN));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ORANGE_ARROW_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ORANGE_ARROW_RIGHT_UTURN));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ORANGE_ARROW_STRAIGHT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ORANGE_ARROW_STRAIGHT_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ORANGE_ARROW_STRAIGHT_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ORANGE_ARROW_STRAIGHT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ORANGE_ARROW_STRAIGHT_UTURN_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ORANGE_ARROW_STRAIGHT_UTURN_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ORANGE_ARROW_UTURN_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksLarge.ORANGE_ARROW_UTURN_RIGHT));
+
+                // 其他标线
+                stacks.add(new ItemStack(ArrowBlocksLarge.DECELERATION_CROSSROADS));
+                stacks.add(new ItemStack(ArrowBlocksLarge.SPEED_BUMP));
+                stacks.add(new ItemStack(ArrowBlocksLarge.YIELD));
+                stacks.add(new ItemStack(ArrowBlocksLarge.DISTANCE_CONFIRM));
+
+                // 样式二箭头（ArrowBlocksStyle2）
+                // 预告箭头
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ADVANCE_ARROW_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ADVANCE_ARROW_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ADVANCE_ARROW_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ADVANCE_ARROW_STRAIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ADVANCE_ARROW_STRAIGHT_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ADVANCE_ARROW_STRAIGHT_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ADVANCE_ARROW_STRAIGHT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ADVANCE_ARROW_UTURN_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ADVANCE_ARROW_UTURN_RIGHT));
+
+                // 普通箭头
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ARROW_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ARROW_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ARROW_PROHIBITED));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ARROW_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ARROW_STRAIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ARROW_STRAIGHT_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ARROW_STRAIGHT_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ARROW_STRAIGHT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ARROW_UTURN_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ARROW_UTURN_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ARROW_DOUBLE_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ARROW_DOUBLE_RIGHT));
+
+                // 禁止箭头
+                stacks.add(new ItemStack(ArrowBlocksStyle2.PROHIBITED_ARROW_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.PROHIBITED_ARROW_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.PROHIBITED_ARROW_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.PROHIBITED_ARROW_STRAIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.PROHIBITED_ARROW_STRAIGHT_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.PROHIBITED_ARROW_STRAIGHT_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.PROHIBITED_ARROW_STRAIGHT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.PROHIBITED_ARROW_UTURN_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.PROHIBITED_ARROW_UTURN_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.PROHIBITED_ARROW_DOUBLE_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.PROHIBITED_ARROW_DOUBLE_RIGHT));
+
+                // 橙色箭头
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ORANGE_ARROW_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ORANGE_ARROW_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ORANGE_ARROW_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ORANGE_ARROW_STRAIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ORANGE_ARROW_STRAIGHT_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ORANGE_ARROW_STRAIGHT_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ORANGE_ARROW_STRAIGHT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ORANGE_ARROW_UTURN_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ORANGE_ARROW_UTURN_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ORANGE_ARROW_DOUBLE_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksStyle2.ORANGE_ARROW_DOUBLE_RIGHT));
+
+                // 样式三箭头（ArrowBlocksStyle3）
+                // 普通箭头
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ARROW_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ARROW_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ARROW_STRAIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ARROW_UTURN_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ARROW_UTURN_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ARROW_LEFT_MERGE));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ARROW_RIGHT_MERGE));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ARROW_LEFT_UTURN));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ARROW_RIGHT_UTURN));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ARROW_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ARROW_STRAIGHT_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ARROW_STRAIGHT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ARROW_STRAIGHT_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ARROW_PROHIBITED));
+
+                // 禁止箭头
+                stacks.add(new ItemStack(ArrowBlocksStyle3.PROHIBITED_ARROW_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.PROHIBITED_ARROW_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.PROHIBITED_ARROW_STRAIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.PROHIBITED_ARROW_UTURN_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.PROHIBITED_ARROW_UTURN_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.PROHIBITED_ARROW_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.PROHIBITED_ARROW_STRAIGHT_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.PROHIBITED_ARROW_STRAIGHT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.PROHIBITED_ARROW_STRAIGHT_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.PROHIBITED_ARROW_LEFT_UTURN));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.PROHIBITED_ARROW_RIGHT_UTURN));
+
+                // 橙色箭头
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ORANGE_ARROW_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ORANGE_ARROW_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ORANGE_ARROW_STRAIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ORANGE_ARROW_UTURN_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ORANGE_ARROW_UTURN_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ORANGE_ARROW_LEFT_MERGE));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ORANGE_ARROW_RIGHT_MERGE));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ORANGE_ARROW_LEFT_UTURN));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ORANGE_ARROW_RIGHT_UTURN));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ORANGE_ARROW_LEFT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ORANGE_ARROW_STRAIGHT_LEFT));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ORANGE_ARROW_STRAIGHT_RIGHT));
+                stacks.add(new ItemStack(ArrowBlocksStyle3.ORANGE_ARROW_STRAIGHT_LEFT_RIGHT));
+            })
+            .build();
+
+    /**
      * 向分类中添加 mishanguc 的文本复制工具（如果可用）。
      */
     private static void addMishangucTextCopyTool(List<ItemStack> stacks) {
@@ -545,6 +805,23 @@ public class ModItemGroups {
         }
     }
 
+    /**
+     * 如果指定 ID 的物品已注册，则向分类中添加其默认 {@link ItemStack}。
+     */
+    private static void addItem(List<ItemStack> stacks, String namespace, String id) {
+        Item item = Registry.ITEM.get(new Identifier(namespace, id));
+        if (item != null) {
+            stacks.add(new ItemStack(item));
+        } else {
+            LOGGER.debug("物品不可用，跳过: {}:{}", namespace, id);
+        }
+    }
+
     public static void registerItemGroups() {
+        // 只把 BlockItem 注册到 Registry.ITEM；具体分类由 ROAD_MARKS 通过 appendItems 显式列举
+        ArrowBlocks.registerBlockItems();
+        ArrowBlocksLarge.registerBlockItems();
+        ArrowBlocksStyle2.registerBlockItems();
+        ArrowBlocksStyle3.registerBlockItems();
     }
 }
