@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "mishanguc:concrete_standing_sign",
+  "key": {
+    "#": "minecraft:light_gray_concrete",
+    "-": "mishanguc:invisible_wall_sign",
+    "|": "minecraft:stick"
+  },
+  "pattern": [
+    "---",
+    "###",
+    " | "
+  ],
+  "result": {
+    "count": 4,
+    "id": "mishanguc:light_gray_concrete_standing_sign"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "minecraft:glowstone",
+    "*": "minecraft:cyan_dye",
+    "C": "minecraft:cyan_concrete"
+  },
+  "pattern": [
+    "*#*",
+    "#C#",
+    "*#*"
+  ],
+  "result": {
+    "count": 8,
+    "id": "mishanguc:cyan_light"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "#": "mishanguc:road_with_white_auto_ra_line"
+  },
+  "pattern": [
+    "###"
+  ],
+  "result": {
+    "count": 6,
+    "id": "mishanguc:road_slab_with_white_auto_ra_line"
+  }
+}

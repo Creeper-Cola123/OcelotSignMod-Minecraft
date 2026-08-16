@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "mishanguc:road_with_s_ba_line",
+  "key": {
+    "*": "#c:dyes/yellow",
+    "X": "mishanguc:road_with_white_line"
+  },
+  "pattern": [
+    " *X",
+    "*X ",
+    "X  "
+  ],
+  "result": {
+    "count": 3,
+    "id": "mishanguc:road_with_w_s_y_ba_line"
+  }
+}

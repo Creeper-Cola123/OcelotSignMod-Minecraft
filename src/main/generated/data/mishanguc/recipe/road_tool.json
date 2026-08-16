@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "X": "minecraft:stick",
+    "a": "#c:dyes/white",
+    "b": "#c:dyes/yellow"
+  },
+  "pattern": [
+    "aba",
+    "bXb",
+    "aba"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mishanguc:road_tool"
+  }
+}

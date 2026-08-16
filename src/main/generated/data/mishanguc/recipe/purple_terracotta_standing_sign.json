@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "mishanguc:terracotta_standing_sign",
+  "key": {
+    "#": "minecraft:purple_terracotta",
+    "-": "mishanguc:invisible_wall_sign",
+    "|": "minecraft:stick"
+  },
+  "pattern": [
+    "---",
+    "###",
+    " | "
+  ],
+  "result": {
+    "count": 4,
+    "id": "mishanguc:purple_terracotta_standing_sign"
+  }
+}

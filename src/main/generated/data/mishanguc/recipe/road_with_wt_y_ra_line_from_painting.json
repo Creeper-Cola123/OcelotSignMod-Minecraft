@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "mishanguc:road_with_wt_ra_line",
+  "key": {
+    "X": "mishanguc:road_block",
+    "a": "#c:dyes/white",
+    "b": "#c:dyes/yellow"
+  },
+  "pattern": [
+    "aaa",
+    "bXX",
+    " X "
+  ],
+  "result": {
+    "count": 3,
+    "id": "mishanguc:road_with_wt_y_ra_line"
+  }
+}

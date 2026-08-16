@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "minecraft:stone_bricks",
+  "result": {
+    "count": 20,
+    "id": "mishanguc:stone_brick_hung_sign_bar"
+  }
+}

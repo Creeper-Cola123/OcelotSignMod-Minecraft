@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "minecraft:obsidian",
+    "-": "mishanguc:invisible_wall_sign"
+  },
+  "pattern": [
+    "-#-",
+    "-#-",
+    "-#-"
+  ],
+  "result": {
+    "count": 6,
+    "id": "mishanguc:obsidian_hung_sign"
+  }
+}

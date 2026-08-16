@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "minecraft:white_dye",
+  "result": {
+    "id": "ocelotsignmod:roadmark_style_2/arrow_straight_right",
+    "count": 1
+  }
+}

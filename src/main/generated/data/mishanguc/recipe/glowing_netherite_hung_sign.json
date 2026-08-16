@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "minecraft:netherite_block",
+    "-": "mishanguc:invisible_glowing_wall_sign"
+  },
+  "pattern": [
+    "-#-",
+    "-#-",
+    "-#-"
+  ],
+  "result": {
+    "count": 6,
+    "id": "mishanguc:glowing_netherite_hung_sign"
+  }
+}

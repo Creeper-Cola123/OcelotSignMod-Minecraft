@@ -1,0 +1,42 @@
+{
+	"schemaVersion": 1,
+	"id": "ocelotsignmod",
+	"version": "${version}",
+	"name": "OcelotSignMod",
+	"description": "As a major expansion of the MishangUC ecosystem, this mod focuses on road traffic guidance. It features standard road signs from the Chinese Mainland, public information symbols, custom sign blocks, and matching support pillars. It also provides a wide variety of road markings, including lane pre-signal arrows and regulatory arrows, bringing more realistic traffic details to your city building.",
+	"authors": [
+		"Project Lead / Code / Model / Art: Ocelot Creeper Cola; Traffic Sign Advisor: Hua laohua; Game Tester: XFunny"
+	],
+	"contact": {
+		"homepage": "https://creeper-cola123.github.io/OcelotSignMod_Docs/",
+		"sources": "https://github.com/Creeper-Cola123/ocelotsignmod-minecraft",
+		"issues": "https://github.com/Creeper-Cola123/ocelotsignmod-minecraft/issues",
+		"curseforge": "https://www.curseforge.com/minecraft/mc-mods/ocelotsignmod",
+		"modrinth": "https://modrinth.com/mod/ocelotsignmod"
+	},
+	"license": "LGPL-3.0",
+	"icon": "assets/ocelotsignmod/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"bklmc.ocelotsign.OcelotSignMod"
+		],
+		"client": [
+			"bklmc.ocelotsign.OcelotSignModClient"
+		]
+	},
+	"mixins": [
+		"ocelotsignmod.mixins.json",
+		{
+			"config": "ocelotsignmod.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": "*",
+		"minecraft": "1.21.4",
+		"java": ">=21",
+		"fabric-api": "*",
+		"mishanguc": ">=1.6.0"
+	}
+}

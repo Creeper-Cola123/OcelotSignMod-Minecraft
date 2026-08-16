@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "minecraft:glowstone",
+    "*": "minecraft:pink_dye",
+    "C": "minecraft:pink_concrete"
+  },
+  "pattern": [
+    "*#*",
+    "#C#",
+    "*#*"
+  ],
+  "result": {
+    "count": 8,
+    "id": "mishanguc:pink_light"
+  }
+}
