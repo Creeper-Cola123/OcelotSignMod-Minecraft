@@ -53,7 +53,7 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
 	// Local MishangUC integration library supplied in the project's libs directory.
-	modImplementation files('libs/mishanguc-1.6.1-1.21.1.jar')
+	modImplementation files('libs/mishanguc-1.6.5-alpha.1-1.21.1.jar')
 }
 
 processResources {

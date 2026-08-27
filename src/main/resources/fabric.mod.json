@@ -40,6 +40,6 @@
 		"minecraft": "1.21.1",
 		"java": ">=17",
 		"fabric-api": "*",
-		"mishanguc": ">=1.6.0"
+		"mishanguc": ">1.6.4"
 	}
 }

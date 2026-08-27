@@ -77,7 +77,7 @@ public final class SignEditorInsertion {
             int index
     ) {
         TextFieldListWidget.Entry newEntry = textFieldListWidget.children().get(index);
-        textFieldListWidget.setFocused(newEntry, false, false);
+        textFieldListWidget.setFocused(newEntry);
         textFieldListWidget.setScrollAmount(textFieldListWidget.getScrollAmount());
         if (!textFieldListWidget.children().isEmpty()) {
             screen.setFocused(textFieldListWidget);
