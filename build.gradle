@@ -35,7 +35,7 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
 	// mishanguc 依赖：使用本地预置的 1.21.8 版本 jar。
-	modImplementation files("libs/mishanguc-1.6.1-1.21.8.jar")
+	modImplementation files("libs/mishanguc-1.6.5+mc1.21.8.jar")
 }
 
 processResources {
