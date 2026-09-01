@@ -34,8 +34,8 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-	// mishanguc 硬依赖（libs 中预置的 1.6.4+mc1.21.11 jar）
-	modImplementation files("libs/mishanguc-1.6.4+mc1.21.11.jar")
+	// mishanguc 硬依赖（libs 中预置的 1.6.5+mc1.21.11 jar）
+	modImplementation files("libs/mishanguc-1.6.5+mc1.21.11.jar")
 }
 
 processResources {
