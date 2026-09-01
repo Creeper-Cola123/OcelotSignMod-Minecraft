@@ -33,7 +33,7 @@ public final class SignEditorInsertion {
         TextureSpecialDrawable textureDrawable = new TextureSpecialDrawable(identifier, textContext);
         textContext.extra = textureDrawable;
 
-        // In mishanguc 1.21.1, addTextField is on TextFieldListWidget, not on the screen.
+        // 在 mishanguc 1.21.1 中，addTextField 属于 TextFieldListWidget
         TextFieldListWidget.Entry newEntry = textFieldListWidget.addTextField(index, textContext, false);
         SignTextCommandApplier.apply(newEntry, screen);
         syncSignPreview(screen);
@@ -57,10 +57,10 @@ public final class SignEditorInsertion {
             textContext = new TextContext();
         }
 
-        // In mishanguc 1.21.1, addTextField is on TextFieldListWidget, not on the screen.
+        // 在 mishanguc 1.21.1 中，addTextField 属于 TextFieldListWidget
         TextFieldListWidget.Entry newEntry = textFieldListWidget.addTextField(index, textContext, false);
         newEntry.textFieldWidget.setText(text);
-        // In 1.21.1, setCursorToEnd takes no parameters
+        // 在 1.21.1 中，setCursorToEnd 不接收任何参数。
         newEntry.textFieldWidget.setCursorToEnd(false);
         SignTextCommandApplier.apply(newEntry, screen);
         syncSignPreview(screen);
@@ -77,7 +77,7 @@ public final class SignEditorInsertion {
             int index
     ) {
         TextFieldListWidget.Entry newEntry = textFieldListWidget.children().get(index);
-        textFieldListWidget.setFocused(newEntry, false, false);
+        textFieldListWidget.setFocused(newEntry);
         textFieldListWidget.setScrollY(textFieldListWidget.getScrollY());
         if (!textFieldListWidget.children().isEmpty()) {
             screen.setFocused(textFieldListWidget);

@@ -25,7 +25,7 @@ public class VersionBlocks {
         return RegistryKey.of(Registries.ITEM.getKey(), Identifier.of(OcelotSignMod.MOD_ID, id));
     }
 
-    public static final Block VERSION_BLOCK_1_0_0 = registerWithItem("version_block_1_0_0_beta_1", new Block(AbstractBlock.Settings.create().registryKey(getBlockKey("version_block_1_0_0_beta_1"))));
+    public static final Block VERSION_BLOCK_1_0_1 = registerWithItem("version_block_1_0_1_beta_1", new Block(AbstractBlock.Settings.create().registryKey(getBlockKey("version_block_1_0_1_beta_1"))));
 
     /**
      * 注册并创建方块对应的物品。
