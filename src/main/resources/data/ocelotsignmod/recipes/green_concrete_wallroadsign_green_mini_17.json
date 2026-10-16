@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "minecraft:green_concrete"
+  },
+  "result": "ocelotsignmod:wallroadsign/green/mini_17",
+  "count": 4
+}

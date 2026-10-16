@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "minecraft:yellow_concrete"
+  },
+  "result": "ocelotsignmod:roadsign/yellow/horizontal_middle",
+  "count": 4
+}

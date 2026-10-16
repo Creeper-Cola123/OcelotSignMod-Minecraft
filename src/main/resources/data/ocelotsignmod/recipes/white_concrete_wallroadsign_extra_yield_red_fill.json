@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "minecraft:white_concrete"
+  },
+  "result": "ocelotsignmod:wallroadsign/extra/yield_red_fill",
+  "count": 4
+}

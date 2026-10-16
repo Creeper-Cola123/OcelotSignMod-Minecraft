@@ -1,0 +1,84 @@
+{
+  "categories": [
+    {
+      "name": {
+        "zh_cn": "道路交通标志",
+        "en_us": "Road Traffic Signs"
+      },
+      "level1_categories": [
+        {
+          "name": {
+            "zh_cn": "警告标志",
+            "en_us": "Warning Signs"
+          },
+          "description": {
+            "zh_cn": "各种道路警告标志",
+            "en_us": "Various road warning signs"
+          },
+          "directory": "textures/sign/road/croppedwarningsign",
+          "sort_mode": "default",
+          "enable_tabs": true,
+          "background_colors": {}
+        }
+      ]
+    },
+    {
+      "name": {
+        "zh_cn": "公共场所标识",
+        "en_us": "Public Signs"
+      },
+      "level1_categories": [
+        {
+          "name": {
+            "zh_cn": "悬挂标识",
+            "en_us": "Hanging Signs"
+          },
+          "description": {
+            "zh_cn": "各种公共场所悬挂标识",
+            "en_us": "Various public hanging signs"
+          },
+          "directory": "textures/sign/hangingsign",
+          "sort_mode": "default",
+          "enable_tabs": true,
+          "background_colors": {}
+        }
+      ]
+    },
+    {
+      "name": {
+        "zh_cn": "内置字体",
+        "en_us": "Built-in Fonts"
+      },
+      "level1_categories": [
+        {
+          "name": {
+            "zh_cn": "交通标志专用字体",
+            "en_us": "Traffic Sign Fonts"
+          },
+          "description": {
+            "zh_cn": "交通标志专用字体，包括A型、B型、C型",
+            "en_us": "Traffic sign dedicated fonts, including Type A, B, C"
+          },
+          "directory": "fonts/traffic",
+          "sort_mode": "default",
+          "enable_tabs": false,
+          "background_colors": {}
+        },
+        {
+          "name": {
+            "zh_cn": "思源字体",
+            "en_us": "Siyuan Fonts"
+          },
+          "description": {
+            "zh_cn": "包括思源黑体和思源宋体",
+            "en_us": "Including Siyuan Heiti and Siyuan Songti"
+          },
+          "directory": "fonts/siyuan",
+          "sort_mode": "default",
+          "enable_tabs": false,
+          "background_colors": {}
+        }
+      ]
+    }
+  ]
+}

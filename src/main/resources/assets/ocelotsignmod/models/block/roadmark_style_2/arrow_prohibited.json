@@ -1,0 +1,1 @@
+{ "parent": "block/block", "textures": { "particle": "ocelotsignmod:block/roadmark_style_2/arrow_prohibited", "texture": "ocelotsignmod:block/roadmark_style_2/arrow_prohibited" }, "elements": [{ "from": [-16, 0, -16], "to": [32, 0.5, 32], "faces": { "up": { "texture": "#texture", "uv": [0, 0, 16, 16] } } }] }

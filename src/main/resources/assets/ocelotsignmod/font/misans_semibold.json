@@ -1,0 +1,11 @@
+{
+    "providers": [
+        {
+            "type": "ttf",
+            "file": "ocelotsignmod:misans_semibold.ttf",
+            "size": 13.0,
+            "oversample": 16.0,
+            "shift": [0, -0.5]
+        }
+    ]
+}

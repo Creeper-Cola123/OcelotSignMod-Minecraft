@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "minecraft:white_concrete"
+  },
+  "result": "ocelotsignmod:wallroadsign/extra/no_long_term_parking",
+  "count": 4
+}

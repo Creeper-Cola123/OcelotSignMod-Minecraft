@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " G ",
+    "GDG",
+    "RGR"
+  ],
+  "key": {
+    "G": "minecraft:glass",
+    "D": "minecraft:diamond",
+    "R": "minecraft:redstone"
+  },
+  "result": {
+    "item": "ocelotsignmod:custom_model_block",
+    "count": 1
+  }
+}

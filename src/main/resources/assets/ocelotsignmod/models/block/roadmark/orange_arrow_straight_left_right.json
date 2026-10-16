@@ -1,0 +1,26 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "ocelotsignmod:block/roadmark/orange_arrow_straight_left_right",
+    "texture": "ocelotsignmod:block/roadmark/orange_arrow_straight_left_right"
+  },
+  "elements": [
+    {
+      "from": [
+        -8,
+        0,
+        -8
+      ],
+      "to": [
+        24,
+        0.5,
+        24
+      ],
+      "faces": {
+        "up": {
+          "texture": "#texture",
+          "uv": [0, 0, 16, 16]}
+      }
+    }
+  ]
+}
