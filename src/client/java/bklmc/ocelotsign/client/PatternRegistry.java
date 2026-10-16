@@ -397,6 +397,8 @@ public final class PatternRegistry {
 
         try {
             List<Resource> resources = collectAllResources(manager, jsonId);
+            Identifier yunbeiId = Identifier.parse("ocelotsignyunbei:" + jsonId.getPath());
+            resources.addAll(collectAllResources(manager, yunbeiId));
             for (Resource resource : resources) {
                 try (InputStreamReader reader = new InputStreamReader(resource.open(), StandardCharsets.UTF_8)) {
                     JsonElement root = JsonParser.parseReader(reader);
@@ -433,6 +435,8 @@ public final class PatternRegistry {
 
         try {
             List<Resource> resources = collectAllResources(manager, jsonId);
+            Identifier yunbeiId = Identifier.parse("ocelotsignyunbei:" + jsonId.getPath());
+            resources.addAll(collectAllResources(manager, yunbeiId));
             for (Resource resource : resources) {
                 try (InputStreamReader reader = new InputStreamReader(resource.open(), StandardCharsets.UTF_8)) {
                     JsonElement root = JsonParser.parseReader(reader);

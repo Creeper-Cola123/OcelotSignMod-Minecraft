@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
  * <p>用于强制客户端更新至特定版本，缺少对应方块时无法进入服务器。
  */
 public class VersionBlocks {
-    public static final Block VERSION_BLOCK_1_0_1 = registerWithItem("version_block_1_0_1", new Block(BlockBehaviour.Properties.of()
+    public static final Block VERSION_BLOCK_1_0_2 = registerWithItem("version_block_1_0_1", new Block(BlockBehaviour.Properties.of()
             .setId(OcelotSignMod.blockKey("version_block_1_0_1"))));
 
     /**

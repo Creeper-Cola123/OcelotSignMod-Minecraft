@@ -85,38 +85,78 @@ public class PillarBlock extends Block {
     public static final VoxelShape UPRIGHT_C_HALF_W = Block.box(0, 0, 7, 2, 8, 9);
 
     public static final VoxelShape UPRIGHT_C_INCLINED_LEFT_N = Shapes.or(
-            Block.box(7, 8, 0, 9, 16, 2),
-            Block.box(5.5, 6.4, 0, 7.5, 14.4, 2),
-            Block.box(2.5, 3.4, 0, 4.5, 7.65, 2));
+            Block.box(7,  7,  0,  9,  16, 2),
+            Block.box(6,  6,  0,  8,  8,  2),
+            Block.box(5,  5,  0,  7,  7,  2),
+            Block.box(4,  4,  0,  6,  6,  2),
+            Block.box(3,  3,  0,  5,  5,  2),
+            Block.box(2,  2,  0,  4,  4,  2),
+            Block.box(1,  1,  0,  3,  3,  2),
+            Block.box(0,  0,  0,  2,  2,  2));
     public static final VoxelShape UPRIGHT_C_INCLINED_LEFT_S = Shapes.or(
-            Block.box(7, 8, 14, 9, 16, 16),
-            Block.box(8.5, 6.4, 14, 10.5, 14.4, 16),
-            Block.box(11.5, 3.4, 14, 13.5, 7.65, 16));
+            Block.box(7,  7,  14, 9,  16, 16),
+            Block.box(8,  6,  14, 10, 8,  16),
+            Block.box(9,  5,  14, 11, 7,  16),
+            Block.box(10, 4,  14, 12, 6,  16),
+            Block.box(11, 3,  14, 13, 5,  16),
+            Block.box(12, 2,  14, 14, 4,  16),
+            Block.box(13, 1,  14, 15, 3,  16),
+            Block.box(14, 0,  14, 16, 2,  16));
     public static final VoxelShape UPRIGHT_C_INCLINED_LEFT_E = Shapes.or(
-            Block.box(14, 8, 7, 16, 16, 9),
-            Block.box(14, 6.4, 8.5, 16, 14.4, 10.5),
-            Block.box(14, 3.4, 11.5, 16, 7.65, 13.5));
+            Block.box(14, 7,  7,  16, 16, 9),
+            Block.box(14, 6,  6,  16, 8,  8),
+            Block.box(14, 5,  5,  16, 7,  7),
+            Block.box(14, 4,  4,  16, 6,  6),
+            Block.box(14, 3,  3,  16, 5,  5),
+            Block.box(14, 2,  2,  16, 4,  4),
+            Block.box(14, 1,  1,  16, 3,  3),
+            Block.box(14, 0,  0,  16, 2,  2));
     public static final VoxelShape UPRIGHT_C_INCLINED_LEFT_W = Shapes.or(
-            Block.box(0, 8, 7, 2, 16, 9),
-            Block.box(0, 6.4, 5.5, 2, 14.4, 7.5),
-            Block.box(0, 3.4, 2.5, 2, 7.65, 4.5));
+            Block.box(0, 7,  7,  2,  16, 9),
+            Block.box(0, 6,  8,  2,  8,  10),
+            Block.box(0, 5,  9,  2,  7,  11),
+            Block.box(0, 4,  10, 2,  6,  12),
+            Block.box(0, 3,  11, 2,  5,  13),
+            Block.box(0, 2,  12, 2,  4,  14),
+            Block.box(0, 1,  13, 2,  3,  15),
+            Block.box(0, 0,  14, 2,  2,  16));
 
     public static final VoxelShape UPRIGHT_C_INCLINED_RIGHT_N = Shapes.or(
-            Block.box(7, 8, 0, 9, 16, 2),
-            Block.box(8.5, 6.4, 0, 10.5, 14.4, 2),
-            Block.box(11.5, 3.4, 0, 13.5, 7.65, 2));
+            Block.box(7,  7,  0,  9,  16, 2),
+            Block.box(8,  6,  0,  10, 8,  2),
+            Block.box(9,  5,  0,  11, 7,  2),
+            Block.box(10, 4,  0,  12, 6,  2),
+            Block.box(11, 3,  0,  13, 5,  2),
+            Block.box(12, 2,  0,  14, 4,  2),
+            Block.box(13, 1,  0,  15, 3,  2),
+            Block.box(14, 0,  0,  16, 2,  2));
     public static final VoxelShape UPRIGHT_C_INCLINED_RIGHT_S = Shapes.or(
-            Block.box(7, 8, 14, 9, 16, 16),
-            Block.box(5.5, 6.4, 14, 7.5, 14.4, 16),
-            Block.box(2.5, 3.4, 14, 4.5, 7.65, 16));
+            Block.box(7,  7,  14, 9,  16, 16),
+            Block.box(8,  6,  14, 10, 8,  16),
+            Block.box(9,  5,  14, 11, 7,  16),
+            Block.box(10, 4,  14, 12, 6,  16),
+            Block.box(11, 3,  14, 13, 5,  16),
+            Block.box(12, 2,  14, 14, 4,  16),
+            Block.box(13, 1,  14, 15, 3,  16),
+            Block.box(14, 0,  14, 16, 2,  16));
     public static final VoxelShape UPRIGHT_C_INCLINED_RIGHT_E = Shapes.or(
-            Block.box(14, 8, 7, 16, 16, 9),
-            Block.box(14, 6.4, 5.5, 16, 14.4, 7.5),
-            Block.box(14, 3.4, 2.5, 16, 7.65, 4.5));
+            Block.box(14, 7,  7,  16, 16, 9),
+            Block.box(14, 6,  8,  16, 8,  10),
+            Block.box(14, 5,  9,  16, 7,  11),
+            Block.box(14, 4,  10, 16, 6,  12),
+            Block.box(14, 3,  11, 16, 5,  13),
+            Block.box(14, 2,  12, 16, 4,  14),
+            Block.box(14, 1,  13, 16, 3,  15),
+            Block.box(14, 0,  14, 16, 2,  16));
     public static final VoxelShape UPRIGHT_C_INCLINED_RIGHT_W = Shapes.or(
-            Block.box(0, 8, 7, 2, 16, 9),
-            Block.box(0, 6.4, 8.5, 2, 14.4, 10.5),
-            Block.box(0, 3.4, 11.5, 2, 7.65, 13.5));
+            Block.box(0, 7,  7,  2,  16, 9),
+            Block.box(0, 6,  6,  2,  8,  8),
+            Block.box(0, 5,  5,  2,  7,  7),
+            Block.box(0, 4,  4,  2,  6,  6),
+            Block.box(0, 3,  3,  2,  5,  5),
+            Block.box(0, 2,  2,  2,  4,  4),
+            Block.box(0, 1,  1,  2,  3,  3),
+            Block.box(0, 0,  0,  2,  2,  2));
 
     public static final VoxelShape HORIZONTAL_A_N = Shapes.or(
             Block.box(8, 7, 1, 16, 9, 3),
@@ -379,16 +419,16 @@ public class PillarBlock extends Block {
             Block.box(11, 0, 5, 15, 16, 6),
             Block.box(11, 0, 10, 15, 16, 11),
             Block.box(10, 0, 6, 16, 16, 10),
-            Block.box(12, 7, 0, 13, 9, 5),
-            Block.box(13, 6, 0, 15, 10, 5),
-            Block.box(15, 7, 0, 16, 9, 6));
+            Block.box(12, 7, 11, 13, 9, 16),
+            Block.box(13, 6, 11, 15, 10, 16),
+            Block.box(15, 7, 10, 16, 9, 16));
     public static final VoxelShape FOUR_SIDES_D_LEFT_W = Shapes.or(
             Block.box(1, 0, 10, 5, 16, 11),
             Block.box(1, 0, 5, 5, 16, 6),
             Block.box(0, 0, 6, 6, 16, 10),
-            Block.box(3, 7, 11, 4, 9, 16),
-            Block.box(1, 6, 11, 3, 10, 16),
-            Block.box(0, 7, 10, 1, 9, 16));
+            Block.box(3, 7, 0, 4, 9, 5),
+            Block.box(1, 6, 0, 3, 10, 5),
+            Block.box(0, 7, 0, 1, 9, 6));
 
     public static final VoxelShape FOUR_SIDES_D_RIGHT_N = Shapes.or(
             Block.box(5, 0, 1, 6, 16, 5),
@@ -408,16 +448,16 @@ public class PillarBlock extends Block {
             Block.box(11, 0, 5, 15, 16, 6),
             Block.box(11, 0, 10, 15, 16, 11),
             Block.box(10, 0, 6, 16, 16, 10),
-            Block.box(12, 7, 11, 13, 9, 16),
-            Block.box(13, 6, 11, 15, 10, 16),
-            Block.box(15, 7, 10, 16, 9, 16));
+            Block.box(12, 7, 0, 13, 9, 5),
+            Block.box(13, 6, 0, 15, 10, 5),
+            Block.box(15, 7, 0, 16, 9, 6));
     public static final VoxelShape FOUR_SIDES_D_RIGHT_W = Shapes.or(
             Block.box(1, 0, 10, 5, 16, 11),
             Block.box(1, 0, 5, 5, 16, 6),
             Block.box(0, 0, 6, 6, 16, 10),
-            Block.box(3, 7, 0, 4, 9, 5),
-            Block.box(1, 6, 0, 3, 10, 5),
-            Block.box(0, 7, 0, 1, 9, 6));
+            Block.box(3, 7, 11, 4, 9, 16),
+            Block.box(1, 6, 11, 3, 10, 16),
+            Block.box(0, 7, 10, 1, 9, 16));
 
     /**
      * @param type     立柱类型
