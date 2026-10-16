@@ -431,7 +431,7 @@ public final class LayoutHelper {
         int columnWidth = (mainWidth - 60) / 2;
         int leftCardHeight = getCardHeightFromUrls(textRenderer, columnWidth,
                 "https://github.com/SolidBlock-cn/mishanguc",
-                "https://www.mcmod.cn/class/5743.html");
+                "https://github.com/SolidBlock-cn/mishanguc/wiki");
         int rightCardHeight = getCardHeightFromUrls(textRenderer, columnWidth,
                 "https://github.com/Creeper-Cola123/ocelotsignmod-minecraft",
                 "https://creeper-cola123.github.io/OcelotSignMod_Docs/");
