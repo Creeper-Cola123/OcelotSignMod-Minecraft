@@ -12,7 +12,7 @@ import net.minecraft.util.Util;
 import java.util.List;
 
 /**
- * 文档列表（主页）渲染逻辑 (1.19.2 兼容版)
+ * 文档列表（主页）渲染逻辑
  *
  * @see PatternAndFontOverlay
  */
@@ -152,13 +152,13 @@ public final class HomepageRenderer {
         int fixedCardHeight = calculateCardHeight(textRenderer, columnWidth, padding,
                 Text.translatable("ocelotsignmod.gui.homepage.mishang.title"),
                 "https://github.com/SolidBlock-cn/mishanguc",
-                "https://www.mcmod.cn/class/5743.html");
+                "https://github.com/SolidBlock-cn/mishanguc/wiki");
 
         int leftCardEndY = renderCard(matrices, textRenderer, mouseX, mouseY,
                 leftColumnX, cardStartY, columnWidth,
                 Text.translatable("ocelotsignmod.gui.homepage.mishang.title"),
                 "https://github.com/SolidBlock-cn/mishanguc",
-                "https://www.mcmod.cn/class/5743.html",
+                "https://github.com/SolidBlock-cn/mishanguc/wiki",
                 scrollWindowStartY, scrollWindowEndY, fixedCardHeight);
 
         int rightCardEndY = renderCard(matrices, textRenderer, mouseX, mouseY,
@@ -374,7 +374,7 @@ public final class HomepageRenderer {
     }
 
     /**
-     * 绘制简单边框（1.19.2 兼容）。
+     * 绘制简单边框。
      */
     private static void drawBorder(MatrixStack matrices, int x, int y, int width, int height, int color) {
         DrawableHelper.fill(matrices, x, y, x + width, y + 1, color);

@@ -10,7 +10,7 @@ import net.minecraft.text.Text;
 import java.util.List;
 
 /**
- * 布局与渲染辅助工具类 (1.19.2 兼容版)
+ * 布局与渲染辅助工具类
  *
  * @see PatternAndFontOverlay
  */
@@ -314,7 +314,7 @@ public final class LayoutHelper {
         int columnWidth = (mainWidth - 60) / 2;
         int leftCardHeight = getCardHeightFromUrls(textRenderer, columnWidth,
                 "https://github.com/SolidBlock-cn/mishanguc",
-                "https://www.mcmod.cn/class/5743.html");
+                "https://github.com/SolidBlock-cn/mishanguc/wiki");
         int rightCardHeight = getCardHeightFromUrls(textRenderer, columnWidth,
                 "https://github.com/Creeper-Cola123/ocelotsignmod-minecraft",
                 "https://creeper-cola123.github.io/OcelotSignMod_Docs/");
@@ -518,7 +518,7 @@ public final class LayoutHelper {
     }
 
     /**
-     * 绘制简单边框（1.19.2 兼容）。
+     * 绘制简单边框
      */
     private static void drawBorder(MatrixStack matrices, int x, int y, int width, int height, int color) {
         DrawableHelper.fill(matrices, x, y, x + width, y + 1, color);
