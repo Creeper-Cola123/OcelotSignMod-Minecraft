@@ -33,7 +33,6 @@ public final class SignEditorInsertion {
         TextureSpecialDrawable textureDrawable = new TextureSpecialDrawable(identifier, textContext);
         textContext.extra = textureDrawable;
 
-        // In mishanguc 1.21.1, addTextField is on TextFieldListWidget, not on the screen.
         TextFieldListWidget.Entry newEntry = textFieldListWidget.addTextField(index, textContext, false);
         SignTextCommandApplier.apply(newEntry, screen);
         syncSignPreview(screen);

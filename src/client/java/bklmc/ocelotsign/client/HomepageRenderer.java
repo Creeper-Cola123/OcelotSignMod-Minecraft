@@ -159,13 +159,13 @@ public final class HomepageRenderer {
         int fixedCardHeight = calculateCardHeight(textRenderer, columnWidth, padding,
                 Text.translatable("ocelotsignmod.gui.homepage.mishang.title"),
                 "https://github.com/SolidBlock-cn/mishanguc",
-                "https://www.mcmod.cn/class/5743.html");
+                "https://github.com/SolidBlock-cn/mishanguc/wiki");
 
         int leftCardEndY = renderCard(context, textRenderer, mouseX, mouseY,
                 leftColumnX, cardStartY, columnWidth,
                 Text.translatable("ocelotsignmod.gui.homepage.mishang.title"),
                 "https://github.com/SolidBlock-cn/mishanguc",
-                "https://www.mcmod.cn/class/5743.html",
+                "https://github.com/SolidBlock-cn/mishanguc/wiki",
                 scrollWindowStartY, scrollWindowEndY, fixedCardHeight);
 
         int rightCardEndY = renderCard(context, textRenderer, mouseX, mouseY,
