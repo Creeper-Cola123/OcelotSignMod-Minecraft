@@ -5,7 +5,7 @@
 [![CurseForge](https://img.shields.io/badge/CurseForge-Ocelot_Sign_Mod-f16436?logo=curseforge)](https://www.curseforge.com/minecraft/mc-mods/ocelotsignmod)
 [![MC百科](https://img.shields.io/badge/MC百科-28882-blue)](https://www.mcmod.cn/class/28882.html)
 [![哔哩哔哩宣传片](https://img.shields.io/badge/Bilibili-宣传片-ff69b4?logo=bilibili)](https://www.bilibili.com/video/BV1kFgq6PE4D/)
-[![QQ群](https://img.shields.io/badge/QQ群-871229937-12b7f5?logo=tencentqq)](https://qun.qq.com/universal-share/share?ac=1&authKey=4Nn/HUptHFXeX0LvwZ7aVyW/psDyh8tgyhMhHEGnCtr0EuQzFpoIvXeOd%2Ba6cW%2BN&busi_data=eyJncm91cENvZGUiOiI4NzEyMjk5MzciLCJ1aW4iOiIxNTk5Mjk0OTU3In0=&data=-XUNHn2ONLeDg7l3sslDVejgEuAq73ALu_2TClospj7g4S3rv98L3mZCSgnivTvV_yUbZ7-xv-b6Owi73v6CdkAT1lxJ3l9MzYfWaiOT7pg&svctype=5&tempid=h5_group_info)
+[![QQ群](https://img.shields.io/badge/QQ群-871229937-12b7f5?logo=tencentqq)](https://qun.qq.com/universal-share/share?ac=1&authKey=4Nn/HUptHFXeX0LvwZ7aVyW/psDyh8tgyhMhHEGnCtr0EuQzFpoIvXeOd%2Ba6cW%2BN&busi_data=eyJncm91cENvZGUiOiI4NzEyMjk5MzciLCJ0b2tlbiI6ImxUK1UwN25ybGVaWnpDakwxdy9zZEYwQ1ZHWnhkM25tYkRXUWVrUXRYMmk3c0RUT0JFWEVESFUxNUsyUVZjSnciLCJ1aW4iOiIxNTk5Mjk0OTU3In0=&data=-XUNHn2ONLeDg7l3sslDVejgEuAq73ALu_2TClospj7g4S3rv98L3mZCSgnivTvV_yUbZ7-xv-b6Owi73v6CdkAT1lxJ3l9MzYfWaiOT7pg&svctype=5&tempid=h5_group_info)
 [![License](https://img.shields.io/badge/License-LGPL_3.0-blue.svg)](LICENSE)
 
 [简体中文](README.md) | [English](README_EN.md)
