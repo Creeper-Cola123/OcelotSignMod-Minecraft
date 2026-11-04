@@ -2,7 +2,7 @@
                               OCELOTSIGNMOD
 ================================================================================
 
-Copyright (c) 2024-2026 OcelotSignMod Contributors
+Copyright (c) 2025-2026 OcelotSignMod Contributors - https://github.com/Creeper-Cola123/OcelotSignMod-Minecraft
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published
@@ -25,10 +25,10 @@ This mod uses the following third-party libraries:
 
 --------------------------------------------------------------------------------
 
-1. MishangUC (mishanguc-1.5.3-1..jar)
+1. MishangUC (mishanguc-1.5.3-1.20.1.jar)
    License: GNU Lesser General Public License version 3 (LGPL-3.0)
-   Copyright: 2022-2024 SolidZacko
-   Project URL: https://github.com/SolidZacko/mishanguc
+   Copyright: 2022-2024 Solid-Block
+   Project URL: https://github.com/SolidBlock-cn/mishanguc
    Modified: Yes - This mod uses Mixin to modify the following classes:
      - AbstractSignBlockEditScreen (color selection extension, pattern list button)
 
