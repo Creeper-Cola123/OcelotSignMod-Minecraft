@@ -5,7 +5,7 @@
 [![CurseForge](https://img.shields.io/badge/CurseForge-Ocelot_Sign_Mod-f16436?logo=curseforge)](https://www.curseforge.com/minecraft/mc-mods/ocelotsignmod)
 [![MC百科](https://img.shields.io/badge/MC百科-28882-blue)](https://www.mcmod.cn/class/28882.html)
 [![哔哩哔哩宣传片](https://img.shields.io/badge/Bilibili-宣传片-ff69b4?logo=bilibili)](https://www.bilibili.com/video/BV1kFgq6PE4D/)
-[![QQ群](https://img.shields.io/badge/QQ群-871229937-12b7f5?logo=tencentqq)](https://qun.qq.com/universal-share/share?ac=1&authKey=4Nn/HUptHFXeX0LvwZ7aVyW/psDyh8tgyhMhHEGnCtr0EuQzFpoIvXeOd%2Ba6cW%2BN&busi_data=eyJncm91cENvZGUiOiI4NzEyMjk5MzciLCJ1aW4iOiIxNTk5Mjk0OTU3In0=&data=-XUNHn2ONLeDg7l3sslDVejgEuAq73ALu_2TClospj7g4S3rv98L3mZCSgnivTvV_yUbZ7-xv-b6Owi73v6CdkAT1lxJ3l9MzYfWaiOT7pg&svctype=5&tempid=h5_group_info)
+[![QQ群](https://img.shields.io/badge/QQ群-871229937-12b7f5?logo=tencentqq)](https://qun.qq.com/universal-share/share?ac=1&authKey=4Nn/HUptHFXeX0LvwZ7aVyW/psDyh8tgyhMhHEGnCtr0EuQzFpoIvXeOd%2Ba6cW%2BN&busi_data=eyJncm91cENvZGUiOiI4NzEyMjk5MzciLCJ0b2tlbiI6ImxUK1UwN25ybGVaWnpDakwxdy9zZEYwQ1ZHWnhkM25tYkRXUWVrUXRYMmk3c0RUT0JFWEVESFUxNUsyUVZjSnciLCJ1aW4iOiIxNTk5Mjk0OTU3In0=&data=-XUNHn2ONLeDg7l3sslDVejgEuAq73ALu_2TClospj7g4S3rv98L3mZCSgnivTvV_yUbZ7-xv-b6Owi73v6CdkAT1lxJ3l9MzYfWaiOT7pg&svctype=5&tempid=h5_group_info)
 [![License](https://img.shields.io/badge/License-LGPL_3.0-blue.svg)](LICENSE)
 
 [简体中文](README.md) | [English](README_EN.md)
@@ -53,7 +53,7 @@
 - **使用文档与创意广场**：[查阅《图案与字体列表》及在线工具](https://creeper-cola123.github.io/OcelotSignMod_Docs/)
 - **下载地址**：[Modrinth](https://modrinth.com/mod/ocelotsignmod) · [CurseForge](https://www.curseforge.com/minecraft/mc-mods/ocelotsignmod) · [MC百科 (MCMOD)](https://www.mcmod.cn/class/28882.html)
 - **视频演示**：[哔哩哔哩宣传片](https://www.bilibili.com/video/BV1kFgq6PE4D/)
-- **交流与反馈**：遇到 Bug 请直接提交 [Issue](../../issues)，日常吹水与城建交流欢迎加入 [官方 QQ 群 (871229937)](https://qun.qq.com/universal-share/share?ac=1&authKey=4Nn/HUptHFXeX0LvwZ7aVyW/psDyh8tgyhMhHEGnCtr0EuQzFpoIvXeOd%2Ba6cW%2BN&busi_data=eyJncm91cENvZGUiOiI4NzEyMjk5MzciLCJ1aW4iOiIxNTk5Mjk0OTU3In0=&data=-XUNHn2ONLeDg7l3sslDVejgEuAq73ALu_2TClospj7g4S3rv98L3mZCSgnivTvV_yUbZ7-xv-b6Owi73v6CdkAT1lxJ3l9MzYfWaiOT7pg&svctype=5&tempid=h5_group_info)。
+- **交流与反馈**：遇到 Bug 请直接提交 [Issue](../../issues)，或加入 [官方 QQ 群 (871229937)](https://qun.qq.com/universal-share/share?ac=1&authKey=4Nn/HUptHFXeX0LvwZ7aVyW/psDyh8tgyhMhHEGnCtr0EuQzFpoIvXeOd%2Ba6cW%2BN&busi_data=eyJncm91cENvZGUiOiI4NzEyMjk5MzciLCJ0b2tlbiI6ImxUK1UwN25ybGVaWnpDakwxdy9zZEYwQ1ZHWnhkM25tYkRXUWVrUXRYMmk3c0RUT0JFWEVESFUxNUsyUVZjSnciLCJ1aW4iOiIxNTk5Mjk0OTU3In0=&data=-XUNHn2ONLeDg7l3sslDVejgEuAq73ALu_2TClospj7g4S3rv98L3mZCSgnivTvV_yUbZ7-xv-b6Owi73v6CdkAT1lxJ3l9MzYfWaiOT7pg&svctype=5&tempid=h5_group_info)。
 
 ## 从源码构建
 

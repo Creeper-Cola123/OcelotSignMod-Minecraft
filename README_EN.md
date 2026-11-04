@@ -7,7 +7,7 @@
 [![CurseForge](https://img.shields.io/badge/CurseForge-Ocelot_Sign_Mod-f16436?logo=curseforge)](https://www.curseforge.com/minecraft/mc-mods/ocelotsignmod)
 [![MCMOD](https://img.shields.io/badge/MCMOD-28882-blue)](https://www.mcmod.cn/class/28882.html)
 [![Bilibili](https://img.shields.io/badge/Bilibili-Trailer-ff69b4?logo=bilibili)](https://www.bilibili.com/video/BV1kFgq6PE4D/)
-[![QQ Group](https://img.shields.io/badge/QQ_Group-871229937-12b7f5?logo=tencentqq)](https://qun.qq.com/universal-share/share?ac=1&authKey=4Nn/HUptHFXeX0LvwZ7aVyW/psDyh8tgyhMhHEGnCtr0EuQzFpoIvXeOd%2Ba6cW%2BN&busi_data=eyJncm91cENvZGUiOiI4NzEyMjk5MzciLCJ1aW4iOiIxNTk5Mjk0OTU3In0=&data=-XUNHn2ONLeDg7l3sslDVejgEuAq73ALu_2TClospj7g4S3rv98L3mZCSgnivTvV_yUbZ7-xv-b6Owi73v6CdkAT1lxJ3l9MzYfWaiOT7pg&svctype=5&tempid=h5_group_info)
+[![QQ Group](https://img.shields.io/badge/QQ_Group-871229937-12b7f5?logo=tencentqq)](https://qun.qq.com/universal-share/share?ac=1&authKey=4Nn/HUptHFXeX0LvwZ7aVyW/psDyh8tgyhMhHEGnCtr0EuQzFpoIvXeOd%2Ba6cW%2BN&busi_data=eyJncm91cENvZGUiOiI4NzEyMjk5MzciLCJ0b2tlbiI6ImxUK1UwN25ybGVaWnpDakwxdy9zZEYwQ1ZHWnhkM25tYkRXUWVrUXRYMmk3c0RUT0JFWEVESFUxNUsyUVZjSnciLCJ1aW4iOiIxNTk5Mjk0OTU3In0=&data=-XUNHn2ONLeDg7l3sslDVejgEuAq73ALu_2TClospj7g4S3rv98L3mZCSgnivTvV_yUbZ7-xv-b6Owi73v6CdkAT1lxJ3l9MzYfWaiOT7pg&svctype=5&tempid=h5_group_info)
 [![License](https://img.shields.io/badge/License-LGPL_3.0-blue.svg)](LICENSE)
 
 > [!IMPORTANT]
@@ -53,7 +53,7 @@ The resulting folder layout should look like this:
 - **Documentation & Creative Plaza**: [Pattern and Font List plus the online tools](https://creeper-cola123.github.io/OcelotSignMod_Docs/)
 - **Downloads**: [Modrinth](https://modrinth.com/mod/ocelotsignmod) · [CurseForge](https://www.curseforge.com/minecraft/mc-mods/ocelotsignmod) · [MCMOD](https://www.mcmod.cn/class/28882.html)
 - **Video showcase**: [Bilibili trailer](https://www.bilibili.com/video/BV1kFgq6PE4D/)
-- **Feedback**: please open an [Issue](../../issues) for bugs; for general chat and city-building talk, join the [official QQ group (871229937)](https://qun.qq.com/universal-share/share?ac=1&authKey=4Nn/HUptHFXeX0LvwZ7aVyW/psDyh8tgyhMhHEGnCtr0EuQzFpoIvXeOd%2Ba6cW%2BN&busi_data=eyJncm91cENvZGUiOiI4NzEyMjk5MzciLCJ1aW4iOiIxNTk5Mjk0OTU3In0=&data=-XUNHn2ONLeDg7l3sslDVejgEuAq73ALu_2TClospj7g4S3rv98L3mZCSgnivTvV_yUbZ7-xv-b6Owi73v6CdkAT1lxJ3l9MzYfWaiOT7pg&svctype=5&tempid=h5_group_info).
+- **Feedback**: please open an [Issue](../../issues) for bugs; or join the [official QQ group (871229937)](https://qun.qq.com/universal-share/share?ac=1&authKey=4Nn/HUptHFXeX0LvwZ7aVyW/psDyh8tgyhMhHEGnCtr0EuQzFpoIvXeOd%2Ba6cW%2BN&busi_data=eyJncm91cENvZGUiOiI4NzEyMjk5MzciLCJ0b2tlbiI6ImxUK1UwN25ybGVaWnpDakwxdy9zZEYwQ1ZHWnhkM25tYkRXUWVrUXRYMmk3c0RUT0JFWEVESFUxNUsyUVZjSnciLCJ1aW4iOiIxNTk5Mjk0OTU3In0=&data=-XUNHn2ONLeDg7l3sslDVejgEuAq73ALu_2TClospj7g4S3rv98L3mZCSgnivTvV_yUbZ7-xv-b6Owi73v6CdkAT1lxJ3l9MzYfWaiOT7pg&svctype=5&tempid=h5_group_info).
 
 ## Building from Source
 
